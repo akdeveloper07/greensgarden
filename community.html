@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gardening Community & Growth Showcase | Green Garden</title>
+  <link rel="icon" type="image/png" href="icon-512.png">
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
+
+  <style>
+    .community-page-wrap {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .community-post-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+
+    .post-header {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .author-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--sage-200);
+    }
+
+    .post-media-wrap {
+      width: 100%;
+      max-height: 440px;
+      background: var(--ivory-100);
+      overflow: hidden;
+    }
+
+    .post-media-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .post-content-area {
+      padding: 20px;
+    }
+
+    .post-actions-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 14px;
+      font-size: 0.95rem;
+    }
+
+    .post-btn-action {
+      background: none;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .post-btn-action:hover, .post-btn-action.liked {
+      color: #e63946;
+    }
+
+    .challenge-banner {
+      background: linear-gradient(135deg, var(--forest-900), var(--forest-800));
+      color: #fff;
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="global-header"></div>
+
+  <main class="community-page-wrap">
+    <!-- Active Challenge Banner -->
+    <div class="challenge-banner">
+      <div>
+        <span class="badge-new" style="background: var(--brass-500); margin-bottom: 8px; display: inline-block;">MONTHLY CHALLENGE</span>
+        <h2 style="color: #fff; font-size: 1.6rem; margin-bottom: 4px;">🌸 Spring Rose Blooms Challenge 2026</h2>
+        <p style="color: var(--sage-200); font-size: 0.9rem;">Share your flowering roses grown from Green Garden cultivars to win ₹500 in nursery gift points!</p>
+      </div>
+      <button class="btn-botanical btn-botanical-accent" onclick="openCreatePostModal()">
+        <i class="fas fa-camera"></i> Share Your Growth
+      </button>
+    </div>
+
+    <!-- Feed Container -->
+    <div id="postsFeedContainer">
+      <!-- Dynamic posts -->
+    </div>
+  </main>
+
+  <div id="global-footer"></div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
+
+  <script>
+    const INITIAL_COMMUNITY_POSTS = [
+      {
+        id: 'post_1',
+        author: 'Priya Sharma (Bangalore)',
+        avatar: 'Ak1.jpg',
+        date: '2 hours ago',
+        plantTag: 'Morning Jewel Rose Seeds',
+        image: 'F1.jpg',
+        caption: '30 days after sowing in the organic potting mix! The first buds just cracked open this morning. The fragrance is incredible! 🌿🌸',
+        likes: 38,
+        liked: false,
+        commentsCount: 6
+      },
+      {
+        id: 'post_2',
+        author: 'Rohan Mehra (Pune)',
+        avatar: 'Ak.jpg',
+        date: 'Yesterday',
+        plantTag: 'Brazilian Wood Lucky Plant',
+        image: 'F6.jpg',
+        caption: 'Transferred this hydroponic desk log into a sunny window ledge. Two fresh sprouts emerged in just 8 days of clean water baths! ✨',
+        likes: 54,
+        liked: true,
+        commentsCount: 12
+      }
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      Store.renderHeader('community');
+      Store.renderFooter();
+
+      renderCommunityPosts();
+    });
+
+    function getPosts() {
+      return JSON.parse(localStorage.getItem('gg_community_posts') || JSON.stringify(INITIAL_COMMUNITY_POSTS));
+    }
+
+    function renderCommunityPosts() {
+      const posts = getPosts();
+      const container = document.getElementById('postsFeedContainer');
+
+      container.innerHTML = posts.map(p => `
+        <div class="community-post-card">
+          <div class="post-header">
+            <img src="${p.avatar}" class="author-avatar" onerror="this.src='Ak.jpg'">
+            <div>
+              <strong style="color: var(--forest-900); font-size: 0.95rem;">${p.author}</strong>
+              <div style="font-size: 0.78rem; color: var(--text-muted);">${p.date} • <span style="color: var(--sage-500); font-weight: 600;">${p.plantTag}</span></div>
+            </div>
+          </div>
+
+          <div class="post-media-wrap">
+            <img src="${p.image}" alt="${p.plantTag}" onerror="this.src='garden.jpg'">
+          </div>
+
+          <div class="post-content-area">
+            <p style="color: var(--forest-900); line-height: 1.6; font-size: 0.95rem;">${p.caption}</p>
+
+            <div class="post-actions-row">
+              <button class="post-btn-action ${p.liked ? 'liked' : ''}" onclick="togglePostLike('${p.id}')">
+                <i class="${p.liked ? 'fas' : 'far'} fa-heart"></i>
+                <span>${p.likes} Likes</span>
+              </button>
+              <button class="post-btn-action" onclick="alert('Comments: \\n• Akash: Beautiful petals!\\n• Meena: Which fertilizer did you use?\\n• Green Garden: Thank you for sharing!')">
+                <i class="far fa-comment"></i>
+                <span>${p.commentsCount} Comments</span>
+              </button>
+              <button class="post-btn-action" onclick="Store.showToast('Post link copied to clipboard!');">
+                <i class="fas fa-share"></i> Share
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function togglePostLike(id) {
+      const posts = getPosts();
+      const p = posts.find(x => x.id === id);
+      if (p) {
+        p.liked = !p.liked;
+        p.likes += p.liked ? 1 : -1;
+        localStorage.setItem('gg_community_posts', JSON.stringify(posts));
+        renderCommunityPosts();
+      }
+    }
+
+    function openCreatePostModal() {
+      const user = AuthService.getCurrentUser();
+      const authorName = user ? user.name : prompt("Enter your name:", "Urban Gardener");
+      if (!authorName) return;
+
+      const caption = prompt("Write about your plant growth or gardening experience:");
+      if (!caption) return;
+
+      const posts = getPosts();
+      posts.unshift({
+        id: 'post_' + Date.now(),
+        author: authorName,
+        avatar: 'Ak.jpg',
+        date: 'Just now',
+        plantTag: 'Green Garden Living Specimen',
+        image: 'F41.jpg',
+        caption: caption,
+        likes: 1,
+        liked: true,
+        commentsCount: 0
+      });
+
+      localStorage.setItem('gg_community_posts', JSON.stringify(posts));
+      Store.showToast("🌱 Story posted to Green Garden Community (+25 Green Points)!");
+      renderCommunityPosts();
+    }
+  </script>
+</body>
+</html>

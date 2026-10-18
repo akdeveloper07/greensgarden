@@ -1,1380 +1,461 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #2E7D32;
-            --primary-light: #4CAF50;
-            --secondary: #F5F5F5;
-            --accent: #FFC107;
-            --text-dark: #333;
-            --text-light: #777;
-            --white: #FFFFFF;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s ease;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Botanical Catalog & Seeds | Green Garden</title>
+  <link rel="icon" type="image/png" href="icon-512.png">
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
 
-        body {
-            background-color: #f9f9f9;
-            color: var(--text-dark);
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--white);
-            color: var(--primary);
-            padding: 1rem 2rem;
-            box-shadow: var(--shadow);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .nav-brand i {
-            font-size: 1.8rem;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-        }
-
-        .nav-link {
-            color: var(--text-dark);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
-            padding: 0.5rem 0;
-            position: relative;
-        }
-
-        .nav-link:hover {
-            color: var(--primary);
-        }
-
-        .nav-link.active {
-            color: var(--primary);
-        }
-
-        .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--primary);
-        }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .search-bar {
-            display: flex;
-            align-items: center;
-            background: var(--secondary);
-            border-radius: 30px;
-            padding: 0.5rem 1rem;
-            transition: var(--transition);
-        }
-
-        .search-bar:focus-within {
-            box-shadow: 0 0 0 2px var(--primary-light);
-        }
-
-        .search-bar input {
-            border: none;
-            outline: none;
-            background: transparent;
-            padding: 0.5rem;
-            width: 200px;
-            font-size: 0.9rem;
-        }
-
-        .search-bar button {
-            border: none;
-            background: transparent;
-            color: var(--text-light);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .search-bar button:hover {
-            color: var(--primary);
-        }
-
-        .back-home {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            transition: var(--transition);
-        }
-
-        .back-home:hover {
-            background: rgba(46, 125, 50, 0.1);
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-top: 80px;
-            padding: 2rem;
-        }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .page-title {
-            font-size: 1.8rem;
-            color: var(--primary);
-            font-weight: 700;
-        }
-
-        .sort-buttons {
-        display: flex;
-        gap: 8px;
+  <style>
+    .catalog-header {
+      background: linear-gradient(135deg, var(--forest-900), var(--forest-800));
+      color: #fff;
+      padding: 48px 24px 40px;
+      text-align: center;
     }
 
-    .sort-btn {
-        padding: 8px 16px;
-        border: 1px solid #ddd;
-        border-radius: 20px;
-        background: white;
-        cursor: pointer;
-        transition: all 0.3s;
-        display: flex;
-        align-items: center;
-        gap: 6px;
+    .catalog-header h1 {
+      color: #fff;
+      font-size: 2.8rem;
+      margin-bottom: 8px;
     }
 
-    .sort-btn:hover {
-        background: #f0f0f0;
+    .catalog-header p {
+      color: var(--sage-200);
+      font-size: 1.1rem;
+      max-width: 650px;
+      margin: 0 auto;
     }
 
-    .sort-btn.active {
-        background: #4CAF50;
-        color: white;
-        border-color: #4CAF50;
+    /* Filter & Search Bar */
+    .filter-section {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 73px;
+      z-index: 900;
+      box-shadow: var(--shadow-sm);
     }
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
 
-        .product-card {
-            background: var(--white);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            position: relative;
-        }
+    .filter-container {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
 
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
+    .filter-top-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
 
-        .product-badge {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            background: var(--primary);
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            z-index: 1;
-        }
+    .search-box {
+      flex: 1;
+      min-width: 280px;
+      max-width: 460px;
+      position: relative;
+    }
 
-        .product-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
+    .search-box input {
+      width: 100%;
+      padding: 11px 18px 11px 44px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-subtle);
+      background: var(--ivory-50);
+      font-size: 0.95rem;
+      outline: none;
+      transition: var(--transition-fast);
+    }
 
-        .product-info {
-            padding: 1.5rem;
-        }
+    .search-box input:focus {
+      background: #fff;
+      border-color: var(--sage-400);
+      box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.15);
+    }
 
-        .product-category {
-            color: var(--text-light);
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
+    .search-box i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
 
-        .product-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
+    .filter-controls {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
 
-        .product-price {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin: 0.5rem 0;
-        }
+    .custom-select {
+      padding: 10px 16px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-subtle);
+      background: var(--ivory-50);
+      color: var(--forest-900);
+      font-size: 0.88rem;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+    }
 
-        .product-rating {
-            color: var(--accent);
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
+    .checkbox-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 16px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-subtle);
+      background: var(--ivory-50);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      color: var(--forest-900);
+      transition: var(--transition-fast);
+    }
 
-        .product-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    .checkbox-pill.active {
+      background: var(--sage-100);
+      border-color: var(--sage-400);
+      color: var(--forest-900);
+    }
 
-        
+    /* Category Navigation Tabs */
+    .category-tabs {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
 
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 1rem;
-            }
-            
-            .nav-links {
-                display: none;
-            }
-            
-            .search-bar input {
-                width: 150px;
-            }
-            
-            .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            }
-        }
-    </style>
+    .category-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cat-tab-btn {
+      white-space: nowrap;
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-subtle);
+      background: var(--ivory-50);
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .cat-tab-btn:hover {
+      background: #ffffff;
+      color: var(--forest-900);
+      border-color: var(--sage-300);
+    }
+
+    .cat-tab-btn.active {
+      background: var(--forest-800);
+      color: #ffffff;
+      border-color: var(--forest-800);
+    }
+
+    /* Main Grid Area */
+    .catalog-main {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 36px 24px 80px;
+      flex-grow: 1;
+    }
+
+    .results-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 28px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px dashed var(--border-subtle);
+      grid-column: 1 / -1;
+    }
+  </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-left">
-            <a href="home.html" class="nav-brand">
-                <i class="fas fa-leaf"></i>
-                <span>Green Garden</span>
-            </a>
-            <div class="nav-links">
-                <a href="home.html" class="nav-link">Home</a>
-                <a href="products.html" class="nav-link active">Products</a>
-                <a href="cart.html" class="nav-link">Cart</a>
-                <a href="orders.html" class="nav-link">Orders</a>
-            </div>
-        </div>
-        
-        <div class="nav-right">
-            <div class="search-bar">
-                <input type="text" placeholder="Search products...">
-                <button><i class="fas fa-search"></i></button>
-            </div>
-            <a href="home.html" class="back-home">
-                <i class="fas fa-home"></i>
-                <span>Home</span>
-            </a>
-        </div>
-    </nav>
 
-    <main class="main-content">
-        <div class="page-header">
-            <h1 class="page-title">Our Products</h1>
-    
-    <div class="sort-buttons">
-        <button class="sort-btn active" data-sort="asc" onclick="sortProducts('asc')">
-            <i class="fas fa-arrow-up"></i>
-            Low-High
-        </button>
-        <button class="sort-btn" data-sort="desc" onclick="sortProducts('desc')">
-            <i class="fas fa-arrow-down"></i>
-            High-Low
-        </button>
-    </div>
-        </div>
+  <div id="global-header"></div>
+
+  <div class="catalog-header">
+    <h1>Conservatory & Seed Collection</h1>
+    <p>Discover indigenous blooms, heirloom kitchen crops, living bonsai, and organic nursery care.</p>
+  </div>
+
+  <!-- Interactive Filter Toolbar -->
+  <div class="filter-section">
+    <div class="filter-container">
+      <div class="filter-top-row">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="catalogSearchInput" placeholder="Search by name, scientific name, or tag..." oninput="handleSearchInput(this.value)">
         </div>
 
-      <div class="products-grid">
-         
-            <div class="product-card" onclick="openProductDetails(1)">
-                <img src="F1.jpg" alt="Morning Jewel Rose" class="product-image">
-                <div class="product-info">
-                    <span class="product-category">Flower Seeds</span>
-                    <h3 class="product-title">Morning Jewel Rose Seed</h3>
-                    <div class="product-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <span>(25 reviews)</span>
-                    </div>
-                    <div class="product-price">₹158</div>
-                    <div class="product-stock in-stock">In Stock (50 available)</div>
-                </div>
-            </div>
-            
-           
-            <div class="product-card" onclick="openProductDetails(2)">
-                <img src="F2.jpg" alt="Winter Daisy" class="product-image">
-                <div class="product-info">
-                    <span class="product-category">Flower Seeds</span>
-                    <h3 class="product-title">Winter Daisy Red Mixed Seed</h3>
-                    <div class="product-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <span>(30 reviews)</span>
-                    </div>
-                    <div class="product-price">₹150</div>
-                    <div class="product-stock in-stock">In Stock (45 available)</div>
-                </div>
-            </div>
-            
-          
-            <div class="product-card" onclick="openProductDetails(3)">
-                <img src="F3.jpg" alt="Bitter Gourd" class="product-image">
-                <div class="product-info">
-                    <span class="product-category">Vegetable Seeds</span>
-                    <h3 class="product-title">Bitter Gourd-kareka seed</h3>
-                    <div class="product-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <span>(42 reviews)</span>
-                    </div>
-                    <div class="product-price">₹99</div>
-                    <div class="product-stock in-stock">In Stock (60 available)</div>
-                </div>
-            </div>
-            
-           
-            <div class="product-card" onclick="openProductDetails(4)">
-                <img src="F4.jpg" alt="Black Tomato" class="product-image">
-                <div class="product-info">
-                    <span class="product-category">Vegetable Seeds</span>
-                    <h3 class="product-title">Black Tomato</h3>
-                    <div class="product-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <span>(38 reviews)</span>
-                    </div>
-                    <div class="product-price">₹110</div>
-                    <div class="product-stock in-stock">In Stock (55 available)</div>
-                </div>
-            </div>
-            
-         
-            <div class="product-card" onclick="openProductDetails(5)">
-                <img src="F5.jpg" alt="Broccoli Seed" class="product-image">
-                <div class="product-info">
-                    <span class="product-category">Vegetable Seeds</span>
-                    <h3 class="product-title">Broccoli Vegetable Seed</h3>
-                    <div class="product-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <span>(47 reviews)</span>
-                    </div>
-                    <div class="product-price">₹89</div>
-                    <div class="product-stock in-stock">In Stock (70 available)</div>
-                </div>
-            </div>
-            
-          
-            <div class="product-card" onclick="openProductDetails(6)">
-                <img src="F6.jpg" alt="Brazilian Wood" class="product-image">
-                <div class="product-info">
-                    <span class="product-category">Plants</span>
-                    <h3 class="product-title">Brazilian Wood Plant</h3>
-                    <div class="product-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <span>(18 reviews)</span>
-                    </div>
-                    <div class="product-price">₹550</div>
-                    <div class="product-stock in-stock">In Stock (15 available)</div>
-                </div>
-            </div>
-            
-       
-            <div class="product-card" onclick="openProductDetails(7)">
-                <img src="F7.jpg" alt="Apple Plant" class="product-image">
-                <div class="product-info">
-                    <span class="product-category">Fruit Plants</span>
-                    <h3 class="product-title">Apple Plant Hybrid</h3>
-                    <div class="product-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <span>(29 reviews)</span>
-                    </div>
-                    <div class="product-price">₹100</div>
-                    <div class="product-stock in-stock">In Stock (40 available)</div>
-                </div>
-            </div>
-            
-         
-            <div class="product-card" onclick="openProductDetails(8)">
-                <img src="F8.jpg" alt="Cabbage Seed" class="product-image">
-                <div class="product-info">
-                    <span class="product-category">Vegetable Seeds</span>
-                    <h3 class="product-title">Cabbage Seed</h3>
-                    <div class="product-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <span>(35 reviews)</span>
-                    </div>
-                    <div class="product-price">₹110</div>
-                    <div class="product-stock in-stock">In Stock (65 available)</div>
-                </div>
-            </div>
-            
-       
-            <div class="product-card" onclick="openProductDetails(9)">
-                <img src="F9.jpg" alt="Chinese Cabbage" class="product-image">
-                <div class="product-info">
-                    <span class="product-category">Vegetable Seeds</span>
-                    <h3 class="product-title">Chinese Cabbage</h3>
-                    <div class="product-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <span>(27 reviews)</span>
-                    </div>
-                    <div class="product-price">₹111</div>
-                    <div class="product-stock in-stock">In Stock (50 available)</div>
-                </div>
-            </div>
-            
-          
-            <div class="product-card" onclick="openProductDetails(10)">
-                <img src="F10.jpg" alt="Amaranthus" class="product-image">
-                <div class="product-info">
-                    <span class="product-category">Vegetable Seeds</span>
-                    <h3 class="product-title">Amaranthus Vegetable Seed</h3>
-                    <div class="product-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <span>(33 reviews)</span>
-                    </div>
-                    <div class="product-price">₹130</div>
-                    <div class="product-stock in-stock">In Stock (58 available)</div>
-                </div>
-            </div>
-            
-            <div class="product-card" onclick="openProductDetails(11)">
-                <img src="F11.jpg" alt="Cauliflower" class="product-image">
-                <div class="product-info">
-                    <span class="product-category">Vegetable Seeds</span>
-                    <h3 class="product-title">Farm Cauliflower Violetto</h3>
-                    <div class="product-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <span>(41 reviews)</span>
-                    </div>
-                    <div class="product-price">₹120</div>
-                    <div class="product-stock in-stock">In Stock (47 available)</div>
-                </div>
-            </div>
-            
-            
-            <div class="product-card" onclick="openProductDetails(12)">
-                <img src="F12.jpg" alt="Kamal Seed" class="product-image">
-                <div class="product-info">
-                    <span class="product-category">Flower Seeds</span>
-                    <h3 class="product-title">Kamal Seed (200g)</h3>
-                    <div class="product-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <span>(52 reviews)</span>
-                    </div>
-                    <div class="product-price">₹149</div>
-                    <div class="product-stock in-stock">In Stock (72 available)</div>
-                </div>
-            </div>
-           
-<div class="product-card" onclick="openProductDetails(13)">
-    <img src="F13.jpg" alt="Home Decor" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Home & Decor</span>
-        <h3 class="product-title">6 Birds Hanging Home Decor</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(64 reviews)</span>
-        </div>
-        <div class="product-price">₹160</div>
-        <div class="product-stock in-stock">In Stock (38 available)</div>
-    </div>
-</div>
+        <div class="filter-controls">
+          <select id="sortSelect" class="custom-select" onchange="applyFilters()">
+            <option value="featured">Sort: Featured Picks</option>
+            <option value="price_asc">Price: Low to High</option>
+            <option value="price_desc">Price: High to Low</option>
+            <option value="rating_desc">Highest Rated</option>
+            <option value="reviews_desc">Most Reviewed</option>
+          </select>
 
-<div class="product-card" onclick="openProductDetails(14)">
-    <img src="F14.jpg" alt="Ceramic Pot" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Planters</span>
-        <h3 class="product-title">Blue Ceramic Pot</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <span>(73 reviews)</span>
-        </div>
-        <div class="product-price">₹200</div>
-        <div class="product-stock in-stock">In Stock (42 available)</div>
-    </div>
-</div>
+          <select id="lightSelect" class="custom-select" onchange="applyFilters()">
+            <option value="all">All Sunlight Needs</option>
+            <option value="Full Sun">Full Sun (6+ hrs)</option>
+            <option value="Partial">Partial Sun / Shade</option>
+            <option value="Indirect">Bright Indirect Light</option>
+          </select>
 
-<div class="product-card" onclick="openProductDetails(15)">
-    <img src="F15.jpg" alt="Plastic Pot" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Planters</span>
-        <h3 class="product-title">Multicolor Plastic Pot</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(56 reviews)</span>
+          <label class="checkbox-pill" id="petPill" onclick="togglePetSafe()">
+            <input type="checkbox" id="petSafeOnly" style="display:none;">
+            <span>🐾 Pet Safe Only</span>
+          </label>
         </div>
-        <div class="product-price">₹400</div>
-        <div class="product-stock in-stock">In Stock (29 available)</div>
-    </div>
-</div>
+      </div>
 
-<div class="product-card" onclick="openProductDetails(16)">
-    <img src="F16.jpg" alt="Pot Stand" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Gardening Tools</span>
-        <h3 class="product-title">Signal Bicycle Pot Stand</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(48 reviews)</span>
-        </div>
-        <div class="product-price">₹199</div>
-        <div class="product-stock in-stock">In Stock (35 available)</div>
+      <!-- Category Filter Tabs -->
+      <div class="category-tabs" id="categoryTabs">
+        <button class="cat-tab-btn active" data-cat="all" onclick="selectCategory('all', this)">All Cultivars</button>
+        <button class="cat-tab-btn" data-cat="Flower Seeds" onclick="selectCategory('Flower Seeds', this)">Flower Seeds</button>
+        <button class="cat-tab-btn" data-cat="Vegetable Seeds" onclick="selectCategory('Vegetable Seeds', this)">Vegetable Seeds</button>
+        <button class="cat-tab-btn" data-cat="Live Plants" onclick="selectCategory('Live Plants', this)">Live Plants</button>
+        <button class="cat-tab-btn" data-cat="Fruit Plants" onclick="selectCategory('Fruit Plants', this)">Fruit Plants</button>
+        <button class="cat-tab-btn" data-cat="Planters & Pots" onclick="selectCategory('Planters & Pots', this)">Planters & Pots</button>
+        <button class="cat-tab-btn" data-cat="Plant Stands" onclick="selectCategory('Plant Stands', this)">Plant Stands</button>
+        <button class="cat-tab-btn" data-cat="Plant Care" onclick="selectCategory('Plant Care', this)">Organic Care & Feed</button>
+      </div>
     </div>
-</div>
+  </div>
 
-<div class="product-card" onclick="openProductDetails(17)">
-    <img src="F17.jpg" alt="Plastic Flower Pot" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Planters</span>
-        <h3 class="product-title">Crystal Shaped Plastic Flower Pot</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <span>(62 reviews)</span>
-        </div>
-        <div class="product-price">₹299</div>
-        <div class="product-stock in-stock">In Stock (41 available)</div>
+  <!-- Catalog Content Section -->
+  <main class="catalog-main">
+    <div class="results-bar">
+      <div>Showing <strong id="itemCountDisplay">0</strong> botanical items</div>
+      <div id="activeFilterBadge" style="color: var(--sage-500); font-weight: 600;"></div>
     </div>
-</div>
 
-<div class="product-card" onclick="openProductDetails(18)">
-    <img src="F18.jpg" alt="Potting Mix" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Gardening Supplies</span>
-        <h3 class="product-title">Organic Potting Mix</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(84 reviews)</span>
-        </div>
-        <div class="product-price">₹360</div>
-        <div class="product-stock in-stock">In Stock (67 available)</div>
+    <div id="catalogGrid" class="product-grid">
+      <!-- Injected dynamically -->
     </div>
-</div>
+  </main>
 
-<div class="product-card" onclick="openProductDetails(19)">
-    <img src="F19.jpg" alt="Metal Pot Stand" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Gardening Tools</span>
-        <h3 class="product-title">6 Tier Metal Pot Stand</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(37 reviews)</span>
-        </div>
-        <div class="product-price">₹999</div>
-        <div class="product-stock in-stock">In Stock (18 available)</div>
-    </div>
-</div>
+  <div id="global-footer"></div>
 
-<div class="product-card" onclick="openProductDetails(20)">
-    <img src="F20.jpg" alt="Kalanchoe" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Flower Seeds</span>
-        <h3 class="product-title">Yellow Kalanchoe Flower Seed</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(59 reviews)</span>
-        </div>
-        <div class="product-price">₹149</div>
-        <div class="product-stock in-stock">In Stock (63 available)</div>
-    </div>
-</div>
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
 
-<div class="product-card" onclick="openProductDetails(21)">
-    <img src="F21.jpg" alt="Sky Fruit" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Exotic Seeds</span>
-        <h3 class="product-title">Sky Fruit Seeds (400g)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(23 reviews)</span>
-        </div>
-        <div class="product-price">₹349</div>
-        <div class="product-stock in-stock">In Stock (32 available)</div>
-    </div>
-</div>
+  <script>
+    let allProducts = [];
+    let currentCategory = 'all';
+    let petOnly = false;
 
-<div class="product-card" onclick="openProductDetails(22)">
-    <img src="F22.jpg" alt="Bsarkar" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Vegetable Seeds</span>
-        <h3 class="product-title">Long Luki Seed (25 per pkt)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(31 reviews)</span>
-        </div>
-        <div class="product-price">₹110</div>
-        <div class="product-stock in-stock">In Stock (54 available)</div>
-    </div>
-</div>
+    document.addEventListener('DOMContentLoaded', async () => {
+      Store.renderHeader('products');
+      Store.renderFooter();
 
-<div class="product-card" onclick="openProductDetails(23)">
-    <img src="F23.jpg" alt="Castor" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Oil Seeds</span>
-        <h3 class="product-title">Castor Seed (100g)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(45 reviews)</span>
-        </div>
-        <div class="product-price">₹169</div>
-        <div class="product-stock in-stock">In Stock (39 available)</div>
-    </div>
-</div>
+      // Read URL Query params (e.g. ?category=Flower%20Seeds or ?search=rose)
+      const params = new URLSearchParams(window.location.search);
+      const urlCat = params.get('category');
+      const urlSearch = params.get('search');
 
-<div class="product-card" onclick="openProductDetails(24)">
-    <img src="F24.jpg" alt="Black Avocado" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Tree Seeds</span>
-        <h3 class="product-title">Black Avocado Tree Seed (1 per pkt)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <span>(28 reviews)</span>
-        </div>
-        <div class="product-price">₹129</div>
-        <div class="product-stock in-stock">In Stock (22 available)</div>
-    </div>
-</div>
-
-<div class="product-card" onclick="openProductDetails(25)">
-    <img src="F25.jpg" alt="White Cauliflower" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Vegetable Seeds</span>
-        <h3 class="product-title">Gobhee Seeds (10 per pkt)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(36 reviews)</span>
-        </div>
-        <div class="product-price">₹129</div>
-        <div class="product-stock in-stock">In Stock (48 available)</div>
-    </div>
-</div>
-          
-<div class="product-card" onclick="openProductDetails(26)">
-    <img src="F26.jpg" alt="Garden Cress" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Herb Seeds</span>
-        <h3 class="product-title">Halim Seeds (300g)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(51 reviews)</span>
-        </div>
-        <div class="product-price">₹270</div>
-        <div class="product-stock in-stock">In Stock (57 available)</div>
-    </div>
-</div>
-
-<div class="product-card" onclick="openProductDetails(27)">
-    <img src="F27.jpg" alt="Edible Carrot" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Vegetable Seeds</span>
-        <h3 class="product-title">Carrot Seeds (1 per pkt)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(67 reviews)</span>
-        </div>
-        <div class="product-price">₹199</div>
-        <div class="product-stock in-stock">In Stock (43 available)</div>
-    </div>
-</div>
-
-<div class="product-card" onclick="openProductDetails(28)">
-    <img src="F28.jpg" alt="Green Grass" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Lawn Seeds</span>
-        <h3 class="product-title">Green Grass Seeds (3000 per pkt)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <span>(79 reviews)</span>
-        </div>
-        <div class="product-price">₹118</div>
-        <div class="product-stock in-stock">In Stock (85 available)</div>
-    </div>
-</div>
-
-<div class="product-card" onclick="openProductDetails(29)">
-    <img src="F29.jpg" alt="Dahlia Flower" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Flower Seeds</span>
-        <h3 class="product-title">Hybrid Dahlia Seeds (50 per pkt)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(63 reviews)</span>
-        </div>
-        <div class="product-price">₹125</div>
-        <div class="product-stock in-stock">In Stock (71 available)</div>
-    </div>
-</div>
-<div class="product-card" onclick="openProductDetails(30)">
-    <img src="F30.jpg" alt="Ash gourd" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Vegetable Seeds</span>
-        <h3 class="product-title">Ash gourd seeds(40 per pkt)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(42 reviews)</span>
-        </div>
-        <div class="product-price">₹159</div>
-        <div class="product-stock in-stock">In Stock (53 available)</div>
-    </div>
-</div>
-          
-<div class="product-card" onclick="openProductDetails(31)">
-    <img src="F31.jpg" alt="Black carrot" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Vegetable Seeds</span>
-        <h3 class="product-title">black carrot seeds (120 per pkt)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(87 reviews)</span>
-        </div>
-        <div class="product-price">₹149</div>
-        <div class="product-stock in-stock">In Stock (78 available)</div>
-    </div>
-</div>
-
-          <div class="product-card" onclick="openProductDetails(32)">
-    <img src="F32.jpg" alt="Long Slender Pepper" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Vegetable Seeds</span>
-        <h3 class="product-title">Long Slender PepperSeeds (200 per pkt)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(95 reviews)</span>
-        </div>
-        <div class="product-price">₹145</div>
-        <div class="product-stock in-stock">In Stock (38 available)</div>
-    </div>
-</div>
-
-          
-          <div class="product-card" onclick="openProductDetails(33)">
-    <img src="F33.jpg" alt="Lotus" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Flower Seeds</span>
-        <h3 class="product-title">Lotus Seeds (30 per pkt)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(76 reviews)</span>
-        </div>
-        <div class="product-price">₹119</div>
-        <div class="product-stock in-stock">In Stock (28 available)</div>
-    </div>
-</div>
-
-          <div class="product-card" onclick="openProductDetails(34)">
-    <img src="F34.jpg" alt="Halam" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Vegetable Seeds</span>
-        <h3 class="product-title">Halam Seeds (200g)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(67 reviews)</span>
-        </div>
-        <div class="product-price">₹189</div>
-        <div class="product-stock in-stock">In Stock (78 available)</div>
-    </div>
-</div>
-
-          <div class="product-card" onclick="openProductDetails(35)">
-    <img src="F35.jpg" alt="Hot chilli" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Vegetable Seeds</span>
-        <h3 class="product-title">Hot chilli  organic Seeds (200 per pkt)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(56 reviews)</span>
-        </div>
-        <div class="product-price">₹119</div>
-        <div class="product-stock in-stock">In Stock (8 available)</div>
-    </div>
-</div>
-
-          <div class="product-card" onclick="openProductDetails(36)">
-    <img src="F36.jpg" alt="Raganigandha" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Flower Seeds</span>
-        <h3 class="product-title">Raganigandha flower Seeds (4 per pkt)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(40 reviews)</span>
-        </div>
-        <div class="product-price">₹109</div>
-        <div class="product-stock in-stock">In Stock (74 available)</div>
-    </div>
-</div>
-
-          <div class="product-card" onclick="openProductDetails(37)">
-    <img src="F37.jpg" alt="Sword lily" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Flower Seeds</span>
-        <h3 class="product-title">Sword Lily plant (hybrid,pack of 1)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(40 reviews)</span>
-        </div>
-        <div class="product-price">₹120</div>
-        <div class="product-stock in-stock">In Stock (45 available)</div>
-    </div>
-</div>
-
-          <div class="product-card" onclick="openProductDetails(38)">
-    <img src="F38.jpg" alt="HARSINGAR" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Flower seeds</span>
-        <h3 class="product-title">HARSINGAR seed(20 per pkt)<h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(90 reviews)</span>
-        </div>
-        <div class="product-price">₹129</div>
-        <div class="product-stock in-stock">In Stock (34 available)</div>
-    </div>
-</div>
-
-          <div class="product-card" onclick="openProductDetails(39)">
-    <img src="F39.jpg" alt="French yellow marigold" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Flower Seeds</span>
-        <h3 class="product-title">French yellow marigold seed(50 per pkt)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(76 reviews)</span>
-        </div>
-        <div class="product-price">₹145</div>
-        <div class="product-stock in-stock">In Stock (93 available)</div>
-    </div>
-</div>
-
-          <div class="product-card" onclick="openProductDetails(40)">
-    <img src="F40.jpg" alt="Beej Band" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Flower Seeds</span>
-        <h3 class="product-title">Beej Band Seeds (100 per pkt)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(140 reviews)</span>
-        </div>
-        <div class="product-price">₹199</div>
-        <div class="product-stock in-stock">In Stock (45 available)</div>
-    </div>
-</div>
-            <div class="product-card" onclick="openProductDetails(41)">
-    <img src="F41.jpg" alt="Red Rose" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Flower Seeds</span>
-        <h3 class="product-title">Rose plant(Hybrid,pack of 1)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(150 reviews)</span>
-        </div>
-        <div class="product-price">₹129</div>
-        <div class="product-stock in-stock">In Stock (35 available)</div>
-    </div>
-            </div>
-
-            <div class="product-card" onclick="openProductDetails(40)">
-    <img src="F423.jpg" alt="Black soil manure" class="product-image">
-    <div class="product-info">
-        <span class="product-category">plant manure</span>
-        <h3 class="product-title">Black soil manure(10kg,Powder)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(30 reviews)</span>
-        </div>
-        <div class="product-price">₹219</div>
-        <div class="product-stock in-stock">In Stock (63 available)</div>
-    </div>
-</div>
-            <div class="product-card" onclick="openProductDetails(43)">
-    <img src="F43.jpg" alt="Red Banana" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Fruit Seeds</span>
-        <h3 class="product-title">Red Banana plant(Hybrid, pack of 1)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(15 reviews)</span>
-        </div>
-        <div class="product-price">₹149</div>
-        <div class="product-stock in-stock">In Stock (25 available)</div>
-    </div>
-</div>
-            <div class="product-card" onclick="openProductDetails(44)">
-    <img src="F44.jpg" alt="Hibiscus" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Flower Seeds</span>
-        <h3 class="product-title">Hibiscus plant(Hybrid,pack of 1)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(10 reviews)</span>
-        </div>
-        <div class="product-price">₹115</div>
-        <div class="product-stock in-stock">In Stock (34 available)</div>
-    </div>
-</div>
-            <div class="product-card" onclick="openProductDetails(45)">
-    <img src="F45.jpg" alt="Natural plant manure" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Plant manure</span>
-        <h3 class="product-title">Natural plant manure(1kg,cake)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(140 reviews)</span>
-        </div>
-        <div class="product-price">₹135</div>
-        <div class="product-stock in-stock">In Stock (45 available)</div>
-    </div>
-</div>
-            <div class="product-card" onclick="openProductDetails(46)">
-    <img src="F46.jpg" alt="Flower Holder-Metal" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Pot stand</span>
-        <h3 class="product-title">Flower Holder-metal 5 pot planter stand</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(63 reviews)</span>
-        </div>
-        <div class="product-price">₹870</div>
-        <div class="product-stock in-stock">In Stock (76 available)</div>
-    </div>
-</div>
-            <div class="product-card" onclick="openProductDetails(47)">
-    <img src="F47.jpg" alt="Organic DAP plant Growth Boost" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Plant fertilizer</span>
-        <h3 class="product-title"> Organic DAP plant Growth Boost(1.5 kg)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(40 reviews)</span>
-        </div>
-        <div class="product-price">₹220</div>
-        <div class="product-stock in-stock">In Stock (87 available)</div>
-    </div>
-</div>
-            <div class="product-card" onclick="openProductDetails(48)">
-    <img src="F48.jpg" alt="Gardenplus 3pcs plant Growth" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Plans growth Fertilizer</span>
-        <h3 class="product-title">Gardenplus 3pcs plant Growth (150 ml, Liquid)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(10 reviews)</span>
-        </div>
-        <div class="product-price">₹209</div>
-        <div class="product-stock in-stock">In Stock (20 available)</div>
-    </div>
-</div>
-            <div class="product-card" onclick="openProductDetails(49)">
-    <img src="F49.jpg" alt="Magnesium sulfate for plants" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Plant fertilizer</span>
-        <h3 class="product-title">Magnesium sulfate for plants (500 g)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(45 reviews)</span>
-        </div>
-        <div class="product-price">₹139</div>
-        <div class="product-stock in-stock">In Stock (25 available)</div>
-    </div>
-</div>
-            <div class="product-card" onclick="openProductDetails(50)">
-    <img src="F50.jpg" alt="Miracle grow all purpose manure" class="product-image">
-    <div class="product-info">
-        <span class="product-category">Plant manure</span>
-        <h3 class="product-title">Miracle grow all purpose manure(400 g,powder)</h3>
-        <div class="product-rating">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <span>(59reviews)</span>
-        </div>
-        <div class="product-price">₹450</div>
-        <div class="product-stock in-stock">In Stock (65 available)</div>
-    </div>
-</div>
-            
-
-    </main>
-
-    <script>
-
-document.addEventListener('DOMContentLoaded', () => {
-
-    updateWishlistButtons();
-    
-    document.querySelectorAll('.add-to-cart').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const productCard = this.closest('.product-card');
-            const product = getProductData(productCard);
-            addToCart(product);
-            showNotification('Product added to cart!');
+      if (urlCat) {
+        currentCategory = urlCat;
+        document.querySelectorAll('.cat-tab-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.cat.toLowerCase() === urlCat.toLowerCase());
         });
+      }
+
+      if (urlSearch) {
+        document.getElementById('catalogSearchInput').value = urlSearch;
+      }
+
+      if (params.get('focus') === 'search') {
+        document.getElementById('catalogSearchInput').focus();
+      }
+
+      // Live subscription to catalog
+      ProductService.subscribeToProducts(products => {
+        allProducts = products;
+        applyFilters();
+      });
     });
-    document.querySelectorAll('.wishlist-btn').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const productCard = this.closest('.product-card');
-            toggleWishlist(productCard, this);
-        });
-    });
 
-    document.querySelector('.search-bar input').addEventListener('input', function(e) {
-        const searchTerm = e.target.value.toLowerCase();
-        filterProducts(searchTerm);
-    });
-
-    document.querySelectorAll('.filter-btn').forEach((btn, index) => {
-        btn.addEventListener('click', () => {
-            index === 0 ? filterByCategory() : sortProducts();
-        });
-    });
-});
-
-function getProductData(productCard) {
-    return {
-        title: productCard.querySelector('.product-title').textContent,
-        price: parseFloat(productCard.querySelector('.product-price').textContent.replace('₹', '')),
-        category: productCard.querySelector('.product-category').textContent,
-        image: productCard.querySelector('.product-image').src,
-        quantity: 1
-    };
-}
-
-function addToCart(product) {
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const existingItem = cart.find(item => item.title === product.title);
-    existingItem ? existingItem.quantity++ : cart.push(product);
-    localStorage.setItem('cart', JSON.stringify(cart));
-}
-
-function toggleWishlist(productCard, button) {
-    const product = getProductData(productCard);
-    let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-    const index = wishlist.findIndex(item => item.title === product.title);
-    
-    if (index === -1) {
-        wishlist.push(product);
-        button.innerHTML = '<i class="fas fa-heart"></i>';
-    } else {
-        wishlist.splice(index, 1);
-        button.innerHTML = '<i class="far fa-heart"></i>';
+    function selectCategory(cat, btn) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilters();
     }
-    localStorage.setItem('wishlist', JSON.stringify(wishlist));
-}
 
-function updateWishlistButtons() {
-    const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-    document.querySelectorAll('.wishlist-btn').forEach(button => {
-        const productCard = button.closest('.product-card');
-        const productTitle = productCard.querySelector('.product-title').textContent;
-        button.innerHTML = wishlist.some(item => item.title === productTitle) ?
-            '<i class="fas fa-heart"></i>' :
-            '<i class="far fa-heart"></i>';
-    });
-}
-    function filterProducts(searchTerm) {
-    document.querySelectorAll('.product-card').forEach(card => {
-        const title = card.querySelector('.product-title').textContent.toLowerCase();
-        const category = card.querySelector('.product-category').textContent.toLowerCase();
-        card.style.display = (title.includes(searchTerm) || category.includes(searchTerm)) ? 'block' : 'none';
-    });
-}
+    function togglePetSafe() {
+      petOnly = !petOnly;
+      const pill = document.getElementById('petPill');
+      pill.classList.toggle('active', petOnly);
+      applyFilters();
+    }
 
-let currentCategory = 'all';
-function filterByCategory() {
-    const categories = ['all', 'Flower Seeds', 'Vegetable Seeds', 'Plants', 'Fruit Plants'];
-    currentCategory = categories[(categories.indexOf(currentCategory) + 1) % categories.length];
-    
-    document.querySelectorAll('.product-card').forEach(card => {
-        const category = card.querySelector('.product-category').textContent;
-        card.style.display = (currentCategory === 'all' || category === currentCategory) ? 'block' : 'none';
-    });
-}
+    function handleSearchInput(val) {
+      applyFilters();
+    }
 
-function sortProducts(order) {
-    const grid = document.querySelector('.products-grid');
-    const cards = Array.from(grid.querySelectorAll('.product-card'));
-    
-    document.querySelectorAll('.sort-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.sort === order);
-    });
+    function applyFilters() {
+      const searchTerm = document.getElementById('catalogSearchInput').value.toLowerCase().trim();
+      const sortVal = document.getElementById('sortSelect').value;
+      const lightVal = document.getElementById('lightSelect').value;
 
-    cards.sort((a, b) => {
-        const priceA = parseFloat(a.querySelector('.product-price').textContent.replace(/[^0-9.]/g, ''));
-        const priceB = parseFloat(b.querySelector('.product-price').textContent.replace(/[^0-9.]/g, ''));
-        return order === 'asc' ? priceA - priceB : priceB - priceA;
-    });
+      let filtered = [...allProducts];
 
-    grid.innerHTML = '';
-    cards.forEach(card => grid.appendChild(card));
-}
+      // Category filter
+      if (currentCategory !== 'all') {
+        filtered = filtered.filter(p => p.category.toLowerCase() === currentCategory.toLowerCase());
+      }
 
-function showNotification(message) {
-    const notification = document.createElement('div');
-    notification.className = 'notification';
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.remove();
-    }, 2000);
-}
+      // Search term
+      if (searchTerm) {
+        filtered = filtered.filter(p => 
+          p.name.toLowerCase().includes(searchTerm) ||
+          (p.scientificName && p.scientificName.toLowerCase().includes(searchTerm)) ||
+          p.category.toLowerCase().includes(searchTerm) ||
+          (p.tags && p.tags.some(t => t.toLowerCase().includes(searchTerm)))
+        );
+      }
 
-function openProductDetails(productId) {
+      // Pet safe filter
+      if (petOnly) {
+        filtered = filtered.filter(p => p.petSafe === true);
+      }
 
-    localStorage.setItem('selectedProduct', productId);
-    window.location.href = `productdetails.html?id=${productId}`;
-}
-</script>
+      // Light filter
+      if (lightVal !== 'all') {
+        filtered = filtered.filter(p => p.sunlight && p.sunlight.toLowerCase().includes(lightVal.toLowerCase()));
+      }
+
+      // Sorting
+      if (sortVal === 'price_asc') {
+        filtered.sort((a,b) => (a.salePrice || a.price) - (b.salePrice || b.price));
+      } else if (sortVal === 'price_desc') {
+        filtered.sort((a,b) => (b.salePrice || b.price) - (a.salePrice || a.price));
+      } else if (sortVal === 'rating_desc') {
+        filtered.sort((a,b) => (b.rating || 0) - (a.rating || 0));
+      } else if (sortVal === 'reviews_desc') {
+        filtered.sort((a,b) => (b.reviews || 0) - (a.reviews || 0));
+      }
+
+      renderGrid(filtered);
+    }
+
+    function renderGrid(products) {
+      const container = document.getElementById('catalogGrid');
+      document.getElementById('itemCountDisplay').textContent = products.length;
+
+      if (products.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div style="font-size: 3.5rem; margin-bottom: 12px;">🪴</div>
+            <h3 style="margin-bottom: 8px;">No matching botanical items found</h3>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Try adjusting your search keywords, light requirements, or category filters.</p>
+            <button class="btn-botanical btn-botanical-primary" onclick="resetAllFilters()">Reset All Filters</button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = products.map(p => {
+        const isWish = Store.isInWishlist(p.id);
+        const stockStatus = p.stock > 0 
+          ? (p.stock < 15 ? `<span style="color:#d97706; font-size:0.75rem; font-weight:700;"><i class="fas fa-clock"></i> Only ${p.stock} left</span>` : `<span style="color:#10b981; font-size:0.75rem; font-weight:700;"><i class="fas fa-check"></i> In Stock (${p.stock})</span>`)
+          : `<span style="color:#ef4444; font-size:0.75rem; font-weight:700;"><i class="fas fa-times"></i> Out of Stock</span>`;
+
+        return `
+          <div class="botanical-card" onclick="window.location.href='productdetails.html?id=${p.id}'" style="cursor: pointer;">
+            <div class="card-img-wrap">
+              <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.src='garden.jpg'">
+              <span class="card-badge"><i class="fas fa-leaf" style="color: var(--sage-500);"></i> ${p.category}</span>
+              <button class="card-wish-btn ${isWish ? 'active' : ''}" onclick="event.stopPropagation(); const added = Store.toggleWishlist(INITIAL_CATALOG.find(x => x.id === ${p.id}) || { id: ${p.id}, name: '${p.name.replace(/'/g, "\\'")}', price: ${p.price}, image: '${p.image}' }); this.classList.toggle('active', added);">
+                <i class="${isWish ? 'fas' : 'far'} fa-heart"></i>
+              </button>
+            </div>
+            <div class="card-body">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span class="card-category">${p.category}</span>
+                <div>${stockStatus}</div>
+              </div>
+              <h3 class="card-title">${p.name}</h3>
+              <div class="card-botanical-name">${p.scientificName || 'Botanical specimen'}</div>
+              
+              <div class="card-attributes">
+                <span class="attr-tag"><i class="fas fa-sun" style="color: #f5a623;"></i> ${p.sunlight || 'Sunlight'}</span>
+                <span class="attr-tag"><i class="fas fa-tint" style="color: #4a90e2;"></i> ${p.watering || 'Water'}</span>
+                ${p.petSafe ? '<span class="attr-tag" style="color: #2e7d32;"><i class="fas fa-paw"></i> Pet Safe</span>' : ''}
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: #f5a623; margin-bottom: 12px;">
+                <i class="fas fa-star"></i>
+                <strong style="color: var(--forest-900);">${p.rating || 4.5}</strong>
+                <span style="color: var(--text-muted);">(${p.reviews || 50} reviews)</span>
+              </div>
+
+              <div class="card-footer">
+                <div class="card-pricing">
+                  <span class="price-current">₹${p.salePrice || p.price}</span>
+                  ${p.salePrice ? `<span class="price-original">₹${p.price}</span>` : ''}
+                </div>
+                <button class="btn-card-add" title="Add to Cart" onclick="event.stopPropagation(); Store.addToCart(INITIAL_CATALOG.find(x => x.id === ${p.id}) || { id: ${p.id}, name: '${p.name.replace(/'/g, "\\'")}', price: ${p.salePrice || p.price}, image: '${p.image}' });">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function resetAllFilters() {
+      document.getElementById('catalogSearchInput').value = '';
+      document.getElementById('sortSelect').value = 'featured';
+      document.getElementById('lightSelect').value = 'all';
+      petOnly = false;
+      document.getElementById('petPill').classList.remove('active');
+      currentCategory = 'all';
+      document.querySelectorAll('.cat-tab-btn').forEach((b, idx) => b.classList.toggle('active', idx === 0));
+      applyFilters();
+    }
+  </script>
+</body>
+</html>

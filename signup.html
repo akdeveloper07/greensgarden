@@ -529,6 +529,15 @@
 
 <div id="toastMsg" class="toast-notification"></div>
 
+<!-- Firebase Compat Scripts -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script src="js/catalog.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/store.js"></script>
+
 <script>
     // Password Strength Checker
     function checkPasswordStrength(password) {
@@ -751,40 +760,29 @@
         // Show loading state
         submitBtn.disabled = true;
         const originalBtnHTML = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<span>Creating Account</span><div class="spinner"></div>';
+        submitBtn.innerHTML = '<span>Creating Account...</span><div class="spinner"></div>';
         
-        // Simulate API call with animation
-        setTimeout(() => {
-            // Save user data
-            const userData = {
-                name: name,
-                email: email,
-                password: password,
-                createdAt: new Date().toISOString(),
-                avatar: null
-            };
-            saveUser(email, userData);
-            
-            // Also store current session
-            sessionStorage.setItem('currentUser', JSON.stringify({
-                name: name,
-                email: email,
-                isLoggedIn: true
-            }));
-            
-            // Show success
-            showAlert('Account created successfully! Redirecting to shop...', 'success');
-            showToast('Welcome to Green Garden! 🎉');
-            
-            // Add success animation to button
-            submitBtn.style.background = '#10b981';
-            submitBtn.innerHTML = '<span>Success!</span><i class="fas fa-check-circle"></i>';
-            
-            // Redirect after delay
-            setTimeout(() => {
-                window.location.href = 'products.html';
-            }, 1500);
-        }, 1000);
+        try {
+            const result = await AuthService.signup(name, email, password);
+            if (result.success) {
+                showAlert('Account created! Welcome bonus +100 Green Points added. Redirecting...', 'success');
+                showToast('Welcome to Green Garden! 🌱 (+100 Points)');
+                submitBtn.style.background = '#10b981';
+                submitBtn.innerHTML = '<span>Success!</span><i class="fas fa-check-circle"></i>';
+                setTimeout(() => {
+                    window.location.href = 'products.html';
+                }, 1200);
+            } else {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHTML;
+                showAlert(result.error || 'Failed to create account.', 'error');
+                showToast(result.error || 'Registration failed', true);
+            }
+        } catch (err) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnHTML;
+            showAlert(err.message || 'An error occurred during registration.', 'error');
+        }
     });
     
     // Add shake animation CSS

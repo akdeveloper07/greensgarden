@@ -1,0 +1,668 @@
+/* ==========================================================================
+   GREEN GARDEN — PREMIUM BOTANICAL DESIGN SYSTEM
+   Palette: Deep Forest Green (#143626, #1b4332), Sage (#52b788),
+   Warm Ivory (#faf9f5), Cream Sand (#f4f1ea), Brass Gold (#c58b49)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --forest-900: #0f281c;
+  --forest-800: #143626;
+  --forest-700: #1b4332;
+  --forest-600: #2d6a4f;
+  --sage-500: #40916c;
+  --sage-400: #52b788;
+  --sage-300: #74c69d;
+  --sage-200: #95d5b2;
+  --sage-100: #d8f3dc;
+  
+  --brass-600: #a77032;
+  --brass-500: #c58b49;
+  --brass-400: #e0a96d;
+  --brass-100: #fbf3e8;
+
+  --ivory-50: #faf9f5;
+  --ivory-100: #f5f3ec;
+  --ivory-200: #ece8dd;
+  
+  --text-primary: #15291e;
+  --text-secondary: #4a5d52;
+  --text-muted: #73857b;
+  --text-light: #ffffff;
+
+  --bg-card: rgba(255, 255, 255, 0.95);
+  --border-subtle: rgba(27, 67, 50, 0.1);
+  --border-glass: rgba(255, 255, 255, 0.4);
+  
+  --shadow-sm: 0 2px 8px rgba(15, 40, 28, 0.05);
+  --shadow-md: 0 8px 24px rgba(15, 40, 28, 0.08);
+  --shadow-lg: 0 16px 40px rgba(15, 40, 28, 0.12);
+  --shadow-float: 0 20px 48px rgba(15, 40, 28, 0.18);
+  
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Outfit', sans-serif;
+  
+  --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Base Reset & Typography */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--ivory-50);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, .font-serif {
+  font-family: var(--font-serif);
+  color: var(--forest-900);
+  line-height: 1.25;
+}
+
+h4, h5, h6, .font-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+/* Global Announcement Bar */
+.announcement-bar {
+  background: var(--forest-900);
+  color: var(--brass-400);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  padding: 7px 16px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  z-index: 1001;
+}
+
+.announcement-bar strong {
+  color: #fff;
+}
+
+.announcement-bar a {
+  text-decoration: underline;
+  color: var(--sage-300);
+}
+
+/* Master Header & Navigation */
+.gg-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(250, 249, 245, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
+  transition: var(--transition-smooth);
+}
+
+.gg-header.scrolled {
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: var(--shadow-md);
+}
+
+.nav-container {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Logo */
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-serif);
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--forest-800);
+}
+
+.brand-icon-wrap {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, var(--forest-700), var(--forest-900));
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.4rem;
+  box-shadow: 0 4px 12px rgba(20, 54, 38, 0.25);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.brand-logo:hover .brand-icon-wrap {
+  transform: rotate(8deg) scale(1.06);
+}
+
+.brand-tagline {
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--brass-500);
+  font-family: var(--font-display);
+  font-weight: 600;
+  display: block;
+  line-height: 1;
+}
+
+/* Navigation Links */
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  list-style: none;
+}
+
+.nav-item-link {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--forest-800);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  position: relative;
+  transition: var(--transition-fast);
+}
+
+.nav-item-link:hover, .nav-item-link.active {
+  color: var(--sage-500);
+}
+
+.nav-item-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10px;
+  right: 10px;
+  height: 2px;
+  background: var(--sage-400);
+  border-radius: 2px;
+}
+
+/* Pill badge on nav */
+.badge-ai {
+  background: linear-gradient(135deg, #7928ca, #ff0080);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 12px;
+  margin-left: 4px;
+  letter-spacing: 0.5px;
+}
+
+.badge-new {
+  background: var(--brass-500);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 12px;
+  margin-left: 4px;
+}
+
+/* Action Icons */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.action-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  background: var(--ivory-50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  color: var(--forest-800);
+  cursor: pointer;
+  position: relative;
+  transition: var(--transition-fast);
+}
+
+.action-btn:hover {
+  background: #fff;
+  border-color: var(--sage-400);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.counter-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--forest-700);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  width: 19px;
+  height: 19px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+}
+
+/* User Account Button */
+.user-account-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px 5px 6px;
+  background: #fff;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.user-account-btn:hover {
+  border-color: var(--sage-400);
+  box-shadow: var(--shadow-sm);
+}
+
+.user-avatar-mini {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--sage-200);
+}
+
+.user-name-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--forest-800);
+  max-width: 110px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Botanical Buttons */
+.btn-botanical {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 28px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: var(--transition-smooth);
+}
+
+.btn-botanical-primary {
+  background: linear-gradient(135deg, var(--forest-700), var(--forest-900));
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(20, 54, 38, 0.25);
+}
+
+.btn-botanical-primary:hover {
+  background: linear-gradient(135deg, var(--forest-600), var(--forest-800));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(20, 54, 38, 0.35);
+}
+
+.btn-botanical-secondary {
+  background: var(--ivory-100);
+  color: var(--forest-800);
+  border: 1px solid var(--border-subtle);
+}
+
+.btn-botanical-secondary:hover {
+  background: #ffffff;
+  border-color: var(--forest-700);
+  color: var(--forest-700);
+  transform: translateY(-2px);
+}
+
+.btn-botanical-accent {
+  background: linear-gradient(135deg, var(--brass-500), var(--brass-600));
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(197, 139, 73, 0.3);
+}
+
+.btn-botanical-accent:hover {
+  background: linear-gradient(135deg, var(--brass-400), var(--brass-500));
+  transform: translateY(-2px);
+}
+
+/* Botanical Card Component */
+.botanical-card {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-smooth);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.botanical-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(64, 145, 108, 0.3);
+}
+
+.card-img-wrap {
+  position: relative;
+  width: 100%;
+  padding-top: 100%; /* 1:1 Aspect */
+  overflow: hidden;
+  background: var(--ivory-100);
+}
+
+.card-img-wrap img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.botanical-card:hover .card-img-wrap img {
+  transform: scale(1.06);
+}
+
+.card-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  color: var(--forest-800);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.card-wish-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.card-wish-btn:hover, .card-wish-btn.active {
+  color: #e63946;
+  transform: scale(1.1);
+}
+
+.card-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.card-category {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--sage-500);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.card-title {
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: var(--forest-900);
+  line-height: 1.35;
+  margin-bottom: 4px;
+}
+
+.card-botanical-name {
+  font-style: italic;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.card-attributes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.attr-tag {
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  background: var(--ivory-100);
+  color: var(--forest-700);
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.card-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.card-pricing {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.price-current {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--forest-900);
+}
+
+.price-original {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.btn-card-add {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--forest-800);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.btn-card-add:hover {
+  background: var(--sage-500);
+  transform: scale(1.1);
+}
+
+/* Toast Notifications */
+.gg-toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gg-toast {
+  background: var(--forest-900);
+  color: #fff;
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-float);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.92rem;
+  min-width: 280px;
+  border-left: 4px solid var(--sage-400);
+  animation: slideInToast 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gg-toast.error {
+  border-left-color: #e63946;
+}
+
+@keyframes slideInToast {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* Master Footer */
+.gg-footer {
+  background: var(--forest-900);
+  color: var(--ivory-100);
+  padding: 80px 24px 30px;
+  margin-top: auto;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.footer-container {
+  max-width: 1360px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr;
+  gap: 48px;
+  margin-bottom: 60px;
+}
+
+.footer-col h5 {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  color: #fff;
+  margin-bottom: 20px;
+  letter-spacing: 0.5px;
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-links a {
+  color: var(--sage-200);
+  font-size: 0.9rem;
+  transition: var(--transition-fast);
+}
+
+.footer-links a:hover {
+  color: #fff;
+  padding-left: 4px;
+}
+
+.footer-bottom {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1024px) {
+  .nav-menu { display: none; }
+  .footer-container {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+  }
+  .nav-container {
+    padding: 10px 16px;
+  }
+  .brand-logo {
+    font-size: 1.35rem;
+  }
+}

@@ -1,646 +1,416 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>GreenGardenCart</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Botanical Cart | Green Garden</title>
+  <link rel="icon" type="image/png" href="icon-512.png">
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f1f3f6;
-            color: #212121;
-            overflow-x: hidden;
-        }
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
 
-        ::-webkit-scrollbar {
-            width: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #e0e0e0;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #2874f0;
-            border-radius: 10px;
-        }
+  <style>
+    .cart-page-wrap {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+      flex-grow: 1;
+    }
 
-        .navbar {
-            background: linear-gradient(135deg, #1a2a3a 0%, #0f1a24 100%);
-            padding: 14px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
+    .cart-grid {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 40px;
+      align-items: start;
+    }
 
-        .back-btn {
-            background: rgba(255,255,255,0.12);
-            border: none;
-            padding: 10px 24px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 14px;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s;
-        }
+    .cart-items-panel {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      padding: 28px;
+    }
 
-        .back-btn:hover {
-            background: #2874f0;
-            transform: translateX(-4px);
-        }
+    .cart-header-title {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+    /* Free shipping meter */
+    .shipping-meter {
+      background: var(--ivory-100);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 24px;
+      border: 1px solid var(--border-subtle);
+    }
 
-        /* ========== CUSTOM LOGO STYLES ========== */
-        /* Replace the logo by changing the image URL below */
-        .custom-logo {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #2e7d32, #1b5e20);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
+    .progress-bar-wrap {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
 
-        .custom-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--sage-400), var(--sage-500));
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
 
-        /* Fallback icon if image fails to load */
-        .custom-logo .logo-fallback {
-            font-size: 24px;
-            color: white;
-            display: none;
-        }
+    /* Cart item card */
+    .cart-item-row {
+      display: grid;
+      grid-template-columns: 90px 1fr auto;
+      gap: 20px;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
 
-        .custom-logo img.error + .logo-fallback {
-            display: flex;
-        }
+    .cart-item-row:last-child {
+      border-bottom: none;
+    }
 
-        .brand-text {
-            font-size: 22px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #fff, #ffd966);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
+    .cart-item-img {
+      width: 90px;
+      height: 90px;
+      border-radius: var(--radius-md);
+      object-fit: cover;
+      background: var(--ivory-100);
+    }
 
-        .container {
-            max-width: 1280px;
-            margin: 32px auto;
-            padding: 0 32px;
-            display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 28px;
-        }
+    .cart-item-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--forest-900);
+      margin-bottom: 4px;
+    }
 
-        .cart-card {
-            background: white;
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
+    .cart-item-category {
+      font-size: 0.8rem;
+      color: var(--sage-500);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
 
-        .cart-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid #f0f2f5;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    .cart-item-price {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--forest-900);
+      margin-top: 6px;
+    }
 
-        .cart-header h2 {
-            font-size: 18px;
-            font-weight: 700;
-        }
+    .item-actions-col {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 12px;
+    }
 
-        .cart-items {
-            padding: 0 24px;
-        }
+    .qty-stepper-sm {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-full);
+      padding: 2px 6px;
+      background: #fff;
+    }
 
-        .cart-item {
-            display: flex;
-            gap: 20px;
-            padding: 20px 0;
-            border-bottom: 1px solid #f0f2f5;
-            transition: all 0.2s;
-        }
+    .qty-stepper-sm button {
+      border: none;
+      background: none;
+      width: 26px;
+      height: 26px;
+      cursor: pointer;
+      color: var(--forest-900);
+      font-weight: 700;
+    }
 
-        .cart-item:hover {
-            background: #fafbfc;
-            margin: 0 -8px;
-            padding: 20px 8px;
-            border-radius: 16px;
-        }
+    .qty-stepper-sm span {
+      width: 30px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
 
-        .item-img {
-            width: 100px;
-            height: 100px;
-            background: #f8f9fa;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
+    .remove-link {
+      background: none;
+      border: none;
+      color: #e63946;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
 
-        .item-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+    /* Order summary panel */
+    .summary-panel {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      padding: 28px;
+      position: sticky;
+      top: 100px;
+    }
 
-        .item-img i {
-            font-size: 40px;
-            color: #2e7d32;
-        }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
 
-        .item-details {
-            flex: 1;
-        }
+    .summary-row.total-row {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--forest-900);
+      padding-top: 16px;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 16px;
+    }
 
-        .item-name {
-            font-weight: 600;
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
+    .coupon-box {
+      margin: 20px 0;
+      display: flex;
+      gap: 8px;
+    }
 
-        .item-price {
-            font-weight: 700;
-            font-size: 18px;
-            color: #2874f0;
-            margin-bottom: 12px;
-        }
+    .coupon-input {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-subtle);
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 0.9rem;
+      outline: none;
+    }
 
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #f1f3f6;
-            padding: 6px 12px;
-            border-radius: 40px;
-            width: fit-content;
-        }
+    .empty-cart-card {
+      text-align: center;
+      padding: 60px 20px;
+    }
 
-        .qty-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: none;
-            background: white;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-            color: #2874f0;
-            transition: all 0.2s;
-        }
-
-        .qty-btn:hover:not(:disabled) {
-            background: #2874f0;
-            color: white;
-        }
-
-        .qty-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .qty-value {
-            min-width: 30px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .remove-btn {
-            background: none;
-            border: none;
-            color: #ef4444;
-            cursor: pointer;
-            padding: 8px;
-            transition: all 0.2s;
-        }
-
-        .remove-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .summary-card {
-            background: white;
-            border-radius: 24px;
-            padding: 24px;
-            position: sticky;
-            top: 100px;
-            height: fit-content;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-
-        .summary-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #f0f2f5;
-        }
-
-        .price-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            font-size: 14px;
-            color: #5f6c76;
-        }
-
-        .total-row {
-            border-top: 1px solid #f0f2f5;
-            margin-top: 12px;
-            padding-top: 16px;
-            font-weight: 800;
-            font-size: 20px;
-            color: #212121;
-        }
-
-        .checkout-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #fb641b, #f5721f);
-            border: none;
-            padding: 14px;
-            border-radius: 40px;
-            color: white;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s;
-        }
-
-        .checkout-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(251,100,27,0.3);
-        }
-
-        .clear-cart-btn {
-            width: 100%;
-            background: transparent;
-            border: 1px solid #e2e8f0;
-            padding: 12px;
-            border-radius: 40px;
-            margin-top: 12px;
-            font-weight: 600;
-            color: #ef4444;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .clear-cart-btn:hover {
-            background: #fef2f2;
-            border-color: #ef4444;
-        }
-
-        .empty-cart {
-            text-align: center;
-            padding: 80px 40px;
-        }
-
-        .empty-cart i {
-            font-size: 80px;
-            color: #cbd5e1;
-            margin-bottom: 20px;
-        }
-
-        .empty-cart h3 {
-            font-size: 20px;
-            margin-bottom: 12px;
-        }
-
-        .shop-now-btn {
-            background: linear-gradient(135deg, #2874f0, #1a5bbf);
-            border: none;
-            padding: 12px 32px;
-            border-radius: 40px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 20px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: rgba(33,33,33,0.95);
-            padding: 12px 24px;
-            border-radius: 40px;
-            color: white;
-            z-index: 2000;
-            transition: all 0.3s;
-        }
-
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-                padding: 0 20px;
-            }
-            .cart-item {
-                flex-wrap: wrap;
-            }
-            .navbar {
-                padding: 12px 20px;
-            }
-            .custom-logo {
-                width: 36px;
-                height: 36px;
-            }
-            .brand-text {
-                font-size: 18px;
-            }
-        }
-    </style>
+    @media (max-width: 900px) {
+      .cart-grid {
+        grid-template-columns: 1fr;
+      }
+      .summary-panel {
+        position: static;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<nav class="navbar">
-    <button class="back-btn" onclick="window.location.href='products.html'">
-        <i class="fas fa-arrow-left"></i> Continue Shopping
-    </button>
-    <div class="brand">
-        <!-- ========== YOUR CUSTOM LOGO GOES HERE ========== -->
-        <!-- 
-            TO ADD YOUR OWN LOGO:
-            1. Replace the image URL below with your logo image path
-            2. Supported formats: PNG, JPG, JPEG, SVG, WebP
-            3. If the image fails to load, a garden leaf icon will show as fallback
-        -->
-        <div class="custom-logo" id="customLogoContainer">
-            <img id="brandLogo" src="https://placehold.co/200x200/2e7d32/ffffff?text=GG" alt="My Garden Store Logo" onerror="handleLogoError(this)">
-            <i class="fas fa-leaf logo-fallback"></i>
-        </div>
-        <div class="brand-text">GREEN GARDEN</div>
+  <div id="global-header"></div>
+
+  <main class="cart-page-wrap">
+    <div id="cartContentContainer">
+      <!-- Injected by script -->
     </div>
-    <div style="width: 100px;"></div>
-</nav>
+  </main>
 
-<div class="container">
-    <div class="cart-card">
-        <div class="cart-header">
-            <h2><i class="fas fa-shopping-cart"></i> My Cart</h2>
-            <span id="itemCount" style="color: #64748b;">0 items</span>
-        </div>
-        <div id="cartItemsContainer" class="cart-items"></div>
-    </div>
+  <div id="global-footer"></div>
 
-    <div class="summary-card">
-        <div class="summary-title">Price Details</div>
-        <div class="price-row">
-            <span>Subtotal</span>
-            <span id="subtotal">₹0</span>
-        </div>
-        <div class="price-row">
-            <span>Shipping</span>
-            <span>FREE</span>
-        </div>
-        <div class="price-row">
-            <span>Platform Fee</span>
-            <span>₹10</span>
-        </div>
-        <div class="price-row total-row">
-            <span>Total</span>
-            <span id="totalAmount">₹0</span>
-        </div>
-        <button class="checkout-btn" onclick="proceedToCheckout()">
-            <i class="fas fa-lock"></i> PROCEED TO CHECKOUT
-        </button>
-        <button class="clear-cart-btn" onclick="clearCart()">
-            <i class="fas fa-trash-alt"></i> Clear Cart
-        </button>
-    </div>
-</div>
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
 
-<div id="toast" class="toast"></div>
+  <script>
+    let appliedCoupon = localStorage.getItem('gg_active_coupon') || null;
 
-<script>
-
-    const YOUR_LOGO_URL = "logo1.jpg";
-    // 👆 Replace the URL above with your own logo image path
-    // ===============================================
-    
-    function handleLogoError(imgElement) {
-        // If logo fails to load, show fallback icon
-        imgElement.style.display = 'none';
-        const fallbackIcon = imgElement.parentElement.querySelector('.logo-fallback');
-        if (fallbackIcon) {
-            fallbackIcon.style.display = 'flex';
-        }
-    }
-    
-    function setCustomLogo() {
-        const logoImg = document.getElementById('brandLogo');
-        if (logoImg && YOUR_LOGO_URL) {
-            logoImg.src = YOUR_LOGO_URL;
-            // Reset display if it was hidden from previous error
-            logoImg.style.display = 'block';
-            const fallbackIcon = logoImg.parentElement.querySelector('.logo-fallback');
-            if (fallbackIcon) {
-                fallbackIcon.style.display = 'none';
-            }
-        }
-    }
-    
-    // Call this function when page loads to apply your logo
-    // You can also call this anytime to dynamically change the logo
-    
-    function showToast(message, isError = false) {
-        const toast = document.getElementById('toast');
-        toast.textContent = message;
-        toast.style.background = isError ? 'rgba(239,68,68,0.95)' : 'rgba(33,33,33,0.95)';
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3000);
-    }
-
-    function getCart() {
-        const cart = localStorage.getItem('cart');
-        return cart ? JSON.parse(cart) : [];
-    }
-
-    function saveCart(cart) {
-        localStorage.setItem('cart', JSON.stringify(cart));
-    }
-
-    function getIconForProduct(name) {
-        const nameLower = name.toLowerCase();
-        if (nameLower.includes('rose')) return 'fa-rose';
-        if (nameLower.includes('seed')) return 'fa-leaf';
-        if (nameLower.includes('pot')) return 'fa-flask';
-        if (nameLower.includes('plant')) return 'fa-tree';
-        if (nameLower.includes('mix')) return 'fa-droplet';
-        return 'fa-seedling';
-    }
-
-    function renderCart() {
-        const cart = getCart();
-        const container = document.getElementById('cartItemsContainer');
-        const itemCountSpan = document.getElementById('itemCount');
-        
-        if (cart.length === 0) {
-            container.innerHTML = `
-                <div class="empty-cart">
-                    <i class="fas fa-seedling"></i>
-                    <h3>Your cart is empty</h3>
-                    <p>Add some beautiful plants and seeds to get started!</p>
-                    <button class="shop-now-btn" onclick="window.location.href='products.html'">
-                        <i class="fas fa-store"></i> Shop Now
-                    </button>
-                </div>
-            `;
-            itemCountSpan.textContent = '0 items';
-            document.getElementById('subtotal').textContent = '₹0';
-            document.getElementById('totalAmount').textContent = '₹10';
-            return;
-        }
-        
-        let subtotal = 0;
-        let itemsHtml = '';
-        
-        cart.forEach((item, index) => {
-            const price = typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0;
-            const quantity = item.quantity || 1;
-            const total = price * quantity;
-            subtotal += total;
-            const icon = getIconForProduct(item.name);
-            
-            itemsHtml += `
-                <div class="cart-item" data-index="${index}">
-                    <div class="item-img">
-                        ${item.image ? 
-                            `<img src="${item.image}" alt="${item.name}" onerror="this.parentElement.innerHTML='<i class=\'fas ${icon}\'></i>'">` : 
-                            `<i class="fas ${icon}"></i>`
-                        }
-                    </div>
-                    <div class="item-details">
-                        <div class="item-name">${escapeHtml(item.name)}</div>
-                        <div class="item-price">₹${price.toLocaleString('en-IN')}</div>
-                        <div class="quantity-controls">
-                            <button class="qty-btn" onclick="updateQuantity(${index}, -1)">−</button>
-                            <span class="qty-value">${quantity}</span>
-                            <button class="qty-btn" onclick="updateQuantity(${index}, 1)">+</button>
-                        </div>
-                    </div>
-                    <button class="remove-btn" onclick="removeFromCart(${index})">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                </div>
-            `;
-        });
-        
-        container.innerHTML = itemsHtml;
-        
-        const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-        itemCountSpan.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
-        
-        const platformFee = 10;
-        const total = subtotal + platformFee;
-        
-        document.getElementById('subtotal').textContent = `₹${subtotal.toLocaleString('en-IN')}`;
-        document.getElementById('totalAmount').textContent = `₹${total.toLocaleString('en-IN')}`;
-    }
-    
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
-    }
-
-    function updateQuantity(index, change) {
-        const cart = getCart();
-        if (cart[index]) {
-            const newQuantity = (cart[index].quantity || 1) + change;
-            if (newQuantity >= 1 && newQuantity <= 99) {
-                cart[index].quantity = newQuantity;
-                saveCart(cart);
-                renderCart();
-                showToast(change > 0 ? 'Quantity increased' : 'Quantity decreased');
-            } else if (newQuantity < 1) {
-                showToast('Minimum quantity is 1', true);
-            } else if (newQuantity > 99) {
-                showToast('Maximum quantity is 99', true);
-            }
-        }
-    }
-
-    function removeFromCart(index) {
-        const cart = getCart();
-        if (cart[index]) {
-            const removedItem = cart[index];
-            cart.splice(index, 1);
-            saveCart(cart);
-            renderCart();
-            showToast(`Removed ${removedItem.name} from cart`);
-        }
-    }
-
-    function clearCart() {
-        if (getCart().length === 0) return;
-        if (confirm('Are you sure you want to clear your entire cart?')) {
-            saveCart([]);
-            renderCart();
-            showToast('Cart cleared successfully');
-        }
-    }
-
-    function proceedToCheckout() {
-        const cart = getCart();
-        if (cart.length === 0) {
-            showToast('Your cart is empty! Please add items first.', true);
-            return;
-        }
-        window.location.href = 'buy.html';
-    }
-
-    // Load cart and apply custom logo on page load
     document.addEventListener('DOMContentLoaded', () => {
-        // Apply your custom logo
-        setCustomLogo();
-        renderCart();
-        
-        // Debug: Log cart contents
-        console.log('Cart loaded:', getCart());
-        console.log('Custom logo applied. To change logo, edit YOUR_LOGO_URL variable in the script');
+      Store.renderHeader('cart');
+      Store.renderFooter();
+      renderCartView();
+
+      window.addEventListener('cartUpdated', () => {
+        renderCartView();
+      });
     });
-</script>
+
+    function renderCartView() {
+      const container = document.getElementById('cartContentContainer');
+      const cart = Store.getCart();
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="cart-items-panel empty-cart-card">
+            <div style="font-size: 4rem; margin-bottom: 16px;">🛒</div>
+            <h2 style="font-size: 2rem; margin-bottom: 8px;">Your Garden Cart is Empty</h2>
+            <p style="color: var(--text-muted); font-size: 1.05rem; max-width: 480px; margin: 0 auto 28px;">
+              Your botanical basket is waiting for living plants, heirloom flower seeds, and organic fertilizers.
+            </p>
+            <a href="products.html" class="btn-botanical btn-botanical-primary">
+              <i class="fas fa-seedling"></i> Browse Our Catalog
+            </a>
+          </div>
+        `;
+        return;
+      }
+
+      const totals = Store.calculateTotals(appliedCoupon);
+      const freeShipThreshold = 499;
+      const progressPercent = Math.min(100, Math.round((totals.subtotal / freeShipThreshold) * 100));
+      const amountNeeded = Math.max(0, freeShipThreshold - totals.subtotal);
+
+      container.innerHTML = `
+        <div class="cart-grid">
+          <!-- Items Left Panel -->
+          <div class="cart-items-panel">
+            <div class="cart-header-title">
+              <span>Shopping Cart (${totals.itemCount} items)</span>
+              <button onclick="localStorage.removeItem('cart'); Store.updateBadgeCounters(); renderCartView();" style="border:none; background:none; color: #e63946; font-size: 0.85rem; cursor: pointer;">Clear Cart</button>
+            </div>
+
+            <!-- Free delivery meter -->
+            <div class="shipping-meter">
+              <div style="display: flex; justify-content: space-between; font-size: 0.88rem; font-weight: 700;">
+                <span>${amountNeeded === 0 ? '🎉 You qualified for FREE Botanical Delivery!' : `Add ₹${amountNeeded} more for FREE Express Delivery`}</span>
+                <span style="color: var(--sage-500);">${progressPercent}%</span>
+              </div>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width: ${progressPercent}%;"></div>
+              </div>
+            </div>
+
+            <!-- Cart rows -->
+            <div class="cart-items-list">
+              ${cart.map(item => `
+                <div class="cart-item-row">
+                  <img src="${item.image}" alt="${item.name}" class="cart-item-img" onerror="this.src='garden.jpg'">
+                  <div>
+                    <span class="cart-item-category">${item.category || 'Gardening'}</span>
+                    <h3 class="cart-item-name">${item.name}</h3>
+                    ${item.variant ? `<div style="font-size: 0.8rem; color: var(--text-muted);">${item.variant}</div>` : ''}
+                    <div class="cart-item-price">₹${item.price} each</div>
+                  </div>
+                  <div class="item-actions-col">
+                    <div class="qty-stepper-sm">
+                      <button onclick="Store.updateQuantity('${item.cartItemId || item.id}', ${(item.quantity || 1) - 1})">-</button>
+                      <span>${item.quantity || 1}</span>
+                      <button onclick="Store.updateQuantity('${item.cartItemId || item.id}', ${(item.quantity || 1) + 1})">+</button>
+                    </div>
+                    <div style="font-weight: 800; font-size: 1.1rem; color: var(--forest-900);">
+                      ₹${item.price * (item.quantity || 1)}
+                    </div>
+                    <button class="remove-link" onclick="Store.removeFromCart('${item.cartItemId || item.id}')">
+                      <i class="fas fa-trash-alt"></i> Remove
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+
+            <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+              <a href="products.html" style="font-size: 0.9rem; color: var(--forest-700); font-weight: 700;">
+                <i class="fas fa-arrow-left"></i> Continue Shopping
+              </a>
+              <div style="font-size: 0.82rem; color: var(--text-muted);">
+                <i class="fas fa-shield-alt text-success"></i> 7-Day Live Plant Transit Guarantee
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Summary Right Panel -->
+          <div class="summary-panel">
+            <h3 style="font-size: 1.4rem; margin-bottom: 20px;">Order Summary</h3>
+
+            <div class="summary-row">
+              <span>Item Subtotal</span>
+              <span>₹${totals.subtotal}</span>
+            </div>
+
+            ${totals.discount > 0 ? `
+              <div class="summary-row" style="color: #2e7d32; font-weight: 600;">
+                <span>Coupon / Points Discount</span>
+                <span>-₹${totals.discount}</span>
+              </div>
+            ` : ''}
+
+            <div class="summary-row">
+              <span>Eco-Safe Climate Shipping</span>
+              <span>${totals.shippingFee === 0 ? '<strong style="color: #2e7d32;">FREE</strong>' : `₹${totals.shippingFee}`}</span>
+            </div>
+
+            <div class="summary-row">
+              <span>Agricultural GST (5%)</span>
+              <span>₹${totals.gstTax}</span>
+            </div>
+
+            <!-- Coupon Code Field -->
+            <div class="coupon-box">
+              <input type="text" id="couponInput" class="coupon-input" placeholder="Promo code (e.g. GREEN15)" value="${appliedCoupon || ''}">
+              <button class="btn-botanical btn-botanical-secondary" style="padding: 8px 16px;" onclick="applyPromoCode()">Apply</button>
+            </div>
+            ${appliedCoupon ? `
+              <div style="font-size: 0.78rem; color: #2e7d32; margin-top: -12px; margin-bottom: 12px; display: flex; justify-content: space-between;">
+                <span>✓ Code <strong>${appliedCoupon}</strong> active</span>
+                <a href="#" onclick="removePromoCode(event)" style="color: #e63946; text-decoration: underline;">Remove</a>
+              </div>
+            ` : ''}
+
+            <div class="summary-row total-row">
+              <span>Total Payable</span>
+              <span>₹${totals.finalTotal}</span>
+            </div>
+
+            <button class="btn-botanical btn-botanical-accent" style="width: 100%; padding: 14px; margin-top: 24px; font-size: 1.05rem;" onclick="window.location.href='buy.html'">
+              <span>Proceed to Checkout</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+
+            <div style="margin-top: 16px; text-align: center; font-size: 0.78rem; color: var(--text-muted); display: flex; justify-content: center; gap: 14px;">
+              <span><i class="fas fa-lock text-success"></i> 256-bit SSL</span>
+              <span><i class="fas fa-undo"></i> Easy Replacement</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function applyPromoCode() {
+      const code = document.getElementById('couponInput').value.trim().toUpperCase();
+      if (!code) return;
+      if (COUPON_DATABASE[code]) {
+        appliedCoupon = code;
+        localStorage.setItem('gg_active_coupon', code);
+        Store.showToast(`✨ Coupon ${code} applied successfully!`);
+        renderCartView();
+      } else {
+        Store.showToast("Invalid or expired coupon code", true);
+      }
+    }
+
+    function removePromoCode(e) {
+      e.preventDefault();
+      appliedCoupon = null;
+      localStorage.removeItem('gg_active_coupon');
+      Store.showToast("Coupon removed");
+      renderCartView();
+    }
+  </script>
 </body>
 </html>

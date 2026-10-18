@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Green Garden — Premium Plants, Organic Seeds & Botanical Sanctuary</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icon-512.png">
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
+
+  <style>
+    /* Hero Banner */
+    .hero-section {
+      position: relative;
+      background: linear-gradient(rgba(15, 40, 28, 0.72), rgba(15, 40, 28, 0.82)), url('garden.jpg');
+      background-size: cover;
+      background-position: center;
+      min-height: 82vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #ffffff;
+      padding: 60px 24px;
+    }
+
+    .hero-content {
+      max-width: 860px;
+      margin: 0 auto;
+      z-index: 2;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--sage-300);
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .hero-title {
+      font-size: 3.6rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 20px;
+      line-height: 1.15;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--ivory-100);
+      font-weight: 300;
+      margin-bottom: 36px;
+      line-height: 1.6;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* Live Search Box */
+    .hero-search-wrap {
+      max-width: 640px;
+      margin: 32px auto 0;
+      position: relative;
+    }
+
+    .hero-search-input {
+      width: 100%;
+      padding: 16px 24px 16px 54px;
+      border-radius: var(--radius-full);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--forest-900);
+      font-size: 1rem;
+      outline: none;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      transition: var(--transition-fast);
+    }
+
+    .hero-search-input:focus {
+      background: #ffffff;
+      border-color: var(--sage-400);
+    }
+
+    .hero-search-icon {
+      position: absolute;
+      left: 22px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--sage-500);
+      font-size: 1.2rem;
+    }
+
+    /* Stats Strip */
+    .stats-strip {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 30px 24px;
+    }
+
+    .stats-grid {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: var(--font-serif);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--forest-800);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Section Styling */
+    .section-wrap {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 70px 24px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .section-title {
+      font-size: 2.3rem;
+      margin-bottom: 8px;
+    }
+
+    .section-desc {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      max-width: 580px;
+    }
+
+    /* Categories Grid */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .cat-card {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      padding: 24px 16px;
+      text-align: center;
+      border: 1px solid var(--border-subtle);
+      transition: var(--transition-smooth);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--sage-400);
+    }
+
+    .cat-icon-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--ivory-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      transition: transform 0.3s ease;
+    }
+
+    .cat-card:hover .cat-icon-circle {
+      transform: scale(1.15) rotate(5deg);
+      background: var(--sage-100);
+    }
+
+    .cat-name {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--forest-900);
+    }
+
+    .cat-count {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* Products Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 28px;
+    }
+
+    /* Innovation Banner */
+    .ai-feature-banner {
+      background: linear-gradient(135deg, var(--forest-900) 0%, var(--forest-800) 100%);
+      color: #fff;
+      border-radius: var(--radius-lg);
+      padding: 48px;
+      margin: 40px auto;
+      max-width: 1360px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      align-items: center;
+      gap: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ai-badge {
+      display: inline-block;
+      background: rgba(82, 183, 136, 0.2);
+      border: 1px solid var(--sage-400);
+      color: var(--sage-300);
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 768px) {
+      .hero-title { font-size: 2.4rem; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .ai-feature-banner { grid-template-columns: 1fr; padding: 30px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Global Dynamic Header -->
+  <div id="global-header"></div>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <i class="fas fa-certificate"></i> Certified Organic & Climate Protected
+      </div>
+      <h1 class="hero-title">Breathe Life Into Your Urban Living Space</h1>
+      <p class="hero-subtitle">
+        Curated exotic plants, rare medicinal cultivars, heirloom seeds, and bespoke ceramic planters. Powered by real-time horticultural AI guidance.
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="products.html" class="btn-botanical btn-botanical-accent">
+          <i class="fas fa-shopping-bag"></i> Explore Botanical Catalog
+        </a>
+        <a href="ai-doctor.html" class="btn-botanical btn-botanical-secondary" style="background: rgba(255,255,255,0.15); color: #fff; border-color: rgba(255,255,255,0.3);">
+          <i class="fas fa-stethoscope"></i> Consult AI Plant Doctor
+        </a>
+      </div>
+
+      <!-- Quick Search Bar -->
+      <div class="hero-search-wrap">
+        <i class="fas fa-search hero-search-icon"></i>
+        <input 
+          type="text" 
+          id="heroSearchInput" 
+          class="hero-search-input" 
+          placeholder="Search 50+ plants, seeds, rose cultivars, organic fertilizers..."
+          onkeypress="if(event.key==='Enter') window.location.href='products.html?search=' + encodeURIComponent(this.value)"
+        >
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Botanical Statistics -->
+  <div class="stats-strip">
+    <div class="stats-grid">
+      <div>
+        <div class="stat-number">50+</div>
+        <div class="stat-label">Rare Cultivars & Seeds</div>
+      </div>
+      <div>
+        <div class="stat-number">98.4%</div>
+        <div class="stat-label">Germination Success</div>
+      </div>
+      <div>
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Organic Soil & Feeds</div>
+      </div>
+      <div>
+        <div class="stat-number">4-Day</div>
+        <div class="stat-label">Climate-Safe Delivery</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Featured Categories -->
+  <section class="section-wrap">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Explore by Botanical Category</h2>
+        <p class="section-desc">Carefully nurtured and vetted specimens selected for Indian terrace gardens, apartments and balconies.</p>
+      </div>
+      <a href="products.html" class="btn-botanical btn-botanical-secondary">View All Items <i class="fas fa-arrow-right"></i></a>
+    </div>
+
+    <div class="category-grid">
+      <a href="products.html?category=Flower%20Seeds" class="cat-card">
+        <div class="cat-icon-circle">🌸</div>
+        <div class="cat-name">Flower Seeds</div>
+        <div class="cat-count">Roses, Dahlias, Lotus & more</div>
+      </a>
+      <a href="products.html?category=Vegetable%20Seeds" class="cat-card">
+        <div class="cat-icon-circle">🥦</div>
+        <div class="cat-name">Vegetable Seeds</div>
+        <div class="cat-count">Organic Heirloom Kitchen Crops</div>
+      </a>
+      <a href="products.html?category=Live%20Plants" class="cat-card">
+        <div class="cat-icon-circle">🌿</div>
+        <div class="cat-name">Live Plants</div>
+        <div class="cat-count">Desk, Lucky Wood & Hibiscus</div>
+      </a>
+      <a href="products.html?category=Fruit%20Plants" class="cat-card">
+        <div class="cat-icon-circle">🍎</div>
+        <div class="cat-name">Fruit Plants</div>
+        <div class="cat-count">Dwarf Apple, Hass Avocado & Banana</div>
+      </a>
+      <a href="products.html?category=Planters%20%26%20Pots" class="cat-card">
+        <div class="cat-icon-circle">🏺</div>
+        <div class="cat-name">Planters & Pots</div>
+        <div class="cat-count">Ceramic Glazes & UV Plastics</div>
+      </a>
+      <a href="products.html?category=Plant%20Care" class="cat-card">
+        <div class="cat-icon-circle">🌱</div>
+        <div class="cat-name">Organic Feeds</div>
+        <div class="cat-count">Humus, Bio-DAP & Epsom Salts</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- AI Plant Doctor Interactive Feature Banner -->
+  <div style="padding: 0 24px;">
+    <div class="ai-feature-banner">
+      <div>
+        <span class="ai-badge">SMART HORTICULTURE</span>
+        <h2 style="font-size: 2.2rem; color: #fff; margin-bottom: 14px;">Diagnose Sick Leaves Instantly with AI</h2>
+        <p style="color: var(--sage-200); font-size: 1.05rem; line-height: 1.6; margin-bottom: 24px;">
+          Not sure why your plant is drooping or spotting? Take a photo with your phone. Our AI Plant Doctor identifies pests, mineral deficiencies, and fungal attacks in seconds and suggests tailored botanical remedies.
+        </p>
+        <a href="ai-doctor.html" class="btn-botanical btn-botanical-accent">
+          <i class="fas fa-camera"></i> Launch AI Plant Doctor
+        </a>
+      </div>
+      <div style="text-align: center;">
+        <img src="Ak1.jpg" alt="Botanical leaf care" style="width: 100%; max-width: 380px; border-radius: 20px; box-shadow: var(--shadow-float); border: 2px solid rgba(255,255,255,0.2);">
+      </div>
+    </div>
+  </div>
+
+  <!-- Featured Curated Plants Grid -->
+  <section class="section-wrap">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Trending In Green Garden</h2>
+        <p class="section-desc">Highest rated botanical choices with verified organic germination records.</p>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn-botanical btn-botanical-secondary" onclick="filterHomeProducts('all')">All</button>
+        <button class="btn-botanical btn-botanical-secondary" onclick="filterHomeProducts('Flower Seeds')">Flowers</button>
+        <button class="btn-botanical btn-botanical-secondary" onclick="filterHomeProducts('Vegetable Seeds')">Veggies</button>
+        <button class="btn-botanical btn-botanical-secondary" onclick="filterHomeProducts('Live Plants')">Plants</button>
+      </div>
+    </div>
+
+    <div id="homeFeaturedGrid" class="product-grid">
+      <!-- Dynamic products inserted here -->
+    </div>
+  </section>
+
+  <!-- Global Footer -->
+  <div id="global-footer"></div>
+
+  <!-- Firebase Scripts (Compat v10) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  
+  <!-- Core Green Garden Modules -->
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      Store.renderHeader('home');
+      Store.renderFooter();
+      loadFeaturedProducts();
+    });
+
+    async function loadFeaturedProducts(categoryFilter = 'all') {
+      const container = document.getElementById('homeFeaturedGrid');
+      container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin fa-2x" style="color: var(--sage-500);"></i></div>';
+      
+      let prods = await ProductService.getAll();
+      if (categoryFilter !== 'all') {
+        prods = prods.filter(p => p.category === categoryFilter);
+      }
+      
+      // Top 8 picks
+      const featured = prods.slice(0, 8);
+      
+      container.innerHTML = featured.map(p => {
+        const isWish = Store.isInWishlist(p.id);
+        return `
+          <div class="botanical-card" onclick="window.location.href='productdetails.html?id=${p.id}'" style="cursor: pointer;">
+            <div class="card-img-wrap">
+              <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.src='garden.jpg'">
+              <span class="card-badge"><i class="fas fa-leaf" style="color: var(--sage-500);"></i> ${p.category}</span>
+              <button class="card-wish-btn ${isWish ? 'active' : ''}" onclick="event.stopPropagation(); const added = Store.toggleWishlist(INITIAL_CATALOG.find(x => x.id === ${p.id}) || { id: ${p.id}, name: '${p.name.replace(/'/g, "\\'")}', price: ${p.price}, image: '${p.image}' }); this.classList.toggle('active', added);">
+                <i class="${isWish ? 'fas' : 'far'} fa-heart"></i>
+              </button>
+            </div>
+            <div class="card-body">
+              <span class="card-category">${p.category}</span>
+              <h3 class="card-title">${p.name}</h3>
+              <div class="card-botanical-name">${p.scientificName || 'Botanical specimen'}</div>
+              
+              <div class="card-attributes">
+                <span class="attr-tag"><i class="fas fa-sun" style="color: #f5a623;"></i> ${p.sunlight || 'Full Sun'}</span>
+                <span class="attr-tag"><i class="fas fa-tint" style="color: #4a90e2;"></i> ${p.watering || 'Moderate'}</span>
+                ${p.petSafe ? '<span class="attr-tag" style="color: #2e7d32;"><i class="fas fa-paw"></i> Pet Safe</span>' : ''}
+              </div>
+
+              <div class="card-footer">
+                <div class="card-pricing">
+                  <span class="price-current">₹${p.salePrice || p.price}</span>
+                  ${p.salePrice ? `<span class="price-original">₹${p.price}</span>` : ''}
+                </div>
+                <button class="btn-card-add" title="Add to Cart" onclick="event.stopPropagation(); Store.addToCart(INITIAL_CATALOG.find(x => x.id === ${p.id}) || { id: ${p.id}, name: '${p.name.replace(/'/g, "\\'")}', price: ${p.salePrice || p.price}, image: '${p.image}' });">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterHomeProducts(cat) {
+      loadFeaturedProducts(cat);
+    }
+  </script>
+</body>
+</html>

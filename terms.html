@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms & Conditions | Green Garden</title>
+  <link rel="icon" type="image/png" href="icon-512.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
+  <style>
+    .info-page-wrap { max-width: 900px; margin: 0 auto; padding: 50px 24px 80px; }
+    .info-card { background: #fff; border-radius: var(--radius-lg); border: 1px solid var(--border-subtle); padding: 40px; }
+    .info-card h2 { font-size: 1.5rem; margin: 24px 0 10px; color: var(--forest-900); }
+    .info-card p { color: var(--text-secondary); line-height: 1.8; margin-bottom: 14px; }
+  </style>
+</head>
+<body>
+  <div id="global-header"></div>
+  <main class="info-page-wrap">
+    <div class="info-card">
+      <h1 style="font-size: 2.4rem; margin-bottom: 8px;">Terms & Conditions</h1>
+      <p style="font-size: 0.95rem; color: var(--text-muted);">Last Updated: October 2026</p>
+      
+      <h2>1. Botanical Nature of Products</h2>
+      <p>Plants and seeds are natural living organisms. While Green Garden rigorously tests seed lots for 90%+ germination and healthy root stocks, individual growth results vary with local climate, soil moisture, sunlight, and grower care.</p>
+
+      <h2>2. Order Fulfillment & Pricing</h2>
+      <p>All prices listed on the storefront are in Indian Rupees (₹) and include applicable taxes. We reserve the right to cancel orders if an item is damaged before dispatch or out of stock, with an immediate full refund.</p>
+
+      <h2>3. Customer Conduct in Community</h2>
+      <p>The Green Garden Community is a respectful, supportive horticultural sanctuary. Defamatory comments, unauthorized sales, or non-gardening spam will be removed by administrators.</p>
+    </div>
+  </main>
+  <div id="global-footer"></div>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      Store.renderHeader();
+      Store.renderFooter();
+    });
+  </script>
+</body>
+</html>

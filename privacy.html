@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy | Green Garden Botanical Haven</title>
+  <link rel="icon" type="image/png" href="icon-512.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
+  <style>
+    .info-page-wrap { max-width: 900px; margin: 0 auto; padding: 50px 24px 80px; }
+    .info-card { background: #fff; border-radius: var(--radius-lg); border: 1px solid var(--border-subtle); padding: 40px; }
+    .info-card h2 { font-size: 1.5rem; margin: 24px 0 10px; color: var(--forest-900); }
+    .info-card p { color: var(--text-secondary); line-height: 1.8; margin-bottom: 14px; }
+  </style>
+</head>
+<body>
+  <div id="global-header"></div>
+  <main class="info-page-wrap">
+    <div class="info-card">
+      <h1 style="font-size: 2.4rem; margin-bottom: 8px;">Privacy & Data Protection Policy</h1>
+      <p style="font-size: 0.95rem; color: var(--text-muted);">Last Updated: October 2026</p>
+      
+      <h2>1. Information We Collect</h2>
+      <p>Green Garden collects your name, email, delivery address, and phone number exclusively to fulfill plant shipments and provide digital care reminders. We do not sell or rent personal information to data brokers.</p>
+
+      <h2>2. Payment Information Security</h2>
+      <p>Card numbers, UPI PINs, and banking credentials are never processed or stored on our servers. All transactions are securely routed through PCI-DSS Level 1 certified gateways (Razorpay) over 256-bit SSL encryption.</p>
+
+      <h2>3. Plant Health & Uploaded Photos</h2>
+      <p>Photos uploaded to the AI Plant Doctor are processed solely for botanical diagnosis and plant care evaluation. Users retain full ownership of their garden photographs.</p>
+
+      <h2>4. Your Rights</h2>
+      <p>You may request account deletion, data export, or unsubscribe from promotional emails at any time by contacting support@greengarden.com.</p>
+    </div>
+  </main>
+  <div id="global-footer"></div>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      Store.renderHeader();
+      Store.renderFooter();
+    });
+  </script>
+</body>
+</html>

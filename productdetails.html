@@ -1,859 +1,607 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Product Details</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Botanical Product Details | Green Garden</title>
+  <link rel="icon" type="image/png" href="icon-512.png">
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f5f7fa;
-            color: #1e2a3e;
-            overflow-x: hidden;
-        }
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
 
-        ::-webkit-scrollbar {
-            width: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #e9ecef;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #2874f0;
-            border-radius: 10px;
-        }
+  <style>
+    .details-page-wrap {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 30px 24px 80px;
+    }
 
-        .navbar {
-            background: linear-gradient(135deg, #ffffff 0%, #fef9f0 100%);
-            padding: 14px 48px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
-            border-bottom: 1px solid rgba(0,0,0,0.03);
-            flex-wrap: wrap;
-            gap: 12px;
-        }
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
 
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
+    .breadcrumbs a:hover {
+      color: var(--forest-700);
+    }
 
-        .brand {
-            font-size: 1.6rem;
-            font-weight: 800;
-            letter-spacing: -0.3px;
-            background: linear-gradient(135deg, #1e6f2f, #ff9f00);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
+    .product-details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 56px;
+      align-items: start;
+    }
 
-        .brand i {
-            background: none;
-            -webkit-background-clip: unset;
-            color: #ff9f00;
-            margin-right: 6px;
-        }
+    /* Gallery */
+    .gallery-container {
+      position: sticky;
+      top: 100px;
+    }
 
-        .back-btn {
-            background: rgba(40,116,240,0.1);
-            border: none;
-            padding: 10px 24px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: #2874f0;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-        }
+    .main-image-frame {
+      width: 100%;
+      height: 480px;
+      background: var(--ivory-100);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
 
-        .back-btn:hover {
-            background: #2874f0;
-            color: white;
-            transform: translateX(-4px);
-            gap: 12px;
-        }
+    .main-image-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
 
-        .view-cart-btn {
-            background: linear-gradient(135deg, #ff9f00, #fb641b);
-            border: none;
-            padding: 10px 28px;
-            border-radius: 44px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 12px rgba(251,100,27,0.2);
-        }
+    .main-image-frame:hover img {
+      transform: scale(1.05);
+    }
 
-        .view-cart-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(251,100,27,0.3);
-            background: linear-gradient(135deg, #f78c1e, #e75b18);
-        }
+    .thumb-strip {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
 
-        .cart-badge {
-            background-color: white;
-            color: #fb641b;
-            border-radius: 50px;
-            padding: 2px 8px;
-            font-size: 0.7rem;
-            font-weight: 800;
-            margin-left: 6px;
-        }
+    .thumb-btn {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 2px solid transparent;
+      cursor: pointer;
+      background: #fff;
+    }
 
-        .product-container {
-            max-width: 1280px;
-            margin: 32px auto 60px;
-            padding: 0 32px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 48px;
-        }
+    .thumb-btn.active {
+      border-color: var(--forest-700);
+    }
 
-        .gallery-card {
-            background: white;
-            border-radius: 28px;
-            overflow: hidden;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.06);
-            border: 1px solid #f0f0f0;
-            position: relative;
-        }
+    .thumb-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-        .image-magnifier {
-            background: #faf9fc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 480px;
-            padding: 32px;
-        }
+    /* Info Column */
+    .product-info-col {
+      display: flex;
+      flex-direction: column;
+    }
 
-        .product-img {
-            max-width: 85%;
-            max-height: 380px;
-            object-fit: contain;
-            transition: transform 0.4s cubic-bezier(0.2, 0.95, 0.4, 1.1);
-            filter: drop-shadow(0 8px 20px rgba(0,0,0,0.08));
-        }
+    .badge-category {
+      display: inline-block;
+      align-self: flex-start;
+      background: var(--sage-100);
+      color: var(--forest-800);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      margin-bottom: 12px;
+    }
 
-        .gallery-card:hover .product-img {
-            transform: scale(1.02);
-        }
+    .prod-main-title {
+      font-size: 2.6rem;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
 
-        .badge-stock {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: #e8f5e9;
-            color: #2e7d32;
-            padding: 6px 14px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            z-index: 2;
-        }
+    .prod-scientific-name {
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
 
-        .info-panel {
-            background: white;
-            border-radius: 28px;
-            padding: 32px 32px 40px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.04);
-            border: 1px solid #f0f2f5;
-        }
+    .rating-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
 
-        .product-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            line-height: 1.3;
-            color: #172337;
-            margin-bottom: 12px;
-        }
+    .stars-wrap {
+      color: #f5a623;
+      font-size: 1rem;
+    }
 
-        .rating-section {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
+    .price-box {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
 
-        .rating-badge {
-            background: #388e3c;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
+    .price-tag-large {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--forest-900);
+    }
 
-        .price-block {
-            margin: 20px 0 16px;
-        }
+    .price-strike-large {
+      font-size: 1.3rem;
+      color: var(--text-muted);
+      text-decoration: line-through;
+    }
 
-        .current-price {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #212121;
-        }
+    .savings-badge {
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+    }
 
-        .original-price {
-            font-size: 1rem;
-            color: #878787;
-            text-decoration: line-through;
-            margin-left: 12px;
-        }
+    /* Variant Selector */
+    .variant-group {
+      margin-bottom: 24px;
+    }
 
-        .discount-percent {
-            color: #388e3c;
-            font-weight: 700;
-            margin-left: 12px;
-            font-size: 1rem;
-        }
+    .variant-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
 
-        .tax-info {
-            font-size: 0.75rem;
-            color: #26a541;
-            margin-top: 5px;
-            font-weight: 500;
-        }
+    .var-pill {
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-subtle);
+      background: #fff;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
 
-        .description {
-            color: #565959;
-            line-height: 1.6;
-            margin: 24px 0;
-            font-size: 0.95rem;
-            border-left: 3px solid #ff9f00;
-            padding-left: 16px;
-            background: #fefcf8;
-            border-radius: 12px;
-        }
+    .var-pill.active {
+      background: var(--forest-800);
+      color: #fff;
+      border-color: var(--forest-800);
+    }
 
-        .divider {
-            height: 1px;
-            background: #eef2f5;
-            margin: 24px 0;
-        }
+    /* Quantity and Action Buttons */
+    .action-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
 
-        .quantity-module {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin: 24px 0;
-        }
+    .qty-stepper {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-full);
+      background: #fff;
+      padding: 4px;
+    }
 
-        .qty-label {
-            font-weight: 600;
-            color: #3e4d5b;
-        }
+    .qty-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: var(--ivory-50);
+      color: var(--forest-900);
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        .qty-control-group {
-            display: flex;
-            align-items: center;
-            background: #f1f3f6;
-            border-radius: 44px;
-            overflow: hidden;
-        }
+    .qty-btn:hover {
+      background: var(--sage-200);
+    }
 
-        .qty-btn {
-            background: white;
-            border: none;
-            width: 44px;
-            height: 44px;
-            font-size: 1.4rem;
-            font-weight: 700;
-            cursor: pointer;
-            color: #2874f0;
-            transition: all 0.2s;
-        }
+    .qty-display {
+      width: 44px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1rem;
+    }
 
-        .qty-btn:hover:not(:disabled) {
-            background: #2874f0;
-            color: white;
-        }
+    /* Delivery Pincode Checker */
+    .pincode-card {
+      background: var(--ivory-100);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      margin-bottom: 30px;
+      border: 1px solid var(--border-subtle);
+    }
 
-        .qty-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
+    .pincode-form {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+    }
 
-        .qty-input {
-            width: 60px;
-            text-align: center;
-            border: none;
-            background: white;
-            font-weight: 700;
-            font-size: 1rem;
-            padding: 12px 0;
-        }
+    .pincode-input {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-subtle);
+      background: #fff;
+      outline: none;
+    }
 
-        .qty-input:focus {
-            outline: none;
-        }
+    /* Care Specifications Table */
+    .care-specs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 32px;
+    }
 
-        .action-group {
-            display: flex;
-            gap: 16px;
-            margin-top: 28px;
-            flex-wrap: wrap;
-        }
+    .care-card {
+      background: #fff;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
 
-        .btn-buy {
-            flex: 1;
-            background: #fb641b;
-            border: none;
-            padding: 16px 20px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 1rem;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 2px 8px rgba(251,100,27,0.25);
-        }
+    .care-card i {
+      font-size: 1.3rem;
+      margin-top: 2px;
+    }
 
-        .btn-buy:hover {
-            background: #e75b18;
-            transform: translateY(-2px);
-        }
+    .care-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
 
-        .btn-cart {
-            flex: 1;
-            background: #ff9f00;
-            border: none;
-            padding: 16px 20px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 1rem;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
+    .care-val {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--forest-900);
+    }
 
-        .btn-cart:hover {
-            background: #f78c1e;
-            transform: translateY(-2px);
-        }
-
-        .meta-row {
-            display: flex;
-            gap: 28px;
-            margin-top: 32px;
-            flex-wrap: wrap;
-        }
-
-        .meta-chip {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.8rem;
-            color: #5f6c76;
-            background: #f8f9fc;
-            padding: 6px 14px;
-            border-radius: 40px;
-        }
-
-        .toast-notify {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #1e2a3e;
-            color: white;
-            padding: 14px 28px;
-            border-radius: 60px;
-            font-weight: 500;
-            z-index: 2000;
-            opacity: 0;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(30,42,62,0.95);
-            pointer-events: none;
-        }
-
-        .toast-notify.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
-
-        .cart-summary-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(6px);
-            z-index: 1500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            visibility: hidden;
-            opacity: 0;
-            transition: all 0.2s ease;
-        }
-        
-        .cart-summary-overlay.active {
-            visibility: visible;
-            opacity: 1;
-        }
-        
-        .cart-modal {
-            background: white;
-            max-width: 500px;
-            width: 90%;
-            border-radius: 32px;
-            padding: 24px;
-            box-shadow: 0 30px 40px rgba(0,0,0,0.2);
-            transform: scale(0.95);
-            transition: transform 0.2s;
-        }
-        
-        .cart-summary-overlay.active .cart-modal {
-            transform: scale(1);
-        }
-        
-        .cart-modal h3 {
-            font-size: 1.5rem;
-            margin-bottom: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .cart-items-list {
-            max-height: 350px;
-            overflow-y: auto;
-            margin: 16px 0;
-        }
-        
-        .cart-item-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .cart-total {
-            font-weight: 800;
-            font-size: 1.2rem;
-            margin: 16px 0;
-            text-align: right;
-            border-top: 2px solid #f0f2f5;
-            padding-top: 12px;
-        }
-        
-        .close-cart {
-            background: #e2e6ea;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        .goto-cart-btn {
-            background: #fb641b;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 40px;
-            font-weight: 600;
-            margin-left: 12px;
-            cursor: pointer;
-        }
-
-        @media (max-width: 880px) {
-            .product-container {
-                grid-template-columns: 1fr;
-                gap: 24px;
-                padding: 0 20px;
-            }
-            .navbar {
-                padding: 12px 20px;
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .nav-left {
-                justify-content: space-between;
-            }
-        }
-    </style>
+    @media (max-width: 900px) {
+      .product-details-grid {
+        grid-template-columns: 1fr;
+        gap: 36px;
+      }
+      .gallery-container {
+        position: static;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<div class="navbar">
-    <div class="nav-left">
-        <button class="back-btn ripple" id="backToShopBtn">
-            <i class="fas fa-arrow-left"></i> Back to Shop
-        </button>
-        <div class="brand">
-            <i class="fas fa-leaf"></i> GreenCart
-        </div>
-    </div>
-    <button class="view-cart-btn ripple" id="viewCartNavBtn">
-        <i class="fas fa-shopping-bag"></i> View Cart 
-        <span class="cart-badge" id="cartItemCountBadge">0</span>
-    </button>
-</div>
+  <div id="global-header"></div>
 
-<div class="product-container" id="productContainer">
-    <div class="gallery-card">
-        <div class="badge-stock"><i class="fas fa-check-circle"></i> In Stock</div>
-        <div class="image-magnifier">
-            <img id="mainProductImage" class="product-img" src="" alt="Product">
-        </div>
+  <main class="details-page-wrap">
+    <!-- Breadcrumb trail -->
+    <div class="breadcrumbs">
+      <a href="index.html">Home</a>
+      <i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i>
+      <a href="products.html">Catalog</a>
+      <i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i>
+      <span id="bcCategory">Category</span>
+      <i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i>
+      <span id="bcName" style="color: var(--forest-900); font-weight: 600;">Product</span>
     </div>
 
-    <div class="info-panel">
-        <h1 class="product-title" id="productName">Loading...</h1>
-        <div class="rating-section">
-            <span class="rating-badge" id="productRating"><i class="fas fa-star"></i> 4.5</span>
-            <span style="color:#878787; font-size:0.8rem;" id="reviewCount">★ 120+ ratings</span>
+    <!-- Product Details Two-Column Grid -->
+    <div class="product-details-grid" id="productGridContainer">
+      <!-- Injected by script -->
+      <div style="grid-column: 1 / -1; text-align: center; padding: 100px;">
+        <i class="fas fa-spinner fa-spin fa-3x" style="color: var(--sage-500);"></i>
+      </div>
+    </div>
+
+    <!-- Related Botanical Specimens Section -->
+    <section style="margin-top: 80px;">
+      <div class="section-header">
+        <div>
+          <h2 style="font-size: 2rem;">Cultivars You May Also Love</h2>
+          <p class="section-desc">Hand-picked companion plants and seeds with matching soil and sunlight profiles.</p>
         </div>
+      </div>
+      <div id="relatedGrid" class="product-grid"></div>
+    </section>
+  </main>
 
-        <div class="price-block">
-            <span class="current-price" id="currentPrice">₹0</span>
-            <span class="original-price" id="originalPrice"></span>
-            <span class="discount-percent" id="discountPercent"></span>
-            <div class="tax-info">inclusive of all taxes <i class="fas fa-gem"></i></div>
-        </div>
+  <div id="global-footer"></div>
 
-        <div class="description" id="productDesc"></div>
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
 
-        <div class="divider"></div>
+  <script>
+    let activeProduct = null;
+    let selectedQuantity = 1;
+    let selectedVariant = null;
 
-        <div class="quantity-module">
-            <span class="qty-label"><i class="fas fa-boxes"></i> Quantity:</span>
-            <div class="qty-control-group">
-                <button class="qty-btn" id="minusBtn">−</button>
-                <input type="number" id="quantityInput" class="qty-input" value="1" min="1" max="99">
-                <button class="qty-btn" id="plusBtn">+</button>
+    document.addEventListener('DOMContentLoaded', async () => {
+      Store.renderHeader('products');
+      Store.renderFooter();
+
+      const params = new URLSearchParams(window.location.search);
+      const prodId = parseInt(params.get('id')) || 1;
+
+      // Load products from ProductService (which merges catalog + Firestore)
+      const products = await ProductService.getAll();
+      activeProduct = products.find(p => p.id === prodId) || products[0];
+
+      if (activeProduct) {
+        selectedVariant = activeProduct.variants ? activeProduct.variants[0] : null;
+        renderProductDetails(activeProduct);
+        renderRelatedProducts(activeProduct, products);
+      }
+    });
+
+    function renderProductDetails(p) {
+      document.title = `${p.name} | Green Garden Botanical Haven`;
+      document.getElementById('bcCategory').textContent = p.category;
+      document.getElementById('bcName').textContent = p.name;
+
+      const isWish = Store.isInWishlist(p.id);
+      const discountPercent = p.salePrice ? Math.round(((p.price - p.salePrice) / p.price) * 100) : 0;
+
+      const container = document.getElementById('productGridContainer');
+      container.innerHTML = `
+        <!-- Gallery Column -->
+        <div class="gallery-container">
+          <div class="main-image-frame">
+            <img id="mainGalleryImg" src="${p.image}" alt="${p.name}" onerror="this.src='garden.jpg'">
+          </div>
+          <div class="thumb-strip">
+            <div class="thumb-btn active" onclick="switchImage('${p.image}', this)">
+              <img src="${p.image}" onerror="this.src='garden.jpg'">
             </div>
-        </div>
-
-        <div class="action-group">
-            <button class="btn-buy ripple" id="buyNowBtn"><i class="fas fa-bolt"></i> Buy Now</button>
-            <button class="btn-cart ripple" id="addToCartBtn"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
-        </div>
-
-        <div class="meta-row">
-            <div class="meta-chip"><i class="fas fa-shield-alt"></i> 100% Organic</div>
-            <div class="meta-chip"><i class="fas fa-truck"></i> Free Delivery over ₹500</div>
-            <div class="meta-chip"><i class="fas fa-seedling"></i> Grow Guarantee</div>
-        </div>
-    </div>
-</div>
-
-<div id="cartModal" class="cart-summary-overlay">
-    <div class="cart-modal">
-        <h3><span><i class="fas fa-shopping-cart"></i> Your Cart</span><i class="fas fa-times-circle" id="closeModalIcon" style="cursor:pointer; color:#aaa; font-size: 1.3rem;"></i></h3>
-        <div id="cartModalItems" class="cart-items-list">
-            <div class="empty-cart-msg" style="text-align:center; padding:30px;">
-                <i class="fas fa-bag-shopping" style="font-size:48px; opacity:0.5;"></i>
-                <p>Your cart is empty</p>
+            <div class="thumb-btn" onclick="switchImage('garden.jpg', this)">
+              <img src="garden.jpg">
             </div>
+            <div class="thumb-btn" onclick="switchImage('Ak.jpg', this)">
+              <img src="Ak.jpg">
+            </div>
+          </div>
         </div>
-        <div id="cartModalTotal" class="cart-total">Total: ₹0</div>
-        <div style="display: flex; justify-content: flex-end; gap: 12px;">
-            <button class="close-cart" id="closeCartBtn">Continue Shopping</button>
-            <button class="goto-cart-btn" id="gotoFullCartBtn">Go to Cart <i class="fas fa-arrow-right"></i></button>
+
+        <!-- Info Column -->
+        <div class="product-info-col">
+          <span class="badge-category">${p.category}</span>
+          <h1 class="prod-main-title">${p.name}</h1>
+          <div class="prod-scientific-name">${p.scientificName || 'Botanical specimen'}</div>
+
+          <div class="rating-row">
+            <div class="stars-wrap">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+            </div>
+            <strong style="color: var(--forest-900); font-size: 1rem;">${p.rating || 4.8}</strong>
+            <span style="color: var(--text-muted); font-size: 0.9rem;">• ${p.reviews || 120} verified gardener reviews</span>
+            <span style="color: var(--sage-500); font-weight: 700; margin-left: auto;">
+              <i class="fas fa-check-circle"></i> Nursery Verified
+            </span>
+          </div>
+
+          <div class="price-box">
+            <span class="price-tag-large">₹${p.salePrice || p.price}</span>
+            ${p.salePrice ? `<span class="price-strike-large">₹${p.price}</span>` : ''}
+            ${discountPercent ? `<span class="savings-badge">Save ${discountPercent}%</span>` : ''}
+            <span style="color: var(--text-muted); font-size: 0.85rem;">(Inclusive of all taxes & botanical warranty)</span>
+          </div>
+
+          <p style="color: var(--text-secondary); font-size: 1rem; line-height: 1.7; margin-bottom: 24px;">
+            ${p.description || 'Specially selected and tested for peak vitality and high germination.'}
+          </p>
+
+          <!-- Variant Selector -->
+          ${p.variants && p.variants.length > 0 ? `
+            <div class="variant-group">
+              <label style="font-weight: 700; font-size: 0.88rem; color: var(--forest-900);">Select Specification / Size:</label>
+              <div class="variant-pills">
+                ${p.variants.map((v, i) => `
+                  <button type="button" class="var-pill ${i === 0 ? 'active' : ''}" onclick="selectVariant('${v}', this)">
+                    ${v}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- Quantity & Purchase Action Row -->
+          <div class="action-row">
+            <div class="qty-stepper">
+              <button class="qty-btn" onclick="updateQty(-1)"><i class="fas fa-minus"></i></button>
+              <span class="qty-display" id="qtyDisplay">1</span>
+              <button class="qty-btn" onclick="updateQty(1)"><i class="fas fa-plus"></i></button>
+            </div>
+
+            <button class="btn-botanical btn-botanical-primary" style="flex: 1;" onclick="handleAddToCart()">
+              <i class="fas fa-shopping-bag"></i> Add to Cart
+            </button>
+
+            <button class="btn-botanical btn-botanical-accent" style="flex: 1;" onclick="handleBuyNow()">
+              <i class="fas fa-bolt"></i> Buy Now
+            </button>
+
+            <button class="card-wish-btn ${isWish ? 'active' : ''}" style="position: static; width: 48px; height: 48px;" onclick="const added = Store.toggleWishlist(activeProduct); this.classList.toggle('active', added);">
+              <i class="${isWish ? 'fas' : 'far'} fa-heart"></i>
+            </button>
+          </div>
+
+          <!-- Pincode Serviceability & Delivery Checker -->
+          <div class="pincode-card">
+            <div style="font-weight: 700; font-size: 0.9rem; color: var(--forest-900); display: flex; align-items: center; gap: 8px;">
+              <i class="fas fa-shipping-fast" style="color: var(--sage-500);"></i> Check Delivery Pincode:
+            </div>
+            <div class="pincode-form">
+              <input type="text" id="pincodeInput" class="pincode-input" placeholder="Enter 6-digit PIN code (e.g. 560001)" maxlength="6">
+              <button class="btn-botanical btn-botanical-secondary" style="padding: 8px 18px;" onclick="checkPincode()">Check</button>
+            </div>
+            <div id="pincodeResult" style="font-size: 0.82rem; margin-top: 8px; color: var(--text-secondary);">
+              Standard botanical delivery: 3-5 business days with live hydration pack.
+            </div>
+          </div>
+
+          <!-- Horticultural Care Guide Matrix -->
+          <div style="font-family: var(--font-serif); font-size: 1.3rem; margin-bottom: 14px;">Botanical Care & Growing Matrix</div>
+          <div class="care-specs-grid">
+            <div class="care-card">
+              <i class="fas fa-sun" style="color: #f5a623;"></i>
+              <div>
+                <div class="care-title">Sunlight</div>
+                <div class="care-val">${p.sunlight || 'Full Sunlight'}</div>
+              </div>
+            </div>
+
+            <div class="care-card">
+              <i class="fas fa-tint" style="color: #4a90e2;"></i>
+              <div>
+                <div class="care-title">Watering</div>
+                <div class="care-val">${p.watering || 'Moderate'}</div>
+              </div>
+            </div>
+
+            <div class="care-card">
+              <i class="fas fa-paw" style="color: ${p.petSafe ? '#2e7d32' : '#e63946'};"></i>
+              <div>
+                <div class="care-title">Pet Safety</div>
+                <div class="care-val">${p.petSafe ? 'Safe for Pets' : 'Keep Away From Pets'}</div>
+              </div>
+            </div>
+
+            <div class="care-card">
+              <i class="fas fa-seedling" style="color: var(--forest-700);"></i>
+              <div>
+                <div class="care-title">Care Level</div>
+                <div class="care-val">${p.difficulty || 'Easy Care'}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Smart Plant Passport Quick Action -->
+          <div style="background: #ffffff; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div style="font-weight: 700; font-size: 0.95rem; color: var(--forest-900);">Digital Plant Passport Ready</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">Track watering schedules and growth milestones for this plant.</div>
+            </div>
+            <a href="plant-care.html" class="btn-botanical btn-botanical-secondary" style="font-size: 0.82rem; padding: 6px 14px;">
+              <i class="fas fa-calendar-plus"></i> Set Reminders
+            </a>
+          </div>
         </div>
-    </div>
-</div>
-
-<div id="toastMsg" class="toast-notify">
-    <i class="fas fa-check-circle"></i> <span id="toastText">Item added</span>
-</div>
-
-<script>
-// ============================================
-// COMPLETE PRODUCT DATABASE - 50 PRODUCTS
-// ============================================
-const products = [
-    { id: 1, name: "Morning Jewel Rose Seed", price: 158, image: "F1.jpg", category: "Flower Seeds", rating: 4.2, reviews: 134, stock: 50 },
-    { id: 2, name: "Winter Daisy Red Mixed Seed", price: 150, image: "F2.jpg", category: "Flower Seeds", rating: 4.5, reviews: 98, stock: 45 },
-    { id: 3, name: "Bitter Gourd-karela seed", price: 99, image: "F3.jpg", category: "Vegetable Seeds", rating: 4.7, reviews: 210, stock: 120 },
-    { id: 4, name: "Black Tomato Hybrid", price: 110, image: "F4.jpg", category: "Vegetable Seeds", rating: 4.3, reviews: 76, stock: 85 },
-    { id: 5, name: "Broccoli Vegetable Seed", price: 89, image: "F5.jpg", category: "Vegetable Seeds", rating: 4.0, reviews: 112, stock: 95 },
-    { id: 6, name: "Brazilian Wood Plant", price: 550, image: "F6.jpg", category: "Plants", rating: 4.6, reviews: 203, stock: 30 },
-    { id: 7, name: "Apple Plant Hybrid", price: 100, image: "F7.jpg", category: "Fruit Plants", rating: 4.4, reviews: 89, stock: 40 },
-    { id: 8, name: "Cabbage Seed", price: 110, image: "F8.jpg", category: "Vegetable Seeds", rating: 4.2, reviews: 67, stock: 110 },
-    { id: 9, name: "Chinese Cabbage", price: 111, image: "F9.jpg", category: "Vegetable Seeds", rating: 4.3, reviews: 54, stock: 75 },
-    { id: 10, name: "Amaranthus Vegetable Seed", price: 130, image: "F10.jpg", category: "Vegetable Seeds", rating: 4.1, reviews: 42, stock: 65 },
-    { id: 11, name: "Farm Cauliflower Violetto", price: 120, image: "F11.jpg", category: "Vegetable Seeds", rating: 4.5, reviews: 88, stock: 70 },
-    { id: 12, name: "Kamal Seed(200g)", price: 149, image: "F12.jpg", category: "Flower Seeds", rating: 4.0, reviews: 130, stock: 55 },
-    { id: 13, name: "6 Birds Hanging Home Decor", price: 160, image: "F13.jpg", category: "Garden Decor", rating: 4.7, reviews: 220, stock: 25 },
-    { id: 14, name: "Blue Ceramic Pot", price: 200, image: "F14.jpg", category: "Planters", rating: 4.8, reviews: 310, stock: 60 },
-    { id: 15, name: "Multicolor Plastic Pot", price: 400, image: "F15.jpg", category: "Planters", rating: 4.4, reviews: 175, stock: 45 },
-    { id: 16, name: "Signal Bicycle Pot Stand", price: 199, image: "F16.jpg", category: "Plant Stands", rating: 4.6, reviews: 92, stock: 35 },
-    { id: 17, name: "Crystal Shaped Plastic Flower Pot", price: 299, image: "F17.jpg", category: "Planters", rating: 4.5, reviews: 118, stock: 40 },
-    { id: 18, name: "Organic Potting Mix", price: 360, image: "F18.jpg", category: "Plant Care", rating: 4.9, reviews: 420, stock: 100 },
-    { id: 19, name: "6 Tier Metal Pot Stand", price: 999, image: "F19.jpg", category: "Plant Stands", rating: 4.7, reviews: 201, stock: 20 },
-    { id: 20, name: "Yellow Kalanchoe Flower Seed", price: 149, image: "F20.jpg", category: "Flower Seeds", rating: 4.3, reviews: 77, stock: 85 },
-    { id: 21, name: "sky fruit Seeds(400g)", price: 349, image: "F21.jpg", category: "Fruit Seeds", rating: 4.2, reviews: 56, stock: 40 },
-    { id: 22, name: "long luki seed(25 per pkt)", price: 110, image: "F22.jpg", category: "Vegetable Seeds", rating: 4.0, reviews: 61, stock: 90 },
-    { id: 23, name: "Castor seed(100g)", price: 169, image: "F23.jpg", category: "Oil Seeds", rating: 4.1, reviews: 34, stock: 55 },
-    { id: 24, name: "Black Avacodo tree seed(1 per pkt)", price: 129, image: "F24.jpg", category: "Fruit Seeds", rating: 4.5, reviews: 48, stock: 60 },
-    { id: 25, name: "gobhee seeds(10 per pkt)", price: 129, image: "F25.jpg", category: "Vegetable Seeds", rating: 4.3, reviews: 39, stock: 70 },
-    { id: 26, name: "Halim seeds(300g)", price: 270, image: "F26.jpg", category: "Vegetable Seeds", rating: 4.4, reviews: 27, stock: 45 },
-    { id: 27, name: "carrot seeds(1 per pkt)", price: 199, image: "F27.jpg", category: "Vegetable Seeds", rating: 4.6, reviews: 95, stock: 80 },
-    { id: 28, name: "Green grass seeds(3000 per pkt)", price: 118, image: "F28.jpg", category: "Lawn Seeds", rating: 4.2, reviews: 44, stock: 65 },
-    { id: 29, name: "Hybrid dahlia seeds(50 per pkt)", price: 125, image: "F29.jpg", category: "Flower Seeds", rating: 4.5, reviews: 72, stock: 75 },
-    { id: 30, name: "Ash gourd seeds(40 per pkt)", price: 159, image: "F30.jpg", category: "Vegetable Seeds", rating: 4.3, reviews: 66, stock: 85 },
-    { id: 31, name: "black carrot seeds (120 per pkt)", price: 149, image: "F31.jpg", category: "Vegetable Seeds", rating: 4.7, reviews: 112, stock: 70 },
-    { id: 32, name: "Long Slender PepperSeeds (200 per pkt)", price: 145, image: "F32.jpg", category: "Vegetable Seeds", rating: 4.5, reviews: 83, stock: 90 },
-    { id: 33, name: "Lotua Seeds (30 per pkt)", price: 119, image: "F33.jpg", category: "Flower Seeds", rating: 4.1, reviews: 52, stock: 95 },
-    { id: 34, name: "Halam Seeds (200g)", price: 189, image: "F34.jpg", category: "Vegetable Seeds", rating: 4.4, reviews: 31, stock: 50 },
-    { id: 35, name: "Hot chilli organic Seeds (200 per pkt)", price: 119, image: "F35.jpg", category: "Vegetable Seeds", rating: 4.8, reviews: 146, stock: 110 },
-    { id: 36, name: "Raganigandha flower Seeds (4 per pkt)", price: 109, image: "F36.jpg", category: "Flower Seeds", rating: 4.2, reviews: 37, stock: 80 },
-    { id: 37, name: "Sword Lily plant (hybrid,pack of 1)", price: 120, image: "F37.jpg", category: "Flower Plants", rating: 4.5, reviews: 64, stock: 45 },
-    { id: 38, name: "HARSINGAR seed(20 per pkt)", price: 129, image: "F38.jpg", category: "Flower Seeds", rating: 4.6, reviews: 55, stock: 60 },
-    { id: 39, name: "French yellow marigold seed(50 per pkt)", price: 145, image: "F39.jpg", category: "Flower Seeds", rating: 4.7, reviews: 121, stock: 85 },
-    { id: 40, name: "Beej Band Seeds (100 per pkt)", price: 199, image: "F40.jpg", category: "Flower Seeds", rating: 4.3, reviews: 43, stock: 55 },
-    { id: 41, name: "Rose plant(Hybrid,pack of 1)", price: 129, image: "F41.jpg", category: "Flower Plants", rating: 4.9, reviews: 305, stock: 70 },
-    { id: 42, name: "Black soil manure(10kg,Powder)", price: 219, image: "F42.jpg", category: "Plant Manure", rating: 4.4, reviews: 88, stock: 40 },
-    { id: 43, name: "Red Banana plant(Hybrid, pack of 1)", price: 149, image: "F43.jpg", category: "Fruit Plants", rating: 4.5, reviews: 79, stock: 35 },
-    { id: 44, name: "Hibiscus plant(Hybrid,pack of 1)", price: 115, image: "F44.jpg", category: "Flower Plants", rating: 4.3, reviews: 91, stock: 50 },
-    { id: 45, name: "Natural plant manure(1kg,cake)", price: 135, image: "F45.jpg", category: "Plant Manure", rating: 4.6, reviews: 134, stock: 85 },
-    { id: 46, name: "Flower Holder-metal 5 pot planter stand", price: 870, image: "F46.jpg", category: "Pot Stand", rating: 4.7, reviews: 62, stock: 25 },
-    { id: 47, name: "Organic DAP plant Growth Boost(1.5 kg)", price: 220, image: "F47.jpg", category: "Plant Fertilizer", rating: 4.5, reviews: 107, stock: 60 },
-    { id: 48, name: "Gardenplus 3pcs plant Growth (150 ml, Liquid)", price: 209, image: "F48.jpg", category: "Plant Fertilizer", rating: 4.2, reviews: 45, stock: 70 },
-    { id: 49, name: "Magnesium sulfate for plants (500 g)", price: 139, image: "F49.jpg", category: "Plant Fertilizer", rating: 4.4, reviews: 58, stock: 90 },
-    { id: 50, name: "Miracle grow all purpose manure(400 g,powder)", price: 450, image: "F50.jpg", category: "Plant Manure", rating: 4.8, reviews: 212, stock: 55 }
-];
-
-// Helper function to get product by ID
-function getProductById(id) {
-    return products.find(p => p.id === id);
-}
-
-function getProductIdFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    const id = parseInt(params.get("id"));
-    return isNaN(id) ? 1 : id;
-}
-
-let currentProduct = null;
-
-function showToast(message, isError = false) {
-    const toast = document.getElementById('toastMsg');
-    const toastText = document.getElementById('toastText');
-    toastText.innerText = message;
-    if (isError) {
-        toast.style.background = "rgba(220, 53, 69, 0.95)";
-        toast.querySelector('i').className = "fas fa-exclamation-circle";
-    } else {
-        toast.style.background = "rgba(30,42,62,0.95)";
-        toast.querySelector('i').className = "fas fa-check-circle";
+      `;
     }
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2200);
-}
 
-function updateCartBadge() {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-    const badge = document.getElementById('cartItemCountBadge');
-    if(badge) badge.innerText = totalItems;
-}
-
-function addToCartHandler(quantity, redirectToBuy = false) {
-    if (!currentProduct) return;
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingIndex = cart.findIndex(item => item.id === currentProduct.id);
-    if (existingIndex !== -1) {
-        cart[existingIndex].quantity = (cart[existingIndex].quantity || 1) + quantity;
-    } else {
-        cart.push({
-            id: currentProduct.id,
-            name: currentProduct.name,
-            price: currentProduct.price,
-            image: currentProduct.image,
-            quantity: quantity
-        });
+    function switchImage(src, btn) {
+      document.getElementById('mainGalleryImg').src = src;
+      document.querySelectorAll('.thumb-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
     }
-    localStorage.setItem("cart", JSON.stringify(cart));
-    updateCartBadge();
-    if (redirectToBuy) {
-        showToast(`✨ ${quantity} item(s) added! Redirecting...`, false);
-        setTimeout(() => { window.location.href = 'buy.html'; }, 600);
-    } else {
-        showToast(`✓ ${quantity} × ${currentProduct.name} added to cart`, false);
+
+    function selectVariant(varName, btn) {
+      selectedVariant = varName;
+      document.querySelectorAll('.var-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
     }
-}
 
-function renderProductDetails() {
-    const id = getProductIdFromUrl();
-    currentProduct = getProductById(id) || products[0];
-    const product = currentProduct;
-    
-    document.getElementById('productName').innerText = product.name;
-    document.getElementById('currentPrice').innerHTML = `₹${product.price.toLocaleString('en-IN')}`;
-    document.getElementById('mainProductImage').src = product.image;
-    document.getElementById('productRating').innerHTML = `<i class="fas fa-star"></i> ${product.rating}`;
-    document.getElementById('reviewCount').innerHTML = `${product.reviews}+ ratings`;
-    
-    // Calculate MRP and discount
-    let mrp = Math.round(product.price * (1 + (Math.random() * 0.18 + 0.08)));
-    let discountVal = Math.round(((mrp - product.price) / mrp) * 100);
-    document.getElementById('originalPrice').innerText = `₹${mrp}`;
-    document.getElementById('discountPercent').innerText = `(${discountVal}% off)`;
-    
-    // Category-based description
-    const descriptions = {
-        "Flower Seeds": "🌸 Premium quality flower seeds with high germination rate. Beautiful blooms within 6-8 weeks. Perfect for home gardens and balconies.",
-        "Vegetable Seeds": "🥬 Non-GMO heirloom vegetable seeds. Chemical-free, high yield, perfect for organic home gardening.",
-        "Plants": "🌿 Healthy live plant delivered in eco-friendly pot. Ready to thrive with proper care instructions included.",
-        "Planters": "🏺 Stylish & durable pots. UV resistant, lightweight design, perfect for indoor and outdoor plants.",
-        "Plant Stands": "🪴 Elegant and sturdy plant stands. Space-saving design, perfect for showcasing your favorite plants.",
-        "Flower Plants": "🌸 Beautiful flowering plants. Easy to maintain, blooms throughout the season.",
-        "Fruit Plants": "🍎 Premium fruit plants. Grafted for early fruiting, perfect for home orchards.",
-        "Plant Manure": "🌱 Organic nutrient-rich manure. Enhances soil fertility and promotes healthy plant growth.",
-        "Plant Fertilizer": "💪 Premium plant nutrition. Boosts growth, flowering, and fruiting naturally.",
-        "Garden Decor": "🎨 Beautiful garden decorations. Enhance the beauty of your green space.",
-        "Lawn Seeds": "🌿 Premium grass seeds for lush green lawn. Fast germination, drought resistant.",
-        "Oil Seeds": "🌻 High-quality oil seeds for cultivation. Perfect for organic farming.",
-        "Fruit Seeds": "🍊 Premium fruit seeds with high germination rate. Grow your own fruit trees.",
-        "Pot Stand": "🪑 Elegant pot stands to elevate your plant display."
-    };
-    
-    let description = descriptions[product.category] || "🌱 Premium quality seeds and plants cultivated with care. Each product comes with detailed growing instructions and our satisfaction guarantee.";
-    document.getElementById('productDesc').innerHTML = `${description} <strong>${product.name}</strong> is a customer favorite!`;
-    document.getElementById('quantityInput').value = 1;
-    updateButtonsState(1);
-    updateCartBadge();
-}
-
-function updateButtonsState(qty) {
-    const minusBtn = document.getElementById('minusBtn');
-    const plusBtn = document.getElementById('plusBtn');
-    minusBtn.disabled = qty <= 1;
-    plusBtn.disabled = qty >= 99;
-}
-
-function changeQuantity(delta) {
-    const input = document.getElementById('quantityInput');
-    let val = parseInt(input.value) || 1;
-    let newVal = val + delta;
-    if (newVal >= 1 && newVal <= 99) {
-        input.value = newVal;
-        updateButtonsState(newVal);
+    function updateQty(delta) {
+      selectedQuantity = Math.max(1, selectedQuantity + delta);
+      document.getElementById('qtyDisplay').textContent = selectedQuantity;
     }
-}
 
-function openCartModal() {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const container = document.getElementById('cartModalItems');
-    const totalSpan = document.getElementById('cartModalTotal');
-    
-    if(cart.length === 0) {
-        container.innerHTML = '<div class="empty-cart-msg" style="text-align:center; padding:30px;"><i class="fas fa-bag-shopping" style="font-size:48px; opacity:0.5;"></i><p>Your cart is empty</p></div>';
-        totalSpan.innerText = 'Total: ₹0';
-    } else {
-        let html = '';
-        let total = 0;
-        cart.forEach(item => {
-            const itemTotal = item.price * (item.quantity || 1);
-            total += itemTotal;
-            html += `<div class="cart-item-row">
-                        <div class="cart-item-name"><strong>${escapeHtml(item.name)}</strong> <span style="color:#666;">x ${item.quantity || 1}</span></div>
-                        <div class="cart-item-price">₹${itemTotal.toLocaleString('en-IN')}</div>
-                     </div>`;
-        });
-        container.innerHTML = html;
-        totalSpan.innerHTML = `Total: ₹${total.toLocaleString('en-IN')}`;
+    function handleAddToCart() {
+      if (!activeProduct) return;
+      Store.addToCart(activeProduct, selectedQuantity, selectedVariant);
     }
-    document.getElementById('cartModal').classList.add('active');
-}
 
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
-}
+    function handleBuyNow() {
+      if (!activeProduct) return;
+      Store.addToCart(activeProduct, selectedQuantity, selectedVariant);
+      window.location.href = 'buy.html';
+    }
 
-function closeCartModal() {
-    document.getElementById('cartModal').classList.remove('active');
-}
+    function checkPincode() {
+      const pin = document.getElementById('pincodeInput').value.trim();
+      const res = document.getElementById('pincodeResult');
+      if (pin.length !== 6 || isNaN(pin)) {
+        res.innerHTML = '<span style="color: #e63946;"><i class="fas fa-times-circle"></i> Please enter a valid 6-digit Indian PIN code</span>';
+        return;
+      }
+      res.innerHTML = `<span style="color: #2e7d32;"><i class="fas fa-check-circle"></i> Serviceable! Estimated climate-safe express delivery by <strong>${new Date(Date.now() + 3*24*60*60*1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric'})}</strong></span>`;
+    }
 
-document.addEventListener('DOMContentLoaded', () => {
-    renderProductDetails();
-    
-    document.getElementById('minusBtn').addEventListener('click', () => changeQuantity(-1));
-    document.getElementById('plusBtn').addEventListener('click', () => changeQuantity(1));
-    document.getElementById('quantityInput').addEventListener('input', function() {
-        let val = parseInt(this.value) || 1;
-        val = Math.min(99, Math.max(1, val));
-        this.value = val;
-        updateButtonsState(val);
-    });
-    
-    document.getElementById('addToCartBtn').addEventListener('click', () => {
-        let qty = parseInt(document.getElementById('quantityInput').value) || 1;
-        addToCartHandler(qty, false);
-    });
-    
-    document.getElementById('buyNowBtn').addEventListener('click', () => {
-        let qty = parseInt(document.getElementById('quantityInput').value) || 1;
-        addToCartHandler(qty, true);
-    });
-    
-    document.getElementById('backToShopBtn').addEventListener('click', () => { 
-        window.location.href = 'products.html'; 
-    });
-    
-    document.getElementById('viewCartNavBtn').addEventListener('click', openCartModal);
-    document.getElementById('closeModalIcon').addEventListener('click', closeCartModal);
-    document.getElementById('closeCartBtn').addEventListener('click', closeCartModal);
-    document.getElementById('gotoFullCartBtn').addEventListener('click', () => {
-        window.location.href = 'buy.html';
-    });
-    
-    const modal = document.getElementById('cartModal');
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeCartModal();
-    });
-    
-    updateCartBadge();
-    window.addEventListener('storage', (e) => {
-        if (e.key === 'cart') updateCartBadge();
-    });
-});
-</script>
+    function renderRelatedProducts(curr, all) {
+      const related = all.filter(p => p.id !== curr.id && p.category === curr.category).slice(0, 4);
+      const container = document.getElementById('relatedGrid');
+      
+      container.innerHTML = related.map(p => `
+        <div class="botanical-card" onclick="window.location.href='productdetails.html?id=${p.id}'" style="cursor: pointer;">
+          <div class="card-img-wrap">
+            <img src="${p.image}" alt="${p.name}" onerror="this.src='garden.jpg'">
+            <span class="card-badge">${p.category}</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">${p.name}</h3>
+            <div class="card-botanical-name">${p.scientificName || ''}</div>
+            <div class="card-footer">
+              <div class="card-pricing">
+                <span class="price-current">₹${p.salePrice || p.price}</span>
+              </div>
+              <button class="btn-card-add" onclick="event.stopPropagation(); Store.addToCart(INITIAL_CATALOG.find(x => x.id === ${p.id}) || { id: ${p.id}, name: '${p.name.replace(/'/g, "\\'")}', price: ${p.salePrice || p.price}, image: '${p.image}' });">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+  </script>
 </body>
 </html>

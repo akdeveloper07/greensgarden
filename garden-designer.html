@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Garden Designer & Balcony Planner | Green Garden</title>
+  <link rel="icon" type="image/png" href="icon-512.png">
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
+
+  <style>
+    .designer-page-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .designer-grid {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 36px;
+      align-items: start;
+    }
+
+    .control-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      padding: 28px;
+    }
+
+    .layout-preview-canvas {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      padding: 32px;
+      min-height: 480px;
+    }
+
+    /* Grid representation */
+    .balcony-visualizer {
+      background: #fdfbf7;
+      border: 2px dashed #cbd5e1;
+      border-radius: var(--radius-md);
+      height: 320px;
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .garden-zone {
+      background: rgba(82, 183, 136, 0.15);
+      border: 1px solid var(--sage-400);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 800px) {
+      .designer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="global-header"></div>
+
+  <main class="designer-page-wrap">
+    <div style="margin-bottom: 30px;">
+      <span class="badge-ai" style="padding: 4px 12px; font-size: 0.8rem; margin-bottom: 10px; display: inline-block;">AI LANDSCAPE ARCHITECTURE</span>
+      <h1 style="font-size: 2.6rem; margin-bottom: 6px;">AI Balcony & Garden Space Designer</h1>
+      <p style="color: var(--text-secondary); font-size: 1.05rem;">Input your floor dimensions and sun orientation to receive an optimized architectural planting layout and tailored product checklist.</p>
+    </div>
+
+    <div class="designer-grid">
+      <!-- Input Controls -->
+      <div class="control-card">
+        <h3 style="font-size: 1.3rem; margin-bottom: 16px;">Space Specifications</h3>
+
+        <div class="field-group" style="margin-bottom: 14px;">
+          <label class="field-label">Space Type</label>
+          <select id="spaceType" class="field-input">
+            <option value="balcony">Balcony (Apartment)</option>
+            <option value="terrace">Rooftop Terrace</option>
+            <option value="backyard">Backyard Lawn</option>
+            <option value="patio">Sunny Veranda / Patio</option>
+          </select>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+          <div class="field-group">
+            <label class="field-label">Length (ft)</label>
+            <input type="number" id="spaceLen" class="field-input" value="10" min="4" max="50">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Width (ft)</label>
+            <input type="number" id="spaceWid" class="field-input" value="6" min="3" max="50">
+          </div>
+        </div>
+
+        <div class="field-group" style="margin-bottom: 14px;">
+          <label class="field-label">Sunlight Exposure Direction</label>
+          <select id="sunDirection" class="field-input">
+            <option value="east">East Facing (Gentle Morning Sun)</option>
+            <option value="west">West Facing (Hot Afternoon Sun)</option>
+            <option value="south">South Facing (Intense All-Day Sun)</option>
+            <option value="north">North Facing (Cool Indirect Light)</option>
+          </select>
+        </div>
+
+        <div class="field-group" style="margin-bottom: 20px;">
+          <label class="field-label">Preferred Botanical Theme</label>
+          <select id="spaceTheme" class="field-input">
+            <option value="cottage">English Floral Sanctuary (Roses & Dahlias)</option>
+            <option value="edible">Edible Kitchen Jungle (Tomatoes & Herbs)</option>
+            <option value="zen">Minimalist Zen (Bonsai & Water Lily)</option>
+            <option value="tropical">Exotic Tropical (Bananas & Hibiscus)</option>
+          </select>
+        </div>
+
+        <button class="btn-botanical btn-botanical-accent" style="width: 100%; padding: 14px;" onclick="generateGardenPlan()">
+          <i class="fas fa-magic"></i> Generate Layout & Shopping List
+        </button>
+      </div>
+
+      <!-- Live Generated Layout & Checklist -->
+      <div class="layout-preview-canvas">
+        <h3 style="font-size: 1.4rem; margin-bottom: 14px;">Suggested Spatial Layout (<span id="dimsDisplay">10 × 6 ft</span>)</h3>
+
+        <div class="balcony-visualizer" id="visualizerGrid">
+          <div class="garden-zone">
+            <div style="font-size: 1.5rem; margin-bottom: 4px;">🌸</div>
+            <strong>Front Railing</strong>
+            <span>French Marigolds (Sunlight)</span>
+          </div>
+          <div class="garden-zone">
+            <div style="font-size: 1.5rem; margin-bottom: 4px;">🌹</div>
+            <strong>Perimeter Bed</strong>
+            <span>Morning Jewel Rose</span>
+          </div>
+          <div class="garden-zone">
+            <div style="font-size: 1.5rem; margin-bottom: 4px;">🪜</div>
+            <strong>Vertical Tier Stand</strong>
+            <span>6-Tier Metal Pot Stand</span>
+          </div>
+          <div class="garden-zone">
+            <div style="font-size: 1.5rem; margin-bottom: 4px;">🪴</div>
+            <strong>Shaded Corner</strong>
+            <span>Brazilian Wood Desk Log</span>
+          </div>
+          <div class="garden-zone">
+            <div style="font-size: 1.5rem; margin-bottom: 4px;">🌱</div>
+            <strong>Soil & Care Station</strong>
+            <span>10kg Organic Mix & Neem</span>
+          </div>
+          <div class="garden-zone">
+            <div style="font-size: 1.5rem; margin-bottom: 4px;">☕</div>
+            <strong>Relaxation Zone</strong>
+            <span>Seating Chair Space</span>
+          </div>
+        </div>
+
+        <!-- Generated Shopping List Section -->
+        <div style="margin-top: 30px;">
+          <h4 style="font-size: 1.15rem; margin-bottom: 12px; color: var(--forest-900);">
+            <i class="fas fa-list-check" style="color: var(--sage-500);"></i> Recommended Product Blueprint
+          </h4>
+          <div id="designerShoppingList" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+            <!-- Injected by script -->
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 16px;">
+            <div>
+              <span style="font-size: 0.85rem; color: var(--text-muted);">Estimated Layout Cost:</span>
+              <div style="font-size: 1.4rem; font-weight: 800; color: var(--forest-900);" id="layoutTotalPrice">₹1,946</div>
+            </div>
+            <button class="btn-botanical btn-botanical-primary" onclick="addLayoutToCart()">
+              <i class="fas fa-cart-plus"></i> Add All Layout Items to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="global-footer"></div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
+
+  <script>
+    let layoutProducts = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      Store.renderHeader();
+      Store.renderFooter();
+      generateGardenPlan();
+    });
+
+    function generateGardenPlan() {
+      const len = document.getElementById('spaceLen').value;
+      const wid = document.getElementById('spaceWid').value;
+      const theme = document.getElementById('spaceTheme').value;
+
+      document.getElementById('dimsDisplay').textContent = `${len} × ${wid} ft`;
+
+      if (theme === 'edible') {
+        layoutProducts = [
+          CatalogService.getById(4),  // Black Tomato
+          CatalogService.getById(3),  // Bitter Gourd
+          CatalogService.getById(27), // Kuroda Carrot
+          CatalogService.getById(18)  // Organic Soil
+        ].filter(Boolean);
+      } else if (theme === 'zen') {
+        layoutProducts = [
+          CatalogService.getById(12), // Sacred Lotus
+          CatalogService.getById(6),  // Brazilian Wood
+          CatalogService.getById(14), // Sapphire Ceramic Pot
+          CatalogService.getById(13)  // Hanging Bird Chime
+        ].filter(Boolean);
+      } else {
+        // English Cottage default
+        layoutProducts = [
+          CatalogService.getById(1),  // Morning Jewel Rose
+          CatalogService.getById(29), // Giant Dahlia
+          CatalogService.getById(39), // French Marigold
+          CatalogService.getById(19), // 6-Tier Metal Stand
+          CatalogService.getById(18)  // Potting Mix
+        ].filter(Boolean);
+      }
+
+      const listContainer = document.getElementById('designerShoppingList');
+      listContainer.innerHTML = layoutProducts.map(p => `
+        <div style="display: flex; justify-content: space-between; align-items: center; background: #fff; border: 1px solid var(--border-subtle); padding: 10px 14px; border-radius: var(--radius-md);">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <img src="${p.image}" style="width: 36px; height: 36px; border-radius: 6px; object-fit: cover;" onerror="this.src='garden.jpg'">
+            <div>
+              <strong style="font-size: 0.9rem;">${p.name}</strong>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">${p.category}</div>
+            </div>
+          </div>
+          <strong style="color: var(--forest-900);">₹${p.salePrice || p.price}</strong>
+        </div>
+      `).join('');
+
+      const total = layoutProducts.reduce((sum, p) => sum + (p.salePrice || p.price), 0);
+      document.getElementById('layoutTotalPrice').textContent = `₹${total}`;
+    }
+
+    function addLayoutToCart() {
+      if (layoutProducts.length === 0) return;
+      layoutProducts.forEach(p => {
+        Store.addToCart(p, 1, "AI Garden Designer Plan");
+      });
+      Store.showToast("🏡 All Garden Layout Items Added to Cart!");
+      setTimeout(() => {
+        window.location.href = 'cart.html';
+      }, 700);
+    }
+  </script>
+</body>
+</html>

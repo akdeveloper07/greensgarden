@@ -1,572 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Green Garden</title>
-    <link rel="manifest" href="manifest.json">
-    
-    <!-- Fonts & Icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        :root {
-            --primary-green: #2e7d32;
-            --primary-dark: #1b5e20;
-            --accent: #66bb6a;
-            --white: #ffffff;
-            --glass-bg: rgba(255, 255, 255, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.5);
-            --text-main: #1a1a1a;
-            --text-muted: #555555;
-            --error: #d32f2f;
-            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            /* UPDATED: High quality Green Garden background image */
-            background-image: url('https://images.unsplash.com/photo-1416879595882-3373a0480b5b?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Overlay to make text readable */
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(46, 125, 50, 0.2), rgba(0, 0, 0, 0.3));
-            z-index: 0;
-        }
-
-        .login-container {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 420px;
-            padding: 40px;
-            background: var(--glass-bg);
-            border-radius: 24px;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(16px); /* Stronger blur for premium feel */
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            animation: slideUp 0.6s ease-out;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .logo-wrapper {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            border: 3px solid var(--white);
-            margin-bottom: 15px;
-        }
-
-        .welcome-text h2 {
-            font-size: 1.8rem;
-            color: var(--text-main);
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .welcome-text p { color: var(--text-muted); font-size: 0.95rem; }
-
-        /* Form Styling */
-        .input-group {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 16px 20px 16px 50px;
-            background: rgba(255, 255, 255, 0.6);
-            border: 2px solid transparent;
-            border-radius: 12px;
-            font-size: 1rem;
-            color: var(--text-main);
-            transition: all 0.3s ease;
-            outline: none;
-        }
-
-        .input-group input::placeholder { color: #888; }
-
-        .input-group input:focus {
-            background: var(--white);
-            border-color: var(--primary-green);
-            box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.1);
-        }
-
-        .input-group .icon {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            pointer-events: none;
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: color 0.3s;
-        }
-
-        .toggle-password:hover { color: var(--primary-green); }
-
-        /* Options & Buttons */
-        .form-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            font-size: 0.9rem;
-        }
-
-        .remember-me { display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--text-muted); }
-        .remember-me input { accent-color: var(--primary-green); width: 16px; height: 16px; }
-
-        /* Updated Link Style to look like a button */
-        .forgot-link {
-            color: var(--primary-green);
-            text-decoration: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.3s;
-        }
-        .forgot-link:hover { opacity: 0.8; text-decoration: underline; }
-
-        .btn-login {
-            width: 100%;
-            padding: 16px;
-            background: var(--primary-green);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
-        }
-
-        .btn-login:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
-        }
-
-        .btn-login:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
-
-        /* Error Message */
-        .error-message {
-            background: rgba(211, 47, 47, 0.1);
-            color: var(--error);
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            text-align: center;
-            margin-bottom: 15px;
-            display: none;
-            border: 1px solid rgba(211, 47, 47, 0.2);
-        }
-        .error-message.show { display: block; animation: shake 0.4s ease-in-out; }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        /* Divider & Social Buttons */
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 25px 0;
-            color: var(--text-muted);
-        }
-        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(0,0,0,0.1); }
-        .divider span { padding: 0 10px; font-size: 0.85rem; font-weight: 500; }
-
-        .social-buttons { display: flex; gap: 15px; }
-
-        .btn-social {
-            flex: 1;
-            padding: 12px;
-            background: var(--white);
-            border: 1px solid rgba(0,0,0,0.1);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.2rem;
-            position: relative;
-        }
-
-        .btn-social:hover {
-            background: #f5f5f5;
-            transform: translateY(-1px);
-        }
-
-        .btn-social.google { color: #DB4437; }
-        .btn-social.apple { color: #000000; }
-        .btn-social.loading { pointer-events: none; color: transparent; }
-        .btn-social.loading::after {
-            content: "\f110";
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-            position: absolute;
-            color: var(--text-main);
-            animation: fa-spin 1s infinite linear;
-        }
-
-        /* Footer */
-        .signup-footer { text-align: center; margin-top: 30px; color: var(--text-muted); font-size: 0.95rem; }
-        .signup-footer a { color: var(--primary-green); font-weight: 700; text-decoration: none; margin-left: 5px; }
-        .signup-footer a:hover { text-decoration: underline; }
-
-        footer {
-            position: absolute;
-            bottom: 15px;
-            color: var(--white);
-            font-size: 0.8rem;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
-            z-index: 1;
-        }
-
-        /* --- FORGOT PASSWORD MODAL STYLES --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-            z-index: 99;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            background: var(--white);
-            width: 90%;
-            max-width: 400px;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            transform: scale(0.8);
-            transition: transform 0.3s ease;
-            position: relative;
-            text-align: center;
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 1.5rem;
-            color: #ccc;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .modal-close:hover { color: var(--error); }
-
-        .modal-title {
-            font-size: 1.5rem;
-            color: var(--text-main);
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .modal-desc {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 25px;
-        }
-
-        .modal-message {
-            margin-top: 15px;
-            font-size: 0.9rem;
-            display: none;
-        }
-        .modal-message.success {
-            display: block;
-            color: var(--primary-green);
-            background: rgba(46, 125, 50, 0.1);
-            padding: 10px;
-            border-radius: 8px;
-        }
-
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plant Not Found (404) | Green Garden</title>
+  <link rel="icon" type="image/png" href="icon-512.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
+  <style>
+    .not-found-wrap {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px;
+    }
+    .not-found-box {
+      max-width: 540px;
+      background: #fff;
+      padding: 48px 36px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-md);
+    }
+  </style>
 </head>
 <body>
+  <div id="global-header"></div>
 
-    <div class="login-container">
-        <div class="logo-wrapper">
-            <!-- User's local logo -->
-            <img src="logo1.jpg" alt="Green Garden Logo" class="logo">
-            <div class="welcome-text">
-                <h2>Welcome Back</h2>
-                <p>Login to manage your garden</p>
-            </div>
-        </div>
-
-        <div id="errorMsg" class="error-message">
-            <i class="fas fa-exclamation-circle"></i> <span id="errorText">Invalid credentials</span>
-        </div>
-
-        <form id="loginForm">
-            <div class="input-group">
-                <input type="email" id="email" placeholder="Email Address" required>
-                <i class="fas fa-envelope icon"></i>
-            </div>
-
-            <div class="input-group">
-                <input type="password" id="password" placeholder="Password" required>
-                <i class="fas fa-lock icon"></i>
-                <i class="fas fa-eye-slash toggle-password" onclick="togglePasswordVisibility(this)"></i>
-            </div>
-
-            <div class="form-options">
-                <label class="remember-me">
-                    <input type="checkbox" checked> Remember me
-                </label>
-                <!-- Trigger for Modal -->
-                <a class="forgot-link" onclick="openModal()">Forgot Password?</a>
-            </div>
-
-            <button type="submit" class="btn-login" id="loginBtn">
-                <span>Sign In</span>
-                <i class="fas fa-arrow-right"></i>
-            </button>
-        </form>
-
-        <div class="divider">
-            <span>OR CONTINUE WITH</span>
-        </div>
-
-        <div class="social-buttons">
-            <button class="btn-social google" onclick="handleSocialLogin('google')" title="Login with Google">
-                <i class="fab fa-google"></i>
-            </button>
-            <button class="btn-social apple" onclick="handleSocialLogin('apple')" title="Login with Apple">
-                <i class="fab fa-apple"></i>
-            </button>
-        </div>
-
-        <div class="signup-footer">
-            Don't have an account? <a href="signup.html">Sign Up</a>
-            <br>
-            <span style="font-size: 0.85rem; opacity: 0.8;">
-                Just browsing? <a href="home.html" style="font-weight: 500; color: var(--text-main);">Continue as Guest</a>
-            </span>
-        </div>
+  <div class="not-found-wrap">
+    <div class="not-found-box">
+      <div style="font-size: 4.5rem; margin-bottom: 12px;">🪴</div>
+      <div style="font-family: var(--font-display); font-size: 1.1rem; color: var(--sage-500); font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">Error 404</div>
+      <h1 style="font-size: 2.2rem; margin: 8px 0 16px;">This Specimen Has Been Repotted</h1>
+      <p style="color: var(--text-secondary); margin-bottom: 30px; line-height: 1.6;">
+        The page or botanical variety you are seeking has grown in another direction or doesn't exist in our current conservatory catalog.
+      </p>
+      <div style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
+        <a href="index.html" class="btn-botanical btn-botanical-primary">
+          <i class="fas fa-home"></i> Back to Haven
+        </a>
+        <a href="products.html" class="btn-botanical btn-botanical-secondary">
+          <i class="fas fa-seedling"></i> Browse Catalog
+        </a>
+      </div>
     </div>
+  </div>
 
-    <!-- FORGOT PASSWORD MODAL HTML -->
-    <div id="forgotModal" class="modal-overlay">
-        <div class="modal-content">
-            <i class="fas fa-times modal-close" onclick="closeModal()"></i>
-            <h3 class="modal-title">Reset Password</h3>
-            <p class="modal-desc">Enter your email address and we'll send you a link to reset your password.</p>
-            
-            <form id="forgotForm" onsubmit="handleForgotPassword(event)">
-                <div class="input-group" style="margin-bottom: 15px;">
-                    <input type="email" id="resetEmail" placeholder="Enter your email" required>
-                    <i class="fas fa-envelope icon"></i>
-                </div>
-                <button type="submit" class="btn-login" id="resetBtn">
-                    Send Reset Link
-                </button>
-                <div id="modalMsg" class="modal-message success">
-                    <i class="fas fa-check-circle"></i> Email sent successfully! Please check your inbox.
-                </div>
-            </form>
-        </div>
-    </div>
+  <div id="global-footer"></div>
 
-    <footer>
-        &copy; 2025 Green Garden. All rights reserved.
-    </footer>
-
-    <script>
-        // 1. Password Visibility Toggle
-        function togglePasswordVisibility(icon) {
-            const passwordInput = document.getElementById('password');
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
-            } else {
-                passwordInput.type = "password";
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
-            }
-        }
-
-        // 2. Standard Login Logic
-        const loginForm = document.getElementById('loginForm');
-        const loginBtn = document.getElementById('loginBtn');
-        const errorMsg = document.getElementById('errorMsg');
-        const errorText = document.getElementById('errorText');
-
-        loginForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            errorMsg.classList.remove('show');
-
-            if (!email.includes("@")) {
-                showError("Please enter a valid email address.");
-                return;
-            }
-
-            if (password.length < 1) {
-                showError("Password cannot be empty.");
-                return;
-            }
-
-            // Simulate Loading
-            loginBtn.disabled = true;
-            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
-
-            setTimeout(() => {
-                sessionStorage.setItem('loggedInUser', email);
-                window.location.href = 'home.html';
-            }, 1500);
-        });
-
-        function showError(message) {
-            errorText.textContent = message;
-            errorMsg.classList.add('show');
-        }
-
-        // 3. Social Login Logic
-        function handleSocialLogin(provider) {
-            const btn = document.querySelector(`.btn-social.${provider}`);
-            btn.classList.add('loading');
-            btn.disabled = true;
-
-            setTimeout(() => {
-                if(provider === 'google') {
-                    sessionStorage.setItem('loggedInUser', 'google_user@gmail.com');
-                } else {
-                    sessionStorage.setItem('loggedInUser', 'apple_user@icloud.com');
-                }
-                window.location.href = 'home.html';
-            }, 1500);
-        }
-
-        // 4. Forgot Password Modal Logic
-        const modal = document.getElementById('forgotModal');
-        const modalMsg = document.getElementById('modalMsg');
-        const resetBtn = document.getElementById('resetBtn');
-
-        function openModal() {
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent background scroll
-        }
-
-        function closeModal() {
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto'; // Restore scroll
-            // Reset modal state
-            modalMsg.style.display = 'none';
-            resetBtn.innerHTML = 'Send Reset Link';
-            resetBtn.disabled = false;
-        }
-
-        function handleForgotPassword(e) {
-            e.preventDefault();
-            const email = document.getElementById('resetEmail').value;
-
-            if(!email.includes("@")) {
-                alert("Please enter a valid email");
-                return;
-            }
-
-            // Simulate sending email
-            resetBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            resetBtn.disabled = true;
-
-            setTimeout(() => {
-                resetBtn.style.display = 'none';
-                modalMsg.style.display = 'block';
-                
-                // Auto close after 3 seconds
-                setTimeout(() => {
-                   closeModal();
-                   // Restore button for next time
-                   resetBtn.style.display = 'flex';
-                }, 3000);
-            }, 1500);
-        }
-
-        // Close modal if clicking outside the content box
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                closeModal();
-            }
-        }
-
-        // 5. Service Worker
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("service-worker.js");
-        }
-    </script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      Store.renderHeader();
+      Store.renderFooter();
+    });
+  </script>
 </body>
 </html>

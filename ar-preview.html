@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Plant Placement Preview | Green Garden</title>
+  <link rel="icon" type="image/png" href="icon-512.png">
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
+
+  <style>
+    .ar-page-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 30px 24px 80px;
+    }
+
+    .ar-viewport {
+      position: relative;
+      width: 100%;
+      height: 520px;
+      background: #1a1a1a;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      border: 2px solid var(--border-subtle);
+    }
+
+    #arVideo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    #arFallbackBg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.9);
+    }
+
+    .ar-overlay-plant {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      cursor: grab;
+      user-select: none;
+      z-index: 10;
+      transition: width 0.1s ease;
+    }
+
+    .ar-overlay-plant:active {
+      cursor: grabbing;
+    }
+
+    .ar-controls-panel {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      z-index: 20;
+    }
+
+    .plant-selector-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      margin-top: 20px;
+      padding-bottom: 8px;
+    }
+
+    .ar-thumb-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-full);
+      padding: 6px 14px 6px 8px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .ar-thumb-btn.active {
+      border-color: var(--forest-800);
+      background: var(--ivory-100);
+    }
+
+    .ar-thumb-btn img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="global-header"></div>
+
+  <main class="ar-page-wrap">
+    <div style="margin-bottom: 24px; text-align: center;">
+      <span class="badge-ai" style="padding: 4px 12px; font-size: 0.8rem; margin-bottom: 8px; display: inline-block;">AUGMENTED BOTANY</span>
+      <h1 style="font-size: 2.4rem; margin-bottom: 6px;">AR Plant Placement Preview</h1>
+      <p style="color: var(--text-secondary); font-size: 1rem;">Visualize how selected specimens and planters fit in your living room, desk, or balcony.</p>
+    </div>
+
+    <!-- AR Canvas Viewport -->
+    <div class="ar-viewport" id="arContainer">
+      <video id="arVideo" autoplay playsinline></video>
+      <img id="arFallbackBg" src="garden.jpg" alt="Simulated living room view">
+
+      <!-- Scalable Draggable Overlay Plant -->
+      <img id="arPlantImg" class="ar-overlay-plant" src="F6.jpg" style="width: 200px;" alt="Selected Plant" draggable="false">
+
+      <!-- Bottom In-Viewport Controls -->
+      <div class="ar-controls-panel">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <button class="btn-botanical btn-botanical-primary" id="btnCamToggle" onclick="toggleCamera()" style="padding: 8px 16px; font-size: 0.85rem;">
+            <i class="fas fa-camera"></i> <span id="camStatusText">Enable Live Camera</span>
+          </button>
+          <span style="font-size: 0.82rem; color: var(--text-muted);">Drag plant to position</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <label style="font-size: 0.85rem; font-weight: 700; color: var(--forest-900);">Scale Size:</label>
+          <input type="range" id="scaleSlider" min="100" max="380" value="200" oninput="changePlantScale(this.value)" style="accent-color: var(--forest-800); width: 140px;">
+        </div>
+
+        <button class="btn-botanical btn-botanical-accent" id="btnArAddToCart" style="padding: 8px 18px; font-size: 0.85rem;" onclick="addActiveArPlantToCart()">
+          <i class="fas fa-cart-plus"></i> Buy This Plant
+        </button>
+      </div>
+    </div>
+
+    <!-- Plant Selector Strip -->
+    <div class="plant-selector-scroll" id="arPlantSelector">
+      <!-- Injected -->
+    </div>
+  </main>
+
+  <div id="global-footer"></div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
+
+  <script>
+    let activeArPlant = null;
+    let isCameraLive = false;
+    let cameraStream = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      Store.renderHeader();
+      Store.renderFooter();
+
+      loadArCandidates();
+      setupDraggablePlant();
+    });
+
+    function loadArCandidates() {
+      const candidates = [
+        CatalogService.getById(6),  // Brazilian Wood
+        CatalogService.getById(41), // Red Rose Plant
+        CatalogService.getById(44), // Hibiscus Bush
+        CatalogService.getById(14), // Sapphire Ceramic
+        CatalogService.getById(7)   // Dwarf Apple
+      ].filter(Boolean);
+
+      const strip = document.getElementById('arPlantSelector');
+      strip.innerHTML = candidates.map((p, idx) => `
+        <button class="ar-thumb-btn ${idx === 0 ? 'active' : ''}" onclick="selectArPlant(INITIAL_CATALOG.find(x => x.id === ${p.id}), this)">
+          <img src="${p.image}" onerror="this.src='garden.jpg'">
+          <span>${p.name} (₹${p.salePrice || p.price})</span>
+        </button>
+      `).join('');
+
+      activeArPlant = candidates[0];
+    }
+
+    function selectArPlant(p, btn) {
+      activeArPlant = p;
+      document.querySelectorAll('.ar-thumb-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      document.getElementById('arPlantImg').src = p.image;
+      Store.showToast(`Previewing ${p.name}`);
+    }
+
+    function changePlantScale(size) {
+      document.getElementById('arPlantImg').style.width = size + 'px';
+    }
+
+    async function toggleCamera() {
+      const video = document.getElementById('arVideo');
+      const fallback = document.getElementById('arFallbackBg');
+      const text = document.getElementById('camStatusText');
+
+      if (!isCameraLive) {
+        try {
+          cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+          video.srcObject = cameraStream;
+          video.style.display = 'block';
+          fallback.style.display = 'none';
+          isCameraLive = true;
+          text.textContent = 'Switch to Virtual Room';
+          Store.showToast("📷 Live Room Camera Active!");
+        } catch (err) {
+          console.warn("Camera access note:", err.message);
+          Store.showToast("Camera not available or permission denied. Using Virtual Room backdrop.", true);
+        }
+      } else {
+        if (cameraStream) {
+          cameraStream.getTracks().forEach(track => track.stop());
+        }
+        video.style.display = 'none';
+        fallback.style.display = 'block';
+        isCameraLive = false;
+        text.textContent = 'Enable Live Camera';
+      }
+    }
+
+    function setupDraggablePlant() {
+      const plant = document.getElementById('arPlantImg');
+      const container = document.getElementById('arContainer');
+
+      let isDragging = false;
+      let startX, startY;
+
+      plant.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX - plant.offsetLeft;
+        startY = e.clientY - plant.offsetTop;
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const x = e.clientX - startX;
+        const y = e.clientY - startY;
+        plant.style.left = `${x}px`;
+        plant.style.top = `${y}px`;
+        plant.style.transform = 'none';
+      });
+
+      window.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+
+      // Mobile Touch events
+      plant.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        const touch = e.touches[0];
+        startX = touch.clientX - plant.offsetLeft;
+        startY = touch.clientY - plant.offsetTop;
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const touch = e.touches[0];
+        const x = touch.clientX - startX;
+        const y = touch.clientY - startY;
+        plant.style.left = `${x}px`;
+        plant.style.top = `${y}px`;
+        plant.style.transform = 'none';
+      }, { passive: true });
+
+      window.addEventListener('touchend', () => {
+        isDragging = false;
+      });
+    }
+
+    function addActiveArPlantToCart() {
+      if (!activeArPlant) return;
+      Store.addToCart(activeArPlant, 1);
+    }
+  </script>
+</body>
+</html>

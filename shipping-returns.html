@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shipping & 7-Day Live Plant Guarantee | Green Garden</title>
+  <link rel="icon" type="image/png" href="icon-512.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
+  <style>
+    .info-page-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 50px 24px 80px;
+    }
+    .info-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      padding: 40px;
+      box-shadow: var(--shadow-sm);
+    }
+    .info-card h2 {
+      font-size: 1.6rem;
+      margin: 28px 0 12px;
+      color: var(--forest-900);
+    }
+    .info-card p, .info-card li {
+      color: var(--text-secondary);
+      line-height: 1.8;
+      font-size: 0.98rem;
+    }
+    .info-card ul {
+      margin-left: 20px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="global-header"></div>
+
+  <main class="info-page-wrap">
+    <div class="info-card">
+      <span class="badge-new" style="margin-bottom: 12px; display: inline-block;">NURSERY GUARANTEE</span>
+      <h1 style="font-size: 2.6rem; margin-bottom: 8px;">Shipping, Delivery & Returns Policy</h1>
+      <p style="font-size: 1.05rem; color: var(--forest-800); font-weight: 500;">
+        Every living plant shipped from Green Garden leaves our certified botanical facility with root hydration and shock-resistant packaging.
+      </p>
+
+      <h2>1. The 7-Day Live Plant Guarantee</h2>
+      <p>
+        We guarantee your plants arrive hydrated and alive. If a plant arrives severely damaged or wilts within 7 days of delivery despite following our unboxing care guide, we will ship a complimentary replacement or issue a 100% store credit with no hassle.
+      </p>
+
+      <h2>2. Climate-Safe Transit Packaging</h2>
+      <p>
+        Plants are living organisms. To protect them across Indian transit lanes, we utilize:
+      </p>
+      <ul>
+        <li><strong>Coco-Peat Hydration Sleeves:</strong> Retains root moisture for up to 6 days without waterlogging.</li>
+        <li><strong>Tri-Wall Corrugated Boxes:</strong> Built with ventilation holes for air exchange while shielding against transit impact.</li>
+        <li><strong>Eco-Friendly Straw & Paper Cushions:</strong> 100% biodegradable protection without plastic bubble wrap.</li>
+      </ul>
+
+      <h2>3. Delivery Timelines & Charges</h2>
+      <p>
+        • Orders over ₹499 qualify for <strong>FREE Climate-Safe Delivery</strong> across all serviceable Indian PIN codes.<br>
+        • Standard delivery fee for orders below ₹499 is ₹50.<br>
+        • Metros (Bangalore, Mumbai, Delhi-NCR, Hyderabad, Chennai, Pune): 2-4 business days.<br>
+        • Rest of India: 3-5 business days.
+      </p>
+
+      <h2>4. Non-Living Goods Returns (Pots, Stands, Tools)</h2>
+      <p>
+        Unused pots, stands, and sealed fertilizer bags may be returned within 14 days of receipt for a full refund via your original payment mode (Razorpay or Bank Transfer).
+      </p>
+    </div>
+  </main>
+
+  <div id="global-footer"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      Store.renderHeader();
+      Store.renderFooter();
+    });
+  </script>
+</body>
+</html>

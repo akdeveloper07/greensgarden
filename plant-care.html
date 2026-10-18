@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Plant Care Calendar | Green Garden</title>
+  <link rel="icon" type="image/png" href="icon-512.png">
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
+
+  <style>
+    .care-page-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .calendar-grid-layout {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 36px;
+      align-items: start;
+    }
+
+    .care-card-panel {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+
+    .task-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      margin-bottom: 12px;
+      background: var(--ivory-50);
+      transition: var(--transition-fast);
+    }
+
+    .task-row.done {
+      background: #f1f5f9;
+      opacity: 0.65;
+    }
+
+    .task-row.done strong {
+      text-decoration: line-through;
+    }
+
+    .task-type-badge {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+    }
+
+    .task-type-badge.water { background: #e0f2fe; color: #0284c7; }
+    .task-type-badge.feed { background: #fef3c7; color: #b45309; }
+    .task-type-badge.prune { background: #dcfce7; color: #16a34a; }
+
+    @media (max-width: 768px) {
+      .calendar-grid-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="global-header"></div>
+
+  <main class="care-page-wrap">
+    <div style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <h1 style="font-size: 2.4rem; margin-bottom: 6px;">Smart Botanical Care Calendar</h1>
+        <p style="color: var(--text-secondary); font-size: 1rem;">Dynamic watering, fertilizing, and pruning schedules tailored to weather and species needs.</p>
+      </div>
+      <button class="btn-botanical btn-botanical-primary" onclick="openAddTaskModal()">
+        <i class="fas fa-plus"></i> Add Care Reminder
+      </button>
+    </div>
+
+    <div class="calendar-grid-layout">
+      <!-- Left Column: Today's Tasks -->
+      <div>
+        <div class="care-card-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="font-size: 1.4rem;">Today's Botanical Tasks</h2>
+            <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;" id="currentDateDisplay">Today</span>
+          </div>
+
+          <div id="taskListContainer">
+            <!-- Dynamic task items -->
+          </div>
+        </div>
+
+        <!-- Care History Log -->
+        <div class="care-card-panel">
+          <h3 style="font-size: 1.2rem; margin-bottom: 14px;">Recent Horticultural Log</h3>
+          <div id="careHistoryLog" style="font-size: 0.88rem; color: var(--text-secondary);">
+            <!-- History entries -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Micro-Climate Advice & Reminders -->
+      <div>
+        <div class="care-card-panel" style="background: linear-gradient(135deg, var(--forest-900), var(--forest-800)); color: #fff;">
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--brass-400); text-transform: uppercase;">Climate Guidance</div>
+          <h3 style="font-size: 1.3rem; margin: 6px 0 12px; color: #fff;">Summer / Spring Humidity Alert</h3>
+          <p style="color: var(--sage-200); font-size: 0.9rem; line-height: 1.6; margin-bottom: 16px;">
+            High ambient evaporation rates mean container soil can dry out within 36 hours. Always do the finger-knuckle soil moisture test before watering.
+          </p>
+          <a href="ai-doctor.html" class="btn-botanical btn-botanical-accent" style="font-size: 0.82rem; padding: 8px 16px;">
+            <i class="fas fa-stethoscope"></i> Check Leaf Health
+          </a>
+        </div>
+
+        <div class="care-card-panel">
+          <h3 style="font-size: 1.15rem; margin-bottom: 14px;">My Conservatory Plants</h3>
+          <div id="myPlantMiniList" style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <img src="F1.jpg" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;">
+              <div>
+                <strong style="font-size: 0.88rem; color: var(--forest-900);">Morning Jewel Rose</strong>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">Water every 2 days</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <img src="F6.jpg" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;">
+              <div>
+                <strong style="font-size: 0.88rem; color: var(--forest-900);">Brazilian Wood Lucky Plant</strong>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">Refill basin weekly</div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 16px; border-top: 1px solid var(--border-subtle); padding-top: 12px; text-align: center;">
+            <a href="plant-passport.html" style="font-size: 0.85rem; color: var(--sage-500); font-weight: 700;">Open Digital Plant Passport →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="global-footer"></div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
+
+  <script>
+    const DEFAULT_CARE_TASKS = [
+      { id: 't1', plantName: 'Morning Jewel Rose Seedlings', type: 'water', desc: 'Moisten root ball without soaking leaves', done: false },
+      { id: 't2', plantName: 'Brazilian Wood Hydroponic', type: 'feed', desc: 'Add 2 drops seaweed liquid fertilizer to water tray', done: false },
+      { id: 't3', plantName: 'Bitter Gourd Climber', type: 'prune', desc: 'Pinch early side tendrils to train along trellis', done: true },
+      { id: 't4', plantName: 'Sapphire Ceramic Planter', type: 'water', desc: 'Check soil moisture at 2-inch depth', done: false }
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      Store.renderHeader('care');
+      Store.renderFooter();
+
+      document.getElementById('currentDateDisplay').textContent = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      renderCareTasks();
+    });
+
+    function getTasks() {
+      return JSON.parse(localStorage.getItem('gg_care_tasks') || JSON.stringify(DEFAULT_CARE_TASKS));
+    }
+
+    function saveTasks(tasks) {
+      localStorage.setItem('gg_care_tasks', JSON.stringify(tasks));
+      renderCareTasks();
+    }
+
+    function renderCareTasks() {
+      const tasks = getTasks();
+      const container = document.getElementById('taskListContainer');
+
+      container.innerHTML = tasks.map(t => `
+        <div class="task-row ${t.done ? 'done' : ''}">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTaskDone('${t.id}')" style="width: 20px; height: 20px; accent-color: var(--forest-800); cursor: pointer;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <strong style="color: var(--forest-900); font-size: 0.95rem;">${t.plantName}</strong>
+                <span class="task-type-badge ${t.type}">${t.type}</span>
+              </div>
+              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">${t.desc}</div>
+            </div>
+          </div>
+          <button onclick="deleteTask('${t.id}')" style="border:none; background:none; color: #cbd5e1; cursor: pointer;" title="Delete task">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      `).join('');
+
+      renderLog();
+    }
+
+    function toggleTaskDone(id) {
+      const tasks = getTasks();
+      const t = tasks.find(x => x.id === id);
+      if (t) {
+        t.done = !t.done;
+        saveTasks(tasks);
+        if (t.done) {
+          Store.showToast(`🌿 Completed: ${t.type.toUpperCase()} for ${t.plantName}`);
+          logHistory(`Completed ${t.type} for ${t.plantName}`);
+        }
+      }
+    }
+
+    function deleteTask(id) {
+      let tasks = getTasks();
+      tasks = tasks.filter(x => x.id !== id);
+      saveTasks(tasks);
+    }
+
+    function logHistory(msg) {
+      const logs = JSON.parse(localStorage.getItem('gg_care_history') || '[]');
+      logs.unshift({ msg, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
+      localStorage.setItem('gg_care_history', JSON.stringify(logs.slice(0, 5)));
+      renderLog();
+    }
+
+    function renderLog() {
+      const logs = JSON.parse(localStorage.getItem('gg_care_history') || '[]');
+      const container = document.getElementById('careHistoryLog');
+      if (logs.length === 0) {
+        container.innerHTML = '<div style="color: var(--text-muted);">No care actions logged today yet.</div>';
+        return;
+      }
+      container.innerHTML = logs.map(l => `
+        <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f1f5f9;">
+          <span>✓ ${l.msg}</span>
+          <span style="color: var(--text-muted); font-size: 0.78rem;">${l.time}</span>
+        </div>
+      `).join('');
+    }
+
+    function openAddTaskModal() {
+      const name = prompt("Enter plant name (e.g. Red Rose):");
+      if (!name) return;
+      const type = prompt("Enter task type (water, feed, prune):", "water");
+      const desc = prompt("Enter care note:", "Check moisture & water roots");
+
+      const tasks = getTasks();
+      tasks.push({
+        id: 'task_' + Date.now(),
+        plantName: name,
+        type: (type || 'water').toLowerCase(),
+        desc: desc || 'Routine care',
+        done: false
+      });
+      saveTasks(tasks);
+      Store.showToast("Care reminder scheduled!");
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Plant Passport | Green Garden</title>
+  <link rel="icon" type="image/png" href="icon-512.png">
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
+
+  <style>
+    .passport-page-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .passport-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .passport-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .passport-header-strip {
+      background: linear-gradient(135deg, var(--forest-900), var(--forest-800));
+      color: #fff;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .passport-qr-code {
+      width: 72px;
+      height: 72px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 4px;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="global-header"></div>
+
+  <main class="passport-page-wrap">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <span class="badge-new" style="margin-bottom: 8px; display: inline-block;">HORTICULTURAL IDENTITY</span>
+        <h1 style="font-size: 2.4rem; margin-bottom: 6px;">Digital Plant Passports</h1>
+        <p style="color: var(--text-secondary); font-size: 1rem;">Track growth milestones, health records, and generate printable QR plant tags for your garden pots.</p>
+      </div>
+      <button class="btn-botanical btn-botanical-primary" onclick="openNewPassportModal()">
+        <i class="fas fa-plus"></i> Register New Plant
+      </button>
+    </div>
+
+    <div class="passport-grid" id="passportsContainer">
+      <!-- Dynamic passports injected -->
+    </div>
+  </main>
+
+  <div id="global-footer"></div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
+
+  <script>
+    const DEFAULT_PASSPORTS = [
+      {
+        id: 'pass_1',
+        plantName: 'Morning Jewel Rose',
+        nickname: 'Rosie',
+        dateAdded: '2026-03-15',
+        image: 'F1.jpg',
+        sunlight: 'Full Sun (6+ hrs)',
+        watering: 'Every 2 days',
+        healthStatus: 'Thriving & Budding',
+        notes: 'Fed with Bio-DAP last Tuesday. Pruned outer stems.'
+      },
+      {
+        id: 'pass_2',
+        plantName: 'Brazilian Wood Hydroponic',
+        nickname: 'Woody',
+        dateAdded: '2026-04-01',
+        image: 'F6.jpg',
+        sunlight: 'Bright Indirect',
+        watering: 'Submerged Water Tray',
+        healthStatus: 'Lush Emerald Sprouts',
+        notes: 'Placed on living room desk. Water changed weekly.'
+      }
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      Store.renderHeader('care');
+      Store.renderFooter();
+
+      // Check if URL has params to add plant from order
+      const params = new URLSearchParams(window.location.search);
+      const addName = params.get('addName');
+      const addImg = params.get('addImage');
+      if (addName) {
+        addPassportDirect(addName, addImg);
+      } else {
+        renderPassports();
+      }
+    });
+
+    function getPassports() {
+      return JSON.parse(localStorage.getItem('gg_passports') || JSON.stringify(DEFAULT_PASSPORTS));
+    }
+
+    function renderPassports() {
+      const list = getPassports();
+      const container = document.getElementById('passportsContainer');
+
+      container.innerHTML = list.map(p => `
+        <div class="passport-card">
+          <div class="passport-header-strip">
+            <div>
+              <span style="font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase; color: var(--brass-400);">BOTANICAL PASSPORT</span>
+              <div style="font-family: var(--font-serif); font-size: 1.15rem; font-weight: 700;">${p.nickname || p.plantName}</div>
+            </div>
+            <span class="attr-tag" style="background: rgba(255,255,255,0.15); color: #fff;">Active</span>
+          </div>
+
+          <div style="padding: 20px;">
+            <div style="display: flex; gap: 16px; margin-bottom: 16px;">
+              <img src="${p.image}" alt="${p.plantName}" style="width: 100px; height: 100px; border-radius: var(--radius-md); object-fit: cover;" onerror="this.src='garden.jpg'">
+              <div style="flex: 1;">
+                <strong style="color: var(--forest-900); font-size: 1.05rem; display: block;">${p.plantName}</strong>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Adopted on: ${p.dateAdded}</div>
+                <div style="font-size: 0.82rem; color: #16a34a; font-weight: 700; margin-top: 6px;">
+                  <i class="fas fa-heartbeat"></i> ${p.healthStatus || 'Healthy'}
+                </div>
+              </div>
+            </div>
+
+            <div style="background: var(--ivory-100); border-radius: var(--radius-md); padding: 12px; margin-bottom: 16px; font-size: 0.85rem;">
+              <div><strong>☀️ Sunlight:</strong> ${p.sunlight}</div>
+              <div style="margin-top: 4px;"><strong>💧 Watering:</strong> ${p.watering}</div>
+              <div style="margin-top: 6px; font-style: italic; color: var(--text-secondary);">${p.notes || ''}</div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 14px;">
+              <img src="qr.png" alt="QR tag" class="passport-qr-code" onerror="this.src='icon-512.png'">
+              <div style="text-align: right;">
+                <a href="ai-doctor.html" class="btn-botanical btn-botanical-secondary" style="font-size: 0.78rem; padding: 6px 12px;">
+                  <i class="fas fa-stethoscope"></i> Checkup
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function addPassportDirect(name, img) {
+      const list = getPassports();
+      list.unshift({
+        id: 'pass_' + Date.now(),
+        plantName: name,
+        nickname: name.split(' ')[0],
+        dateAdded: new Date().toISOString().split('T')[0],
+        image: img || 'garden.jpg',
+        sunlight: 'Full / Partial Sun',
+        watering: 'Every 2 days',
+        healthStatus: 'New Adoption',
+        notes: 'Purchased from Green Garden nursery.'
+      });
+      localStorage.setItem('gg_passports', JSON.stringify(list));
+      Store.showToast(`🌿 Plant Passport registered for "${name}"!`);
+      renderPassports();
+    }
+
+    function openNewPassportModal() {
+      const name = prompt("Enter specimen / species name (e.g. Hibiscus Rosa):");
+      if (!name) return;
+      const nick = prompt("Enter a nickname for your plant (e.g. Bella):", name.split(' ')[0]);
+      addPassportDirect(name, 'garden.jpg');
+    }
+  </script>
+</body>
+</html>

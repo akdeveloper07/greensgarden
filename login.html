@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Green Garden Botanical Haven</title>
+  <link rel="icon" type="image/png" href="icon-512.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
+
+  <style>
+    body {
+      background: linear-gradient(135deg, rgba(15, 40, 28, 0.85), rgba(20, 54, 38, 0.9)), url('garden.jpg');
+      background-size: cover;
+      background-position: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .auth-wrapper {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .auth-card {
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(16px);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: var(--shadow-float);
+      max-width: 460px;
+      width: 100%;
+      padding: 44px 36px;
+      animation: fadeInScale 0.4s ease;
+    }
+
+    @keyframes fadeInScale {
+      from { transform: scale(0.96); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--forest-900);
+      margin-bottom: 6px;
+      font-family: var(--font-display);
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap i.prefix-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 13px 44px 13px 44px;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      font-family: var(--font-sans);
+      background: var(--ivory-50);
+      outline: none;
+      transition: var(--transition-fast);
+    }
+
+    .form-input:focus {
+      background: #ffffff;
+      border-color: var(--sage-400);
+      box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.2);
+    }
+
+    .toggle-pass-btn {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .demo-admin-badge {
+      background: var(--ivory-100);
+      border: 1px dashed var(--brass-500);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      margin-top: 24px;
+      text-align: center;
+      font-size: 0.82rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="global-header"></div>
+
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div style="text-align: center; margin-bottom: 28px;">
+        <div class="brand-icon-wrap" style="margin: 0 auto 14px; width: 56px; height: 56px; font-size: 1.8rem; background: var(--forest-800);">🌿</div>
+        <h2 style="font-size: 1.8rem; margin-bottom: 6px;">Welcome Back</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Sign in to manage your garden, orders & rewards</p>
+      </div>
+
+      <div id="authAlert" style="display: none; padding: 12px 16px; border-radius: var(--radius-sm); margin-bottom: 20px; font-size: 0.88rem;"></div>
+
+      <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <div class="input-wrap">
+            <i class="fas fa-envelope prefix-icon"></i>
+            <input type="email" id="loginEmail" class="form-input" placeholder="e.g. akash@example.com" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label class="form-label" style="margin-bottom: 0;">Password</label>
+            <a href="#" onclick="openForgotModal(event)" style="font-size: 0.8rem; color: var(--sage-500); font-weight: 600;">Forgot Password?</a>
+          </div>
+          <div class="input-wrap">
+            <i class="fas fa-lock prefix-icon"></i>
+            <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
+            <button type="button" class="toggle-pass-btn" onclick="togglePassVisibility('loginPassword', this)">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="loginSubmitBtn" class="btn-botanical btn-botanical-primary" style="width: 100%; padding: 14px; margin-top: 10px;">
+          <span>Sign In to Green Garden</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </form>
+
+      <div style="text-align: center; margin-top: 24px; font-size: 0.9rem; color: var(--text-secondary);">
+        New to Green Garden? <a href="signup.html" style="color: var(--forest-700); font-weight: 700; text-decoration: underline;">Create Account</a>
+      </div>
+
+      <!-- Quick Admin Login helper for pairing / demo evaluation -->
+      <div class="demo-admin-badge">
+        <strong style="color: var(--brass-600);"><i class="fas fa-shield-alt"></i> Fast Admin Login (Testing)</strong>
+        <div style="color: var(--text-secondary); margin-top: 4px;">Click to auto-fill Administrator credentials:</div>
+        <button type="button" onclick="fillAdminCredentials()" style="margin-top: 8px; padding: 6px 14px; border: 1px solid var(--brass-500); border-radius: 20px; background: #fff; color: var(--brass-600); font-size: 0.78rem; font-weight: 700; cursor: pointer;">
+          Fill: admin@greengarden.com
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgotModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(6px); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
+    <div style="background: #fff; border-radius: 20px; max-width: 400px; width: 100%; padding: 32px; box-shadow: var(--shadow-float); text-align: center;">
+      <h3 style="margin-bottom: 8px;">Reset Password</h3>
+      <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 20px;">Enter your registered email address to receive a secure password reset link.</p>
+      
+      <input type="email" id="resetEmail" class="form-input" placeholder="Your account email" style="margin-bottom: 16px;">
+      
+      <div style="display: flex; gap: 10px;">
+        <button onclick="closeForgotModal()" style="flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 30px; background: #f5f5f5; cursor: pointer;">Cancel</button>
+        <button onclick="handleForgotSubmit()" class="btn-botanical btn-botanical-primary" style="flex: 1.5; padding: 12px;">Send Link</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="global-footer"></div>
+
+  <!-- Firebase Compat Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      Store.renderHeader('login');
+      Store.renderFooter();
+
+      // If already logged in, redirect
+      const user = AuthService.getCurrentUser();
+      if (user) {
+        if (user.role === 'admin') window.location.href = 'admin.html';
+        else window.location.href = 'index.html';
+      }
+    });
+
+    function togglePassVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fas fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fas fa-eye';
+      }
+    }
+
+    function fillAdminCredentials() {
+      document.getElementById('loginEmail').value = 'admin@greengarden.com';
+      document.getElementById('loginPassword').value = 'admin123';
+      Store.showToast("Admin credentials populated!");
+    }
+
+    async function handleLoginSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const btn = document.getElementById('loginSubmitBtn');
+      const alertBox = document.getElementById('authAlert');
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+      alertBox.style.display = 'none';
+
+      const res = await AuthService.login(email, password);
+
+      if (res.success) {
+        Store.showToast("Welcome back, " + res.user.name + "!");
+        setTimeout(() => {
+          if (res.user.role === 'admin') {
+            window.location.href = 'admin.html';
+          } else {
+            const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || 'index.html';
+            window.location.href = redirectUrl;
+          }
+        }, 600);
+      } else {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Sign In to Green Garden</span><i class="fas fa-arrow-right"></i>';
+        alertBox.style.display = 'block';
+        alertBox.style.background = '#ffebee';
+        alertBox.style.color = '#c62828';
+        alertBox.textContent = res.error || "Login failed. Please check your credentials.";
+      }
+    }
+
+    function openForgotModal(e) {
+      e.preventDefault();
+      document.getElementById('forgotModal').style.display = 'flex';
+    }
+
+    function closeForgotModal() {
+      document.getElementById('forgotModal').style.display = 'none';
+    }
+
+    async function handleForgotSubmit() {
+      const email = document.getElementById('resetEmail').value.trim();
+      if (!email) {
+        alert("Please enter your email");
+        return;
+      }
+      const res = await AuthService.resetPassword(email);
+      closeForgotModal();
+      Store.showToast(res.message);
+    }
+  </script>
+</body>
+</html>

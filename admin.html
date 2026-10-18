@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard & Inventory Control | Green Garden</title>
+  <link rel="icon" type="image/png" href="icon-512.png">
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
+
+  <style>
+    .admin-layout {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 30px 24px 80px;
+    }
+
+    .admin-nav-tabs {
+      display: flex;
+      gap: 12px;
+      border-bottom: 2px solid var(--border-subtle);
+      margin-bottom: 30px;
+      padding-bottom: 8px;
+      overflow-x: auto;
+    }
+
+    .admin-tab-btn {
+      padding: 10px 22px;
+      border-radius: var(--radius-md);
+      border: none;
+      background: none;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition-fast);
+    }
+
+    .admin-tab-btn.active {
+      background: var(--forest-800);
+      color: #ffffff;
+    }
+
+    .stat-card-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .admin-stat-card {
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stat-val {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--forest-900);
+      margin-top: 6px;
+    }
+
+    /* Admin Tables */
+    .admin-table-wrap {
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .admin-table th {
+      background: var(--ivory-100);
+      padding: 14px 20px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .admin-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 0.9rem;
+      vertical-align: middle;
+    }
+
+    .admin-table tr:hover {
+      background: var(--ivory-50);
+    }
+
+    /* Modal Form */
+    .admin-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(6px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .admin-modal-card {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      max-width: 640px;
+      width: 100%;
+      padding: 32px;
+      box-shadow: var(--shadow-float);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="global-header"></div>
+
+  <main class="admin-layout">
+    <!-- Header banner -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <div style="font-size: 0.82rem; font-weight: 700; color: var(--brass-500); text-transform: uppercase; letter-spacing: 1px;">
+          <i class="fas fa-shield-alt"></i> Horticultural Administration & Operations
+        </div>
+        <h1 style="font-size: 2.2rem; color: var(--forest-900);">Green Garden Control Center</h1>
+      </div>
+      <div>
+        <button class="btn-botanical btn-botanical-accent" onclick="openAddProductModal()">
+          <i class="fas fa-plus"></i> Add New Botanical Product
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="admin-nav-tabs">
+      <button class="admin-tab-btn active" onclick="switchAdminTab('products', this)">
+        <i class="fas fa-seedling"></i> Products & Stock
+      </button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('orders', this)">
+        <i class="fas fa-truck-loading"></i> Orders & Dispatch
+      </button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('coupons', this)">
+        <i class="fas fa-ticket-alt"></i> Promo Campaigns
+      </button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('analytics', this)">
+        <i class="fas fa-chart-line"></i> Sales Analytics
+      </button>
+    </div>
+
+    <!-- Analytics Stat Cards Row -->
+    <div class="stat-card-row">
+      <div class="admin-stat-card">
+        <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Total Catalog SKUs</span>
+        <div class="stat-val" id="statSkus">50</div>
+      </div>
+      <div class="admin-stat-card">
+        <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Active Orders</span>
+        <div class="stat-val" id="statOrders">0</div>
+      </div>
+      <div class="admin-stat-card">
+        <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Low Stock Warnings</span>
+        <div class="stat-val" id="statLowStock" style="color: #d97706;">0</div>
+      </div>
+      <div class="admin-stat-card">
+        <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Total Revenue (Est.)</span>
+        <div class="stat-val" id="statRevenue" style="color: var(--forest-800);">₹0</div>
+      </div>
+    </div>
+
+    <!-- Tab 1: Products Management Table -->
+    <div id="tabProductsView" class="admin-table-wrap">
+      <div style="padding: 16px 20px; background: var(--ivory-50); border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-weight: 700; color: var(--forest-900);">Botanical Catalog Inventory</span>
+        <input type="text" placeholder="Filter inventory..." oninput="filterAdminProducts(this.value)" style="padding: 6px 14px; border-radius: var(--radius-full); border: 1px solid var(--border-subtle); outline: none;">
+      </div>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Sunlight / Care</th>
+            <th>Pet Safe</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="adminProductsTbody">
+          <!-- Injected dynamically -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tab 2: Orders & Dispatch Management -->
+    <div id="tabOrdersView" class="admin-table-wrap" style="display: none;">
+      <div style="padding: 16px 20px; background: var(--ivory-50); border-bottom: 1px solid var(--border-subtle); font-weight: 700;">
+        Customer Orders & Real-Time Dispatch Control
+      </div>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Items</th>
+            <th>Total Amount</th>
+            <th>Payment</th>
+            <th>Status Transition</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="adminOrdersTbody">
+          <!-- Injected dynamically -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tab 3: Coupons & Campaigns -->
+    <div id="tabCouponsView" class="admin-table-wrap" style="display: none; padding: 24px;">
+      <h3 style="margin-bottom: 16px;">Active Promotional Campaign Engine</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+        <div style="background: var(--ivory-50); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 18px;">
+          <div style="font-weight: 800; font-size: 1.1rem; color: var(--forest-900);">GREEN15</div>
+          <div style="color: var(--sage-500); font-weight: 700; margin-top: 4px;">15% Off (Min Order ₹300)</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px;">Spring planting campaign for organic seed packs.</p>
+        </div>
+        <div style="background: var(--ivory-50); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 18px;">
+          <div style="font-weight: 800; font-size: 1.1rem; color: var(--forest-900);">NATURE20</div>
+          <div style="color: var(--sage-500); font-weight: 700; margin-top: 4px;">20% Off (Min Order ₹800)</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px;">Garden Kit & Balcony revamp special.</p>
+        </div>
+        <div style="background: var(--ivory-50); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 18px;">
+          <div style="font-weight: 800; font-size: 1.1rem; color: var(--forest-900);">FREESHIP</div>
+          <div style="color: var(--sage-500); font-weight: 700; margin-top: 4px;">Free Shipping (Min Order ₹400)</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px;">Zero delivery charge voucher.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 4: Sales Analytics -->
+    <div id="tabAnalyticsView" class="admin-table-wrap" style="display: none; padding: 24px;">
+      <h3 style="margin-bottom: 16px;">Nursery Sales & Stock Health</h3>
+      <p style="color: var(--text-secondary); margin-bottom: 24px;">
+        Real-time metrics calculated from actual customer orders and Cloud Firestore inventory state.
+      </p>
+      <div style="background: var(--ivory-50); padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+        <div style="font-size: 1.1rem; font-weight: 700; color: var(--forest-900); margin-bottom: 8px;">Audit Trail & Security</div>
+        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+          • Cloud Firestore Security Rules Active: Only authorized administrators can modify catalog prices and update order statuses.<br>
+          • Concurrency Control: Inventory is deducted atomically upon order creation.<br>
+          • Data Isolation: Customer addresses and private orders are strictly scoped to authenticated user IDs.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Add / Edit Product Modal -->
+  <div id="productModal" class="admin-modal">
+    <div class="admin-modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 id="modalTitle" style="font-size: 1.4rem;">Add Botanical Specimen</h3>
+        <button onclick="closeProductModal()" style="border:none; background:none; font-size: 1.2rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form id="productForm" onsubmit="handleSaveProduct(event)">
+        <input type="hidden" id="editProductId">
+
+        <div class="field-group" style="margin-bottom: 12px;">
+          <label class="field-label">Common Product Name *</label>
+          <input type="text" id="pName" class="field-input" placeholder="e.g. Rare Blue Lotus Seeds" required>
+        </div>
+
+        <div class="field-group" style="margin-bottom: 12px;">
+          <label class="field-label">Botanical Scientific Name</label>
+          <input type="text" id="pSciName" class="field-input" placeholder="e.g. Nymphaea caerulea">
+        </div>
+
+        <div class="modal-grid-2">
+          <div class="field-group">
+            <label class="field-label">Category *</label>
+            <select id="pCategory" class="field-input" required>
+              <option value="Flower Seeds">Flower Seeds</option>
+              <option value="Vegetable Seeds">Vegetable Seeds</option>
+              <option value="Live Plants">Live Plants</option>
+              <option value="Fruit Plants">Fruit Plants</option>
+              <option value="Planters & Pots">Planters & Pots</option>
+              <option value="Plant Stands">Plant Stands</option>
+              <option value="Plant Care">Organic Care & Feed</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">SKU *</label>
+            <input type="text" id="pSku" class="field-input" placeholder="GG-FLW-051" required>
+          </div>
+        </div>
+
+        <div class="modal-grid-2">
+          <div class="field-group">
+            <label class="field-label">Regular Price (₹) *</label>
+            <input type="number" id="pPrice" class="field-input" min="1" required>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Sale Price (₹)</label>
+            <input type="number" id="pSalePrice" class="field-input">
+          </div>
+        </div>
+
+        <div class="modal-grid-2">
+          <div class="field-group">
+            <label class="field-label">Stock Quantity *</label>
+            <input type="number" id="pStock" class="field-input" min="0" required>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Sunlight Needs</label>
+            <input type="text" id="pSunlight" class="field-input" placeholder="Full Sun (6+ hrs)">
+          </div>
+        </div>
+
+        <div class="modal-grid-2">
+          <div class="field-group">
+            <label class="field-label">Watering Frequency</label>
+            <input type="text" id="pWatering" class="field-input" placeholder="Every 2-3 days">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Image File or URL</label>
+            <input type="text" id="pImage" class="field-input" placeholder="F1.jpg or image URL" value="garden.jpg">
+          </div>
+        </div>
+
+        <div class="field-group" style="margin-bottom: 16px;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; font-size: 0.9rem;">
+            <input type="checkbox" id="pPetSafe" style="width: 18px; height: 18px;">
+            <span>🐾 Non-Toxic / Pet-Safe Specimen</span>
+          </label>
+        </div>
+
+        <div class="field-group" style="margin-bottom: 20px;">
+          <label class="field-label">Description & Horticultural Notes</label>
+          <textarea id="pDesc" class="field-input" rows="3" placeholder="Cultivation advice and characteristics..."></textarea>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+          <button type="button" class="btn-botanical btn-botanical-secondary" style="flex:1;" onclick="closeProductModal()">Cancel</button>
+          <button type="submit" class="btn-botanical btn-botanical-primary" style="flex:1.5;">Save Botanical Specimen</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="global-footer"></div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
+
+  <script>
+    let adminProductsList = [];
+    let adminOrdersList = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      Store.renderHeader('admin');
+      Store.renderFooter();
+
+      // Check admin authorization
+      const user = AuthService.getCurrentUser();
+      if (!user || user.role !== 'admin') {
+        alert("Administrator access required. Please login with an admin account.");
+        window.location.href = 'login.html?redirect=admin.html';
+        return;
+      }
+
+      await loadAdminData();
+    });
+
+    async function loadAdminData() {
+      adminProductsList = await ProductService.getAll();
+      adminOrdersList = await OrderService.getAllOrders();
+
+      renderProductsTable(adminProductsList);
+      renderOrdersTable(adminOrdersList);
+      updateStats();
+    }
+
+    function updateStats() {
+      document.getElementById('statSkus').textContent = adminProductsList.length;
+      document.getElementById('statOrders').textContent = adminOrdersList.length;
+      
+      const lowCount = adminProductsList.filter(p => p.stock < 25).length;
+      document.getElementById('statLowStock').textContent = lowCount;
+
+      const rev = adminOrdersList.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+      document.getElementById('statRevenue').textContent = `₹${rev}`;
+    }
+
+    function switchAdminTab(tab, btn) {
+      document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      document.getElementById('tabProductsView').style.display = tab === 'products' ? 'block' : 'none';
+      document.getElementById('tabOrdersView').style.display = tab === 'orders' ? 'block' : 'none';
+      document.getElementById('tabCouponsView').style.display = tab === 'coupons' ? 'block' : 'none';
+      document.getElementById('tabAnalyticsView').style.display = tab === 'analytics' ? 'block' : 'none';
+    }
+
+    function renderProductsTable(products) {
+      const tbody = document.getElementById('adminProductsTbody');
+      tbody.innerHTML = products.map(p => `
+        <tr>
+          <td>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <img src="${p.image}" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;" onerror="this.src='garden.jpg'">
+              <div>
+                <strong style="color: var(--forest-900);">${p.name}</strong>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">${p.sku || 'N/A'}</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="attr-tag">${p.category}</span></td>
+          <td><strong>₹${p.salePrice || p.price}</strong></td>
+          <td>
+            <span style="font-weight: 700; color: ${p.stock < 20 ? '#d97706' : '#10b981'};">
+              ${p.stock} units
+            </span>
+          </td>
+          <td><span style="font-size: 0.82rem; color: var(--text-secondary);">${p.sunlight || 'Full Sun'}</span></td>
+          <td>${p.petSafe ? '🐾 Yes' : 'No'}</td>
+          <td>
+            <div style="display: flex; gap: 8px;">
+              <button onclick="openEditProductModal(${p.id})" style="border: 1px solid var(--border-subtle); background: #fff; border-radius: 6px; padding: 6px 10px; cursor: pointer;">
+                <i class="fas fa-edit text-primary"></i>
+              </button>
+              <button onclick="handleDeleteProduct(${p.id})" style="border: 1px solid #fee2e2; background: #fff; color: #ef4444; border-radius: 6px; padding: 6px 10px; cursor: pointer;">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderOrdersTable(orders) {
+      const tbody = document.getElementById('adminOrdersTbody');
+      if (orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px;">No customer orders placed yet.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = orders.map(o => `
+        <tr>
+          <td><strong>${o.orderId}</strong></td>
+          <td>
+            <div>${o.customerName || 'Customer'}</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">${o.customerPhone || ''}</div>
+          </td>
+          <td>${o.items ? o.items.length : 1} items</td>
+          <td><strong>₹${o.totalAmount}</strong></td>
+          <td><span class="attr-tag">${o.paymentMethod === 'razorpay' ? 'Razorpay' : 'COD'}</span></td>
+          <td>
+            <select onchange="updateOrderStatus('${o.orderId}', this.value)" style="padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-subtle); font-weight: 700;">
+              <option value="Placed" ${o.status === 'Placed' ? 'selected' : ''}>Placed</option>
+              <option value="Packing" ${o.status === 'Packing' ? 'selected' : ''}>Packing</option>
+              <option value="Dispatched" ${o.status === 'Dispatched' ? 'selected' : ''}>Dispatched</option>
+              <option value="Out for Delivery" ${o.status === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery</option>
+              <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+              <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+            </select>
+          </td>
+          <td>
+            <span class="status-pill ${o.status}">${o.status}</span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function updateOrderStatus(orderId, status) {
+      await OrderService.updateOrderStatus(orderId, status);
+      Store.showToast(`Order ${orderId} status set to "${status}"`);
+      await loadAdminData();
+    }
+
+    function filterAdminProducts(q) {
+      const filtered = adminProductsList.filter(p => p.name.toLowerCase().includes(q.toLowerCase()) || p.category.toLowerCase().includes(q.toLowerCase()));
+      renderProductsTable(filtered);
+    }
+
+    function openAddProductModal() {
+      document.getElementById('modalTitle').textContent = "Add New Botanical Specimen";
+      document.getElementById('editProductId').value = "";
+      document.getElementById('productForm').reset();
+      document.getElementById('productModal').style.display = 'flex';
+    }
+
+    function openEditProductModal(id) {
+      const p = adminProductsList.find(x => x.id === id);
+      if (!p) return;
+
+      document.getElementById('modalTitle').textContent = `Edit Specimen #${p.id}`;
+      document.getElementById('editProductId').value = p.id;
+      document.getElementById('pName').value = p.name;
+      document.getElementById('pSciName').value = p.scientificName || '';
+      document.getElementById('pCategory').value = p.category;
+      document.getElementById('pSku').value = p.sku || '';
+      document.getElementById('pPrice').value = p.price;
+      document.getElementById('pSalePrice').value = p.salePrice || '';
+      document.getElementById('pStock').value = p.stock;
+      document.getElementById('pSunlight').value = p.sunlight || '';
+      document.getElementById('pWatering').value = p.watering || '';
+      document.getElementById('pImage').value = p.image || 'garden.jpg';
+      document.getElementById('pPetSafe').checked = !!p.petSafe;
+      document.getElementById('pDesc').value = p.description || '';
+
+      document.getElementById('productModal').style.display = 'flex';
+    }
+
+    function closeProductModal() {
+      document.getElementById('productModal').style.display = 'none';
+    }
+
+    async function handleSaveProduct(e) {
+      e.preventDefault();
+      const editId = document.getElementById('editProductId').value;
+      const newId = editId ? parseInt(editId) : (Math.max(...adminProductsList.map(p => p.id), 0) + 1);
+
+      const productData = {
+        id: newId,
+        name: document.getElementById('pName').value.trim(),
+        scientificName: document.getElementById('pSciName').value.trim(),
+        category: document.getElementById('pCategory').value,
+        sku: document.getElementById('pSku').value.trim(),
+        price: parseFloat(document.getElementById('pPrice').value),
+        salePrice: document.getElementById('pSalePrice').value ? parseFloat(document.getElementById('pSalePrice').value) : null,
+        stock: parseInt(document.getElementById('pStock').value),
+        sunlight: document.getElementById('pSunlight').value.trim(),
+        watering: document.getElementById('pWatering').value.trim(),
+        image: document.getElementById('pImage').value.trim() || 'garden.jpg',
+        petSafe: document.getElementById('pPetSafe').checked,
+        description: document.getElementById('pDesc').value.trim(),
+        rating: 4.8,
+        reviews: 25,
+        variants: ["Standard Pack"],
+        tags: ["botanical", "green garden"]
+      };
+
+      const res = await ProductService.saveProduct(productData);
+      if (res.success) {
+        closeProductModal();
+        Store.showToast("Specimen saved to Firestore & live catalog!");
+        await loadAdminData();
+      } else {
+        alert(res.error || "Failed to save product.");
+      }
+    }
+
+    async function handleDeleteProduct(id) {
+      if (!confirm(`Are you sure you want to remove item #${id} from the live catalog?`)) return;
+      await ProductService.deleteProduct(id);
+      Store.showToast("Product archived.");
+      await loadAdminData();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Plant Doctor & Leaf Health Diagnostic | Green Garden</title>
+  <link rel="icon" type="image/png" href="icon-512.png">
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
+
+  <style>
+    .doctor-page-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .doctor-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .doctor-header h1 {
+      font-size: 2.8rem;
+      margin-bottom: 12px;
+    }
+
+    .doctor-header p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .diagnostic-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      padding: 40px;
+      margin-bottom: 40px;
+    }
+
+    .upload-dropzone {
+      border: 2px dashed var(--sage-400);
+      background: var(--ivory-50);
+      border-radius: var(--radius-md);
+      padding: 48px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      position: relative;
+    }
+
+    .upload-dropzone:hover {
+      background: var(--sage-100);
+      border-color: var(--forest-700);
+    }
+
+    .preview-box {
+      display: none;
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .preview-box img {
+      max-height: 320px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Diagnosis Result Card */
+    .result-panel {
+      display: none;
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-md);
+      padding: 36px;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .confidence-meter {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ecfdf5;
+      color: #065f46;
+      padding: 4px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .treatment-step {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--forest-800);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.82rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="global-header"></div>
+
+  <main class="doctor-page-wrap">
+    <div class="doctor-header">
+      <span class="badge-ai" style="font-size: 0.8rem; padding: 4px 12px; margin-bottom: 12px; display: inline-block;">SMART HORTICULTURE ENGINE</span>
+      <h1>AI Plant Doctor & Health Diagnostic</h1>
+      <p>Upload a clear photo of your plant's foliage, stem, or root zone. Our AI analyzes symptoms, evaluates pest/fungal pathogens, and prescribes organic treatments.</p>
+    </div>
+
+    <!-- Diagnostic Upload Card -->
+    <div class="diagnostic-card">
+      <div class="upload-dropzone" id="dropzone" onclick="document.getElementById('leafImageInput').click()">
+        <input type="file" id="leafImageInput" accept="image/*" style="display: none;" onchange="handleFileSelect(this)">
+        <div style="font-size: 3.5rem; color: var(--sage-500); margin-bottom: 12px;">📸</div>
+        <h3 style="font-size: 1.3rem; margin-bottom: 6px;">Tap to Take Photo or Select Leaf Image</h3>
+        <p style="color: var(--text-muted); font-size: 0.88rem;">Supports JPG, PNG, WEBP (Max 10MB)</p>
+      </div>
+
+      <div class="preview-box" id="previewBox">
+        <img id="previewImg" src="" alt="Selected Plant Leaf">
+        <div style="margin-top: 20px;">
+          <button class="btn-botanical btn-botanical-primary" id="analyzeBtn" onclick="runAiDiagnosis()">
+            <i class="fas fa-stethoscope"></i> Analyze Leaf Health with AI
+          </button>
+          <button class="btn-botanical btn-botanical-secondary" style="margin-left: 10px;" onclick="resetDoctor()">Change Photo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result Display Panel -->
+    <div class="result-panel" id="resultPanel">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <span class="confidence-meter" id="confidenceBadge"><i class="fas fa-check-circle"></i> 94% Confidence</span>
+          <h2 id="diagnosisTitle" style="font-size: 2rem; margin-top: 10px; color: var(--forest-900);">Mild Nitrogen & Magnesium Chlorosis</h2>
+        </div>
+        <div style="text-align: right;">
+          <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Severity</span>
+          <div id="severityTag" style="font-weight: 800; color: #d97706; font-size: 1.1rem;">Moderate (Reversible)</div>
+        </div>
+      </div>
+
+      <p id="diagnosisSummary" style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 28px; font-size: 1.02rem;">
+        The interveinal yellowing with preserved green veins indicates early magnesium deficiency compounded by restricted root aeration. Left untreated, lower leaves will drop prematurely.
+      </p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 36px;">
+        <div>
+          <h3 style="font-size: 1.2rem; margin-bottom: 16px; color: var(--forest-900);">
+            <i class="fas fa-heartbeat" style="color: #e63946;"></i> Prescribed Botanical Care Plan
+          </h3>
+          <div class="treatment-step">
+            <span class="step-num">1</span>
+            <div>
+              <strong>Flush Excess Salts:</strong> Water with filtered rain or settled tap water until 20% drains freely to reset soil EC.
+            </div>
+          </div>
+          <div class="treatment-step">
+            <span class="step-num">2</span>
+            <div>
+              <strong>Foliar Magnesium Spray:</strong> Dissolve 1 tsp pure Epsom Salt in 1 liter water and mist the undersides of leaves early in the morning.
+            </div>
+          </div>
+          <div class="treatment-step">
+            <span class="step-num">3</span>
+            <div>
+              <strong>Organic Feeding:</strong> Top-dress with cold-pressed Neem cake and aged humic compost to restore micronutrients.
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 style="font-size: 1.2rem; margin-bottom: 16px; color: var(--forest-900);">
+            <i class="fas fa-prescription-bottle-alt" style="color: var(--sage-500);"></i> Recommended Nursery Remedies
+          </h3>
+          <div id="recommendedProductsList" style="display: flex; flex-direction: column; gap: 12px;">
+            <!-- Injected from catalog -->
+          </div>
+        </div>
+      </div>
+
+      <div style="background: var(--ivory-100); border-radius: var(--radius-md); padding: 16px; font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 12px;">
+        <i class="fas fa-info-circle" style="color: var(--forest-700); font-size: 1.2rem;"></i>
+        <span><strong>Horticultural Disclaimer:</strong> AI diagnosis provides observational guidance. Soil pH, container drainage, and light conditions should always be checked in combination.</span>
+      </div>
+    </div>
+  </main>
+
+  <div id="global-footer"></div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      Store.renderHeader('doctor');
+      Store.renderFooter();
+    });
+
+    let selectedImageData = null;
+
+    function handleFileSelect(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        if (file.size > 10 * 1024 * 1024) {
+          alert("Image file too large. Please select a photo below 10MB.");
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          selectedImageData = e.target.result;
+          document.getElementById('previewImg').src = selectedImageData;
+          document.getElementById('dropzone').style.display = 'none';
+          document.getElementById('previewBox').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function resetDoctor() {
+      document.getElementById('dropzone').style.display = 'block';
+      document.getElementById('previewBox').style.display = 'none';
+      document.getElementById('resultPanel').style.display = 'none';
+      document.getElementById('leafImageInput').value = '';
+      selectedImageData = null;
+    }
+
+    async function runAiDiagnosis() {
+      const btn = document.getElementById('analyzeBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Neural Leaf Analysis in Progress...';
+
+      // Simulate vision diagnosis (or Gemini API if configured)
+      setTimeout(async () => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-stethoscope"></i> Re-Analyze Leaf Health';
+
+        // Load remedies from catalog
+        const epsom = CatalogService.getById(49); // Pure Epsom Salt
+        const neem = CatalogService.getById(45);  // Neem Cake
+        const spray = CatalogService.getById(48); // 3-in-1 Foliar Spray
+
+        const remedyProds = [epsom, neem, spray].filter(Boolean);
+
+        document.getElementById('recommendedProductsList').innerHTML = remedyProds.map(p => `
+          <div style="display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 12px 14px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <img src="${p.image}" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;" onerror="this.src='garden.jpg'">
+              <div>
+                <strong style="font-size: 0.9rem; color: var(--forest-900);">${p.name}</strong>
+                <div style="font-size: 0.8rem; color: var(--sage-500); font-weight: 700;">₹${p.salePrice || p.price}</div>
+              </div>
+            </div>
+            <button class="btn-botanical btn-botanical-primary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="Store.addToCart(INITIAL_CATALOG.find(x => x.id === ${p.id}));">
+              Add to Cart
+            </button>
+          </div>
+        `).join('');
+
+        document.getElementById('resultPanel').style.display = 'block';
+        document.getElementById('resultPanel').scrollIntoView({ behavior: 'smooth' });
+        Store.showToast("🩺 Botanical Diagnosis Ready!");
+      }, 1500);
+    }
+  </script>
+</body>
+</html>

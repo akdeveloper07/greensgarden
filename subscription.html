@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plant Subscription Club | Green Garden</title>
+  <link rel="icon" type="image/png" href="icon-512.png">
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
+
+  <style>
+    .sub-page-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .sub-hero {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .sub-plans-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+      align-items: stretch;
+    }
+
+    .sub-plan-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      padding: 36px 28px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: var(--transition-smooth);
+    }
+
+    .sub-plan-card.featured {
+      border: 2px solid var(--forest-700);
+      box-shadow: var(--shadow-lg);
+      transform: scale(1.02);
+    }
+
+    .plan-tag {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--brass-500);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 16px;
+      border-radius: var(--radius-full);
+    }
+
+    .plan-price-large {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: var(--forest-900);
+      line-height: 1;
+      margin: 16px 0 6px;
+    }
+
+    .plan-features-list {
+      list-style: none;
+      margin: 24px 0 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 0.95rem;
+    }
+
+    .plan-features-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .plan-features-list li i {
+      color: var(--sage-500);
+    }
+  </style>
+</head>
+<body>
+
+  <div id="global-header"></div>
+
+  <main class="sub-page-wrap">
+    <div class="sub-hero">
+      <span class="badge-new" style="margin-bottom: 10px; display: inline-block;">RECURRING BOTANICAL DISPATCH</span>
+      <h1 style="font-size: 3rem; margin-bottom: 10px;">The Green Garden Subscription Club</h1>
+      <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 650px; margin: 0 auto;">
+        Delight in hand-selected seasonal living plants, organic fertilizers, and rare heirloom seeds delivered to your door every month. Skip or cancel anytime with one click.
+      </p>
+    </div>
+
+    <div class="sub-plans-grid">
+      <!-- Plan 1 -->
+      <div class="sub-plan-card">
+        <h3 style="font-size: 1.4rem; color: var(--forest-900);">The Edible Micro-Farm</h3>
+        <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">For home chefs and fresh kitchen veggies.</p>
+        <div class="plan-price-large">₹499<span style="font-size: 1rem; color: var(--text-muted); font-weight: 400;">/month</span></div>
+
+        <ul class="plan-features-list">
+          <li><i class="fas fa-check-circle"></i> 4 Heirloom Organic Seed Packets</li>
+          <li><i class="fas fa-check-circle"></i> Expanding Coconut Coir Soil Pellets</li>
+          <li><i class="fas fa-check-circle"></i> Organic Humus Nutrition Booster</li>
+          <li><i class="fas fa-check-circle"></i> Free Express Delivery</li>
+        </ul>
+
+        <button class="btn-botanical btn-botanical-secondary" style="margin-top: auto;" onclick="joinSubscription('The Edible Micro-Farm', 499)">
+          Subscribe Now
+        </button>
+      </div>
+
+      <!-- Plan 2: Featured -->
+      <div class="sub-plan-card featured">
+        <span class="plan-tag">MOST POPULAR</span>
+        <h3 style="font-size: 1.4rem; color: var(--forest-900);">Urban Balcony Oasis</h3>
+        <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">Curated for modern apartments and balconies.</p>
+        <div class="plan-price-large">₹699<span style="font-size: 1rem; color: var(--text-muted); font-weight: 400;">/month</span></div>
+
+        <ul class="plan-features-list">
+          <li><i class="fas fa-check-circle"></i> 1 Premium Live Potted Plant (Nursery Grade)</li>
+          <li><i class="fas fa-check-circle"></i> 2 Rare Flower / Foliage Seed Packs</li>
+          <li><i class="fas fa-check-circle"></i> 3-in-1 Foliar Plant Vitamin Spray</li>
+          <li><i class="fas fa-check-circle"></i> Digital Plant Passport & Care Reminders</li>
+          <li><i class="fas fa-check-circle"></i> Priority 24/7 AI Doctor Access</li>
+        </ul>
+
+        <button class="btn-botanical btn-botanical-primary" style="margin-top: auto;" onclick="joinSubscription('Urban Balcony Oasis', 699)">
+          Join Botanical Club
+        </button>
+      </div>
+
+      <!-- Plan 3 -->
+      <div class="sub-plan-card">
+        <h3 style="font-size: 1.4rem; color: var(--forest-900);">Rare Cultivar Collector</h3>
+        <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">Exotic bonsai, aquatic lotus, and glazed ceramics.</p>
+        <div class="plan-price-large">₹1,299<span style="font-size: 1rem; color: var(--text-muted); font-weight: 400;">/month</span></div>
+
+        <ul class="plan-features-list">
+          <li><i class="fas fa-check-circle"></i> 2 Rare Collector Plants (Grafted / Bonsai)</li>
+          <li><i class="fas fa-check-circle"></i> Handcrafted Glazed Ceramic Planter</li>
+          <li><i class="fas fa-check-circle"></i> Pure Bio-DAP & Epsom Salts</li>
+          <li><i class="fas fa-check-circle"></i> 100 Bonus Green Points every renewal</li>
+        </ul>
+
+        <button class="btn-botanical btn-botanical-secondary" style="margin-top: auto;" onclick="joinSubscription('Rare Cultivar Collector', 1299)">
+          Subscribe Now
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <div id="global-footer"></div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      Store.renderHeader();
+      Store.renderFooter();
+    });
+
+    function joinSubscription(planName, price) {
+      const user = AuthService.getCurrentUser();
+      if (!user) {
+        alert("Please sign in or create an account to start your monthly plant subscription.");
+        window.location.href = 'login.html?redirect=subscription.html';
+        return;
+      }
+
+      // Add subscription item to cart for checkout
+      Store.addToCart({
+        id: 999,
+        name: `Plant Club: ${planName}`,
+        price: price,
+        salePrice: price,
+        image: 'F6.jpg',
+        category: 'Subscription'
+      }, 1, "Monthly Recurring Box");
+
+      Store.showToast(`🌿 Added "${planName}" subscription to your checkout!`);
+      setTimeout(() => {
+        window.location.href = 'buy.html';
+      }, 700);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Build Your Own Custom Garden Kit | Green Garden</title>
+  <link rel="icon" type="image/png" href="icon-512.png">
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
+
+  <style>
+    .kit-page-wrap {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .kit-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .step-section {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      padding: 28px;
+      margin-bottom: 28px;
+    }
+
+    .kit-options-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .kit-item-card {
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      cursor: pointer;
+      text-align: center;
+      transition: var(--transition-fast);
+      background: var(--ivory-50);
+    }
+
+    .kit-item-card:hover {
+      border-color: var(--sage-400);
+      transform: translateY(-2px);
+    }
+
+    .kit-item-card.selected {
+      border-color: var(--forest-800);
+      background: var(--ivory-100);
+      box-shadow: 0 0 0 3px rgba(20, 54, 38, 0.12);
+    }
+
+    .kit-item-card img {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      margin-bottom: 8px;
+    }
+
+    .bundle-summary-panel {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      padding: 28px;
+      position: sticky;
+      top: 100px;
+    }
+
+    @media (max-width: 900px) {
+      .kit-grid { grid-template-columns: 1fr; }
+      .bundle-summary-panel { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="global-header"></div>
+
+  <main class="kit-page-wrap">
+    <div style="margin-bottom: 30px;">
+      <span class="badge-new" style="margin-bottom: 10px; display: inline-block;">15% BUNDLE SAVINGS</span>
+      <h1 style="font-size: 2.6rem; margin-bottom: 6px;">Build Your Custom Garden Kit</h1>
+      <p style="color: var(--text-secondary); font-size: 1.05rem;">Combine your favorite live specimen or seeds with artisanal pots, organic potting soil, and plant feed.</p>
+    </div>
+
+    <div class="kit-grid">
+      <!-- Steps Column -->
+      <div>
+        <!-- Step 1: Plant -->
+        <div class="step-section">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="width: 28px; height: 28px; border-radius: 50%; background: var(--forest-800); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700;">1</span>
+            <h2 style="font-size: 1.3rem;">Choose Your Plant or Cultivar</h2>
+          </div>
+          <div class="kit-options-row" id="plantOptionsRow"></div>
+        </div>
+
+        <!-- Step 2: Planter -->
+        <div class="step-section">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="width: 28px; height: 28px; border-radius: 50%; background: var(--forest-800); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700;">2</span>
+            <h2 style="font-size: 1.3rem;">Select Artisanal Pot or Planter</h2>
+          </div>
+          <div class="kit-options-row" id="potOptionsRow"></div>
+        </div>
+
+        <!-- Step 3: Soil -->
+        <div class="step-section">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="width: 28px; height: 28px; border-radius: 50%; background: var(--forest-800); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700;">3</span>
+            <h2 style="font-size: 1.3rem;">Choose Premium Soil & Humus</h2>
+          </div>
+          <div class="kit-options-row" id="soilOptionsRow"></div>
+        </div>
+
+        <!-- Step 4: Feed & Tools -->
+        <div class="step-section">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="width: 28px; height: 28px; border-radius: 50%; background: var(--forest-800); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700;">4</span>
+            <h2 style="font-size: 1.3rem;">Select Plant Tonic or Root Booster</h2>
+          </div>
+          <div class="kit-options-row" id="feedOptionsRow"></div>
+        </div>
+      </div>
+
+      <!-- Right Column: Bundle Pricing & Kit Add -->
+      <div>
+        <div class="bundle-summary-panel">
+          <h3 style="font-size: 1.3rem; margin-bottom: 16px;">Your Custom Bundle</h3>
+
+          <div id="bundleItemsBreakdown" style="margin-bottom: 20px; font-size: 0.9rem;">
+            <!-- Components list -->
+          </div>
+
+          <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color: var(--text-secondary);">
+            <span>Regular Price</span>
+            <span id="kitRegPrice">₹0</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color: #2e7d32; font-weight: 700;">
+            <span>Kit Bundle Discount (15%)</span>
+            <span id="kitDisc">-₹0</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; font-size: 1.4rem; font-weight: 800; color: var(--forest-900); padding-top: 14px; border-top: 1px solid var(--border-subtle); margin-top: 14px;">
+            <span>Bundle Total</span>
+            <span id="kitFinalPrice">₹0</span>
+          </div>
+
+          <button class="btn-botanical btn-botanical-accent" style="width: 100%; padding: 14px; margin-top: 24px; font-size: 1.05rem;" onclick="addBundleToCart()">
+            <i class="fas fa-box"></i> Add Garden Kit to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="global-footer"></div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
+
+  <script>
+    const bundleSelection = {
+      plant: null,
+      pot: null,
+      soil: null,
+      feed: null
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      Store.renderHeader('kit');
+      Store.renderFooter();
+
+      loadKitChoices();
+    });
+
+    function loadKitChoices() {
+      // Step 1: Plants & Seeds
+      const plantItems = [
+        CatalogService.getById(1),  // Morning Jewel Rose
+        CatalogService.getById(6),  // Brazilian Wood
+        CatalogService.getById(41), // Red Rose Bush
+        CatalogService.getById(3)   // Bitter Gourd
+      ].filter(Boolean);
+
+      // Step 2: Pots
+      const potItems = [
+        CatalogService.getById(14), // Sapphire Ceramic
+        CatalogService.getById(15), // Pastel Plastic Set
+        CatalogService.getById(17)  // Geometric Crystal
+      ].filter(Boolean);
+
+      // Step 3: Soils
+      const soilItems = [
+        CatalogService.getById(18), // Organic Potting Mix
+        CatalogService.getById(42)  // Humus Manure
+      ].filter(Boolean);
+
+      // Step 4: Feeds & Boosters
+      const feedItems = [
+        CatalogService.getById(47), // Bio DAP
+        CatalogService.getById(48), // 3-in-1 Spray
+        CatalogService.getById(49)  // Epsom Salt
+      ].filter(Boolean);
+
+      renderOptionGroup('plantOptionsRow', plantItems, 'plant');
+      renderOptionGroup('potOptionsRow', potItems, 'pot');
+      renderOptionGroup('soilOptionsRow', soilItems, 'soil');
+      renderOptionGroup('feedOptionsRow', feedItems, 'feed');
+
+      // Select defaults
+      selectKitItem('plant', plantItems[0]);
+      selectKitItem('pot', potItems[0]);
+      selectKitItem('soil', soilItems[0]);
+      selectKitItem('feed', feedItems[0]);
+    }
+
+    function renderOptionGroup(containerId, items, type) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = items.map(item => `
+        <div class="kit-item-card" id="kit_${type}_${item.id}" onclick="selectKitItem('${type}', INITIAL_CATALOG.find(x => x.id === ${item.id}))">
+          <img src="${item.image}" onerror="this.src='garden.jpg'">
+          <div style="font-weight: 700; font-size: 0.88rem; color: var(--forest-900);">${item.name}</div>
+          <div style="color: var(--sage-500); font-weight: 700; margin-top: 4px;">₹${item.salePrice || item.price}</div>
+        </div>
+      `).join('');
+    }
+
+    function selectKitItem(type, item) {
+      bundleSelection[type] = item;
+      document.querySelectorAll(`[id^="kit_${type}_"]`).forEach(c => c.classList.remove('selected'));
+      const card = document.getElementById(`kit_${type}_${item.id}`);
+      if (card) card.classList.add('selected');
+      updateBundleSummary();
+    }
+
+    function updateBundleSummary() {
+      const selected = Object.values(bundleSelection).filter(Boolean);
+      const listContainer = document.getElementById('bundleItemsBreakdown');
+
+      listContainer.innerHTML = selected.map(item => `
+        <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f1f5f9;">
+          <span style="font-size: 0.85rem; color: var(--forest-900);">${item.name}</span>
+          <strong>₹${item.salePrice || item.price}</strong>
+        </div>
+      `).join('');
+
+      const rawTotal = selected.reduce((sum, i) => sum + (i.salePrice || i.price), 0);
+      const discount = Math.round(rawTotal * 0.15); // 15% bundle bonus
+      const bundlePrice = rawTotal - discount;
+
+      document.getElementById('kitRegPrice').textContent = `₹${rawTotal}`;
+      document.getElementById('kitDisc').textContent = `-₹${discount}`;
+      document.getElementById('kitFinalPrice').textContent = `₹${bundlePrice}`;
+    }
+
+    function addBundleToCart() {
+      const selected = Object.values(bundleSelection).filter(Boolean);
+      if (selected.length < 4) {
+        alert("Please pick one item from all 4 categories to complete your garden kit.");
+        return;
+      }
+
+      // Add each item to cart
+      selected.forEach(item => {
+        Store.addToCart(item, 1, "Garden Kit Bundle Component");
+      });
+
+      Store.showToast("🎉 Custom Garden Kit Added to Cart with 15% discount!");
+      setTimeout(() => {
+        window.location.href = 'cart.html';
+      }, 700);
+    }
+  </script>
+</body>
+</html>

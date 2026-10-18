@@ -1,1022 +1,509 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Green Garden Checkout</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #eef2f7 100%);
-            min-height: 100vh;
-            color: #1a1f2e;
-        }
-
-        .navbar-luxury {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(46, 125, 50, 0.15);
-            padding: 0 40px;
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .navbar-left {
-            display: flex;
-            align-items: center;
-            gap: 32px;
-        }
-
-        .back-btn-premium {
-            background: linear-gradient(135deg, rgba(46, 125, 50, 0.08), rgba(27, 94, 32, 0.08));
-            border: 1px solid rgba(46, 125, 50, 0.2);
-            padding: 10px 24px;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #2e7d32;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
-        }
-
-        .back-btn-premium:hover {
-            background: linear-gradient(135deg, #2e7d32, #1b5e20);
-            border-color: transparent;
-            color: white;
-            transform: translateX(-5px);
-            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.3);
-        }
-
-        .brand-luxury {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .logo-image {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            object-fit: cover;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .logo-image:hover {
-            transform: scale(1.05);
-        }
-
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #2e7d32, #1b5e20);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: float 3s ease-in-out infinite;
-            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.25);
-        }
-
-        .logo-icon i {
-            font-size: 24px;
-            color: white;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-3px); }
-        }
-
-        .logo-text {
-            font-size: 26px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 50%, #ff9800 100%);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.5px;
-        }
-
-        .logo-badge {
-            font-size: 10px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #ff9800, #f57c00);
-            padding: 3px 8px;
-            border-radius: 30px;
-            color: white;
-            margin-left: 8px;
-            vertical-align: super;
-        }
-
-        .navbar-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .security-chip {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(46, 125, 50, 0.1);
-            padding: 8px 18px;
-            border-radius: 50px;
-            border: 1px solid rgba(46, 125, 50, 0.2);
-        }
-
-        .security-chip i {
-            font-size: 16px;
-            color: #2e7d32;
-        }
-
-        .security-chip span {
-            font-size: 12px;
-            font-weight: 600;
-            color: #1b5e20;
-        }
-
-        .cart-badge {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .cart-icon {
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(135deg, #f8fafc, #ffffff);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(46, 125, 50, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .cart-icon i {
-            font-size: 20px;
-            color: #2e7d32;
-        }
-
-        .cart-badge:hover .cart-icon {
-            transform: scale(1.08);
-            box-shadow: 0 6px 16px rgba(46, 125, 50, 0.2);
-        }
-
-        .cart-count {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: linear-gradient(135deg, #ff9800, #f57c00);
-            color: white;
-            font-size: 10px;
-            font-weight: 800;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .checkout-luxury {
-            max-width: 1320px;
-            margin: 32px auto;
-            padding: 0 32px;
-            display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 32px;
-        }
-
-        .luxury-card {
-            background: rgba(255, 255, 255, 0.98);
-            border-radius: 28px;
-            margin-bottom: 28px;
-            border: 1px solid rgba(0, 0, 0, 0.04);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.03);
-            transition: all 0.3s ease;
-        }
-
-        .luxury-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-        }
-
-        .card-header-premium {
-            padding: 24px 28px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .card-header-premium i {
-            font-size: 26px;
-            background: linear-gradient(135deg, #2e7d32, #ff9800);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .card-header-premium h2 {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1a1f2e;
-        }
-
-        .card-body-premium {
-            padding: 24px 28px;
-        }
-
-        .input-group {
-            margin-bottom: 24px;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #5a6e8a;
-            margin-bottom: 8px;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 14px 18px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 18px;
-            font-size: 15px;
-            font-family: inherit;
-            transition: all 0.3s;
-        }
-
-        .input-group input:focus {
-            border-color: #2e7d32;
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.12);
-        }
-
-        .payment-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-bottom: 28px;
-        }
-
-        .payment-tile-premium {
-            background: #ffffff;
-            border: 1.5px solid #eef2f8;
-            border-radius: 20px;
-            padding: 14px 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: all 0.35s;
-        }
-
-        .payment-tile-premium:hover {
-            transform: translateY(-3px);
-            border-color: #2e7d32;
-        }
-
-        .payment-tile-premium.active {
-            border-color: #2e7d32;
-            background: linear-gradient(135deg, #f8faff, #ffffff);
-            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.2);
-        }
-
-        .payment-tile-premium i {
-            font-size: 28px;
-        }
-
-        .qr-modern {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 24px;
-            background: linear-gradient(135deg, #ffffff, #f8fafc);
-            border-radius: 24px;
-            border: 1px solid rgba(46, 125, 50, 0.2);
-            text-align: center;
-        }
-
-        .custom-qr-image {
-            width: 160px;
-            height: 160px;
-            object-fit: contain;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-            background: white;
-            padding: 8px;
-        }
-
-        .custom-qr-image:hover {
-            transform: scale(1.02);
-        }
-
-        .qr-container {
-            background: white;
-            padding: 12px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            margin-bottom: 16px;
-            display: inline-block;
-        }
-
-        .upi-details {
-            margin-top: 16px;
-            padding: 12px;
-            background: #f1f5f9;
-            border-radius: 12px;
-            width: 100%;
-        }
-
-        .upi-id {
-            font-family: monospace;
-            font-size: 14px;
-            font-weight: 600;
-            color: #2e7d32;
-            background: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            margin-top: 8px;
-            display: inline-block;
-        }
-
-        .summary-premium {
-            background: rgba(255, 255, 255, 0.98);
-            border-radius: 32px;
-            position: sticky;
-            top: 100px;
-            border: 1px solid rgba(0, 0, 0, 0.04);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-        }
-
-        .summary-header-premium {
-            padding: 24px 28px;
-            background: linear-gradient(135deg, #f8fafc, #ffffff);
-            border-bottom: 1px solid #eef2f8;
-        }
-
-        .cart-items-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .cart-item-row {
-            padding: 16px 28px;
-            display: flex;
-            gap: 16px;
-            border-bottom: 1px solid #f0f2f8;
-            align-items: center;
-        }
-
-        .cart-item-img {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #f5f7fa, #ffffff);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        .cart-item-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .cart-item-img i {
-            font-size: 28px;
-            color: #2e7d32;
-        }
-
-        .cart-item-details {
-            flex: 1;
-        }
-
-        .cart-item-name {
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-
-        .cart-item-price {
-            font-size: 13px;
-            color: #2e7d32;
-            font-weight: 600;
-        }
-
-        .cart-item-qty {
-            font-size: 12px;
-            color: #64748b;
-        }
-
-        .cart-item-total {
-            font-weight: 700;
-            font-size: 14px;
-            color: #1a1f2e;
-        }
-
-        .price-row {
-            padding: 14px 28px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            font-weight: 500;
-            color: #475569;
-        }
-
-        .coupon-section {
-            padding: 16px 28px;
-            display: flex;
-            gap: 12px;
-            border-top: 1px solid #eef2f8;
-            border-bottom: 1px solid #eef2f8;
-        }
-
-        .coupon-section input {
-            flex: 1;
-            padding: 12px 18px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 40px;
-            font-family: inherit;
-        }
-
-        .coupon-section input:focus {
-            border-color: #2e7d32;
-            outline: none;
-        }
-
-        .apply-btn-premium {
-            background: rgba(46, 125, 50, 0.1);
-            border: 1.5px solid #2e7d32;
-            padding: 12px 24px;
-            border-radius: 40px;
-            font-weight: 700;
-            color: #2e7d32;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .apply-btn-premium:hover {
-            background: #2e7d32;
-            color: white;
-        }
-
-        .total-premium {
-            padding: 20px 28px;
-            display: flex;
-            justify-content: space-between;
-            font-weight: 800;
-            font-size: 22px;
-            background: #fafbff;
-        }
-
-        .btn-premium {
-            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
-            border: none;
-            padding: 16px 28px;
-            margin: 20px 28px 28px;
-            border-radius: 48px;
-            color: white;
-            font-weight: 700;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: all 0.4s;
-            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
-        }
-
-        .btn-premium:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(46, 125, 50, 0.5);
-        }
-
-        .empty-cart-checkout {
-            text-align: center;
-            padding: 60px 28px;
-        }
-
-        .empty-cart-checkout i {
-            font-size: 64px;
-            color: #cbd5e1;
-            margin-bottom: 20px;
-        }
-
-        .toast-premium {
-            position: fixed;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(12px);
-            padding: 14px 32px;
-            border-radius: 60px;
-            color: white;
-            font-weight: 600;
-            z-index: 1000;
-            opacity: 0;
-            transition: all 0.4s;
-            pointer-events: none;
-            font-size: 14px;
-        }
-
-        @media (max-width: 900px) {
-            .navbar-luxury {
-                padding: 0 20px;
-                height: 70px;
-            }
-            .checkout-luxury {
-                grid-template-columns: 1fr;
-                padding: 0 20px;
-            }
-            .payment-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .logo-text {
-                font-size: 20px;
-            }
-            .back-btn-premium span {
-                display: none;
-            }
-            .logo-image {
-                width: 40px;
-                height: 40px;
-            }
-            .cart-item-row {
-                flex-wrap: wrap;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Botanical Checkout | Green Garden</title>
+  <link rel="icon" type="image/png" href="icon-512.png">
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
+
+  <style>
+    .checkout-wrap {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 36px 24px 80px;
+    }
+
+    .checkout-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .form-panel {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+
+    .panel-heading {
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .panel-heading span.num-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--forest-800);
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      text-align: left;
+    }
+
+    .field-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--forest-900);
+    }
+
+    .field-input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      background: var(--ivory-50);
+      font-size: 0.95rem;
+      font-family: var(--font-sans);
+      outline: none;
+      transition: var(--transition-fast);
+    }
+
+    .field-input:focus {
+      background: #ffffff;
+      border-color: var(--sage-400);
+      box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.15);
+    }
+
+    /* Payment selector */
+    .pay-option-card {
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: var(--transition-fast);
+    }
+
+    .pay-option-card.selected {
+      border-color: var(--forest-700);
+      background: var(--ivory-100);
+    }
+
+    .pay-option-card input[type="radio"] {
+      accent-color: var(--forest-700);
+      width: 18px;
+      height: 18px;
+    }
+
+    .order-summary-box {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      padding: 28px;
+      position: sticky;
+      top: 100px;
+    }
+
+    .checkout-item-preview {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .checkout-item-preview img {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+    }
+
+    @media (max-width: 900px) {
+      .checkout-grid {
+        grid-template-columns: 1fr;
+      }
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+      }
+      .order-summary-box {
+        position: static;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<nav class="navbar-luxury">
-    <div class="navbar-left">
-        <button class="back-btn-premium" id="backBtn">
-            <i class="fas fa-arrow-left"></i>
-            <span>Back to Shop</span>
-        </button>
-        <div class="brand-luxury" id="brandLogo">
-            <img src="logo1.jpg" alt="Green Garden Logo" class="logo-image" id="customLogo" 
-                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-            <div class="logo-icon" style="display: none;">
-                <i class="fas fa-leaf"></i>
-            </div>
-            <div class="logo-text">
-                GREEN GARDEN
-                <span class="logo-badge">ORGANIC</span>
-            </div>
-        </div>
+  <div id="global-header"></div>
+
+  <main class="checkout-wrap">
+    <div style="margin-bottom: 24px;">
+      <h1 style="font-size: 2.2rem; margin-bottom: 6px;">Secure Botanical Checkout</h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">Enter your shipping details and verify climate-safe packaging for live specimens.</p>
     </div>
 
-    <div class="navbar-right">
-        <div class="cart-badge" id="cartBadge">
-            <div class="cart-icon">
-                <i class="fas fa-shopping-bag"></i>
+    <div class="checkout-grid">
+      <!-- Left Column: Shipping & Payment Form -->
+      <div>
+        <!-- Shipping Address Form -->
+        <div class="form-panel">
+          <div class="panel-heading">
+            <span class="num-badge">1</span>
+            <span>Delivery & Nursery Destination</span>
+          </div>
+
+          <form id="shippingForm">
+            <div class="form-grid-2">
+              <div class="field-group">
+                <label class="field-label">Full Name *</label>
+                <input type="text" id="custName" class="field-input" placeholder="Akash Kumar" required>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Phone Number (For Courier Tracking) *</label>
+                <input type="tel" id="custPhone" class="field-input" placeholder="+91 98765 43210" required>
+              </div>
             </div>
-            <div class="cart-count" id="cartCount">0</div>
+
+            <div class="field-group" style="margin-bottom: 16px;">
+              <label class="field-label">Email Address (Order Confirmation & Invoice) *</label>
+              <input type="email" id="custEmail" class="field-input" placeholder="akash@example.com" required>
+            </div>
+
+            <div class="field-group" style="margin-bottom: 16px;">
+              <label class="field-label">Street Address & Flat / House No. *</label>
+              <input type="text" id="custAddress" class="field-input" placeholder="Flat 4B, Greenwood Heights, Outer Ring Road" required>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="field-group">
+                <label class="field-label">City *</label>
+                <input type="text" id="custCity" class="field-input" placeholder="Bangalore" required>
+              </div>
+              <div class="field-group">
+                <label class="field-label">State *</label>
+                <input type="text" id="custState" class="field-input" placeholder="Karnataka" required>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="field-group">
+                <label class="field-label">PIN Code *</label>
+                <input type="text" id="custPincode" class="field-input" placeholder="560103" maxlength="6" required>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Botanical Delivery Notes (Optional)</label>
+                <input type="text" id="custNotes" class="field-input" placeholder="Leave at guard / Ring doorbell">
+              </div>
+            </div>
+          </form>
         </div>
+
+        <!-- Green Points Rewards Redemption (Phase 14) -->
+        <div class="form-panel">
+          <div class="panel-heading">
+            <span class="num-badge">2</span>
+            <span>Green Rewards Points</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-weight: 700; color: var(--forest-900);">Available Balance: <span id="availPointsDisplay" style="color: var(--sage-500);">100</span> Green Points</div>
+              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">Redeem 50 points to receive an instant ₹50 discount on this order.</div>
+            </div>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 700; cursor: pointer;">
+              <input type="checkbox" id="redeemPointsCheck" onchange="toggleRedeemPoints(this.checked)" style="width: 18px; height: 18px; accent-color: var(--forest-800);">
+              <span>Redeem 50 Pts</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Payment Mode Selection (Phase 7) -->
+        <div class="form-panel">
+          <div class="panel-heading">
+            <span class="num-badge">3</span>
+            <span>Secure Payment Method</span>
+          </div>
+
+          <!-- Razorpay Option -->
+          <div class="pay-option-card selected" id="optRazorpay" onclick="selectPayOption('razorpay')">
+            <input type="radio" name="paymentOption" value="razorpay" checked>
+            <div style="flex: 1;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong style="color: var(--forest-900);">Razorpay Online Gateway</strong>
+                <span style="background: #e8f5e9; color: #2e7d32; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">FAST & INSTANT</span>
+              </div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+                UPI (GPay / PhonePe / Paytm), Credit & Debit Cards, Netbanking
+              </div>
+            </div>
+          </div>
+
+          <!-- Cash On Delivery Option -->
+          <div class="pay-option-card" id="optCod" onclick="selectPayOption('cod')">
+            <input type="radio" name="paymentOption" value="cod">
+            <div style="flex: 1;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong style="color: var(--forest-900);">Cash On Delivery (COD)</strong>
+                <span style="background: var(--ivory-200); color: var(--forest-900); font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 4px;">VERIFIED OTP</span>
+              </div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+                Pay with cash or UPI QR upon courier arrival at your doorstep.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Order Review & Confirmation -->
+      <div>
+        <div class="order-summary-box">
+          <h3 style="font-size: 1.3rem; margin-bottom: 16px;">Order Review</h3>
+
+          <div id="checkoutItemsList" style="max-height: 240px; overflow-y: auto; margin-bottom: 20px;">
+            <!-- Cart preview injected here -->
+          </div>
+
+          <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.92rem; color: var(--text-secondary);">
+            <span>Subtotal</span>
+            <span id="coSubtotal">₹0</span>
+          </div>
+
+          <div id="coDiscountRow" style="display: none; justify-content: space-between; margin-bottom: 10px; font-size: 0.92rem; color: #2e7d32; font-weight: 600;">
+            <span>Discounts & Rewards</span>
+            <span id="coDiscount">-₹0</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.92rem; color: var(--text-secondary);">
+            <span>Climate Shipping</span>
+            <span id="coShipping">FREE</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.92rem; color: var(--text-secondary);">
+            <span>Nursery GST (5%)</span>
+            <span id="coTax">₹0</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; font-size: 1.4rem; font-weight: 800; color: var(--forest-900); padding-top: 16px; border-top: 1px solid var(--border-subtle); margin-top: 14px;">
+            <span>Grand Total</span>
+            <span id="coFinalTotal">₹0</span>
+          </div>
+
+          <button id="btnPlaceOrder" class="btn-botanical btn-botanical-accent" style="width: 100%; padding: 15px; margin-top: 24px; font-size: 1.05rem;" onclick="processOrderPlacement()">
+            <i class="fas fa-lock"></i> Authorize & Place Order
+          </button>
+
+          <div style="margin-top: 16px; font-size: 0.75rem; color: var(--text-muted); text-align: center; line-height: 1.5;">
+            By placing your order, you agree to Green Garden's Botanical Care Policy, 7-Day Live Arrival Guarantee, and Terms of Service.
+          </div>
+        </div>
+      </div>
     </div>
-</nav>
+  </main>
 
-<div class="checkout-luxury" id="checkoutContainer"></div>
-<div id="toastMsg" class="toast-premium"></div>
+  <div id="global-footer"></div>
 
-<script>
-    const CUSTOM_IMAGES = {
-        qrCode: 'qr.png',
-        logo: 'logo1.jpg'
-    };
-    
-    const coupons = { "GREEN10": 50, "GARDEN20": 200, "ORGANIC": 100 };
-    
-    function showToast(msg, isError = false) {
-        const toast = document.getElementById('toastMsg');
-        toast.style.backgroundColor = isError ? '#ef4444' : '#2e7d32';
-        toast.innerText = msg;
-        toast.style.opacity = '1';
-        toast.style.transform = 'translateX(-50%) translateY(0)';
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateX(-50%) translateY(20px)';
-        }, 2500);
-    }
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/razorpay-service.js"></script>
 
-    function getCart() {
-        const cart = localStorage.getItem('cart');
-        return cart ? JSON.parse(cart) : [];
-    }
+  <script>
+    let selectedPayMethod = 'razorpay';
+    let pointsToRedeem = 0;
+    const activeCoupon = localStorage.getItem('gg_active_coupon') || null;
 
-    function updateCartBadge() {
-        const cart = getCart();
-        const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-        document.getElementById('cartCount').innerText = totalItems;
-    }
-
-    function calculateCartTotals(cart, appliedCoupon = null, selectedPayment = 'upi') {
-        let subtotal = cart.reduce((sum, item) => {
-            const price = typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0;
-            const qty = item.quantity || 1;
-            return sum + (price * qty);
-        }, 0);
-        
-        let discount = 0;
-        let platformFee = 10;
-        let codFee = (selectedPayment === 'cod') ? 50 : 0;
-        let couponDiscount = appliedCoupon ? (coupons[appliedCoupon] || 0) : 0;
-        
-        let total = subtotal - discount + platformFee + codFee - couponDiscount;
-        if (total < 0) total = 0;
-        
-        return { subtotal, discount, platformFee, codFee, couponDiscount, total };
-    }
-
-    function updateLogoImage() {
-        const logoImg = document.getElementById('customLogo');
-        const fallbackIcon = logoImg?.nextElementSibling;
-        
-        if (logoImg) {
-            logoImg.src = CUSTOM_IMAGES.logo;
-            logoImg.onerror = function() {
-                this.style.display = 'none';
-                if (fallbackIcon) fallbackIcon.style.display = 'flex';
-            };
-        }
-    }
-
-    function getIconForProduct(name) {
-        const nameLower = name.toLowerCase();
-        if (nameLower.includes('rose')) return 'fa-rose';
-        if (nameLower.includes('seed')) return 'fa-leaf';
-        if (nameLower.includes('pot')) return 'fa-flask';
-        if (nameLower.includes('plant')) return 'fa-tree';
-        if (nameLower.includes('mix')) return 'fa-droplet';
-        return 'fa-seedling';
-    }
-
-    function renderPaymentForm(method, totalAmount = 0) {
-        let html = '';
-        if (method === 'upi') {
-            html = `
-                <div class="input-group">
-                    <label>UPI ID (Google Pay / PhonePe)</label>
-                    <input type="text" id="upiId" placeholder="username@okhdfcbank">
-                </div>
-                <div class="qr-modern">
-                    <div style="margin-bottom: 8px;">
-                        <i class="fas fa-qrcode" style="font-size: 32px; color: #2e7d32;"></i>
-                    </div>
-                    <div class="qr-container">
-                        <img src="${CUSTOM_IMAGES.qrCode}" 
-                             alt="UPI QR Code" 
-                             class="custom-qr-image"
-                             id="customQRImage"
-                             onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'160\\' height=\\'160\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'%232e7d32\\' stroke-width=\\'1\\' stroke-linecap=\\'round\\' stroke-linejoin=\\'round\\'%3E%3Crect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\' ry=\\'2\\'%3E%3C/rect%3E%3Cline x1=\\'9\\' y1=\\'9\\' x2=\\'15\\' y2=\\'15\\'%3E%3C/line%3E%3Cline x1=\\'15\\' y1=\\'9\\' x2=\\'9\\' y2=\\'15\\'%3E%3C/line%3E%3C/svg%3E';">
-                    </div>
-                    <p style="margin-top:12px; font-size:12px; color:#5a6e8a;">Scan QR code with any UPI app to pay</p>
-                    <div class="upi-details">
-                        <div style="font-size: 12px; color: #64748b;">UPI ID:</div>
-                        <div class="upi-id">greengarden@okhdfcbank</div>
-                        <div style="font-size: 11px; color: #10b981; margin-top: 8px;">
-                            <i class="fas fa-check-circle"></i> Instant payment
-                        </div>
-                        <div style="font-size: 11px; color: #ff9800; margin-top: 6px;">
-                            <i class="fas fa-info-circle"></i> Amount: ₹${totalAmount}
-                        </div>
-                    </div>
-                </div>
-            `;
-        } else if (method === 'netbanking') {
-            html = `
-                <div class="input-group">
-                    <label>Select Bank</label>
-                    <select id="bankSelect" style="width:100%; padding:14px; border-radius:18px; border:1.5px solid #e2e8f0;">
-                        <option>Indian Bank</option><option>HDFC Bank</option><option>SBI</option><option>ICICI Bank</option><option>Axis Bank</option>
-                    </select>
-                </div>
-                <div class="input-group"><label>Account Number</label><input type="text" id="accNum" placeholder="XXXXXXXXXXXX"></div>
-                <div class="input-group"><label>IFSC Code</label><input type="text" id="ifsc" placeholder="HDFC0001234"></div>
-            `;
-        } else if (method === 'card') {
-            html = `
-                <div class="input-group"><label>Card Number</label><input type="text" id="cardNum" placeholder="1234 5678 9012 3456"></div>
-                <div class="input-group"><label>Cardholder Name</label><input type="text" id="cardName" placeholder="Name on card"></div>
-                <div style="display:flex; gap:12px;">
-                    <div class="input-group" style="flex:1"><label>Expiry</label><input type="text" id="expiry" placeholder="MM/YY"></div>
-                    <div class="input-group" style="flex:1"><label>CVV</label><input type="password" id="cvv" placeholder="***"></div>
-                </div>
-            `;
-        } else if (method === 'cod') {
-            html = `<div style="text-align:center; padding:20px;">
-                        <i class="fas fa-truck-fast" style="font-size:56px; color:#2e7d32; margin-bottom:12px;"></i>
-                        <p style="font-weight:600;">Pay on delivery</p>
-                        <p style="font-size:13px; color:#64748b;">Extra ₹50 convenience fee applied</p>
-                        <div style="margin-top: 16px; padding: 12px; background: #f1f5f9; border-radius: 12px;">
-                            <i class="fas fa-leaf" style="color: #2e7d32;"></i>
-                            <span style="margin-left: 8px;">Cash accepted on delivery</span>
-                        </div>
-                    </div>`;
-        }
-        const container = document.getElementById('dynamicPaymentContainer');
-        if (container) {
-            container.style.opacity = '0';
-            setTimeout(() => {
-                container.innerHTML = html;
-                container.style.opacity = '1';
-            }, 80);
-        }
-    }
-
-    function renderCheckout() {
-        const cart = getCart();
-        const container = document.getElementById('checkoutContainer');
-        
-        updateCartBadge();
-        
-        if (cart.length === 0) {
-            container.innerHTML = `
-                <div style="grid-column:1/-1;">
-                    <div class="luxury-card" style="text-align:center;">
-                        <div class="empty-cart-checkout">
-                            <i class="fas fa-seedling"></i>
-                            <h3 style="margin-bottom:12px;">Your garden cart is empty</h3>
-                            <p style="color:#64748b; margin-bottom:24px;">Add some beautiful plants and seeds to continue</p>
-                            <button class="btn-premium" id="shopNowBtn" style="display:inline-flex; width:auto; padding:12px 32px; margin:0;">
-                                <i class="fas fa-store"></i> Continue Shopping
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.getElementById('shopNowBtn')?.addEventListener('click', () => {
-                window.location.href = 'products.html';
-            });
-            return;
-        }
-        
-        let selectedPayment = localStorage.getItem('checkout_payment') || 'upi';
-        let appliedCoupon = localStorage.getItem('checkout_coupon');
-        if (appliedCoupon && !coupons[appliedCoupon]) appliedCoupon = null;
-        
-        const totals = calculateCartTotals(cart, appliedCoupon, selectedPayment);
-        
-        // Build cart items HTML with PRODUCT IMAGES
-        let cartItemsHtml = '';
-        cart.forEach((item, idx) => {
-            const price = typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0;
-            const qty = item.quantity || 1;
-            const total = price * qty;
-            const icon = getIconForProduct(item.name);
-            
-            cartItemsHtml += `
-                <div class="cart-item-row">
-                    <div class="cart-item-img">
-                        ${item.image ? 
-                            `<img src="${item.image}" alt="${item.name}" onerror="this.parentElement.innerHTML='<i class=\'fas ${icon}\' style=\'font-size:28px; color:#2e7d32;\'></i>'">` : 
-                            `<i class="fas ${icon}" style="font-size:28px; color:#2e7d32;"></i>`
-                        }
-                    </div>
-                    <div class="cart-item-details">
-                        <div class="cart-item-name">${item.name || 'Plant Product'}</div>
-                        <div class="cart-item-price">₹${price.toLocaleString('en-IN')}</div>
-                        <div class="cart-item-qty">Quantity: ${qty}</div>
-                    </div>
-                    <div class="cart-item-total">₹${total.toLocaleString('en-IN')}</div>
-                </div>
-            `;
-        });
-        
-        container.innerHTML = `
-            <div class="left-premium">
-                <div class="luxury-card">
-                    <div class="card-header-premium">
-                        <i class="fas fa-location-dot"></i>
-                        <h2>Delivery Details</h2>
-                    </div>
-                    <div class="card-body-premium">
-                        <div class="input-group">
-                            <label>Full name</label>
-                            <input type="text" id="fullName" placeholder="Enter your full name">
-                        </div>
-                        <div class="input-group">
-                            <label>Delivery address</label>
-                            <input type="text" id="address" placeholder="Street, City, PIN code">
-                        </div>
-                        <div class="input-group">
-                            <label>Phone number</label>
-                            <input type="tel" id="phone" placeholder="10-digit mobile">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="luxury-card">
-                    <div class="card-header-premium">
-                        <i class="fas fa-credit-card"></i>
-                        <h2>Select Payment</h2>
-                    </div>
-                    <div class="card-body-premium">
-                        <div class="payment-grid" id="paymentGrid">
-                            <div class="payment-tile-premium ${selectedPayment === 'upi' ? 'active' : ''}" data-method="upi">
-                                <i class="fab fa-google-pay"></i>
-                                <span>UPI / GPay</span>
-                            </div>
-                            <div class="payment-tile-premium ${selectedPayment === 'netbanking' ? 'active' : ''}" data-method="netbanking">
-                                <i class="fas fa-building-columns"></i>
-                                <span>NetBanking</span>
-                            </div>
-                            <div class="payment-tile-premium ${selectedPayment === 'card' ? 'active' : ''}" data-method="card">
-                                <i class="fas fa-credit-card"></i>
-                                <span>Card</span>
-                            </div>
-                            <div class="payment-tile-premium ${selectedPayment === 'cod' ? 'active' : ''}" data-method="cod">
-                                <i class="fas fa-money-bill-wave"></i>
-                                <span>Cash on Delivery</span>
-                            </div>
-                        </div>
-                        <div class="dynamic-payment-wrapper">
-                            <div id="dynamicPaymentContainer" class="payment-detail-modern"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="summary-premium">
-                <div class="summary-header-premium">
-                    <h3><i class="fas fa-seedling"></i> Order Summary (${cart.length} item${cart.length > 1 ? 's' : ''})</h3>
-                </div>
-                <div class="cart-items-list">
-                    ${cartItemsHtml}
-                </div>
-                <div class="price-row">
-                    <span>Item total</span>
-                    <span>₹${totals.subtotal.toLocaleString('en-IN')}</span>
-                </div>
-                <div class="price-row">
-                    <span>Platform fee</span>
-                    <span>₹${totals.platformFee}</span>
-                </div>
-                <div class="price-row" id="codFeeRow" style="display: ${selectedPayment === 'cod' ? 'flex' : 'none'}">
-                    <span>COD convenience</span>
-                    <span style="color:#f59e0b;">+₹50</span>
-                </div>
-                <div class="price-row" id="couponDiscountRow" style="display: ${totals.couponDiscount > 0 ? 'flex' : 'none'}">
-                    <span>Coupon discount</span>
-                    <span style="color:#10b981;">-₹${totals.couponDiscount}</span>
-                </div>
-                <div class="coupon-section">
-                    <input type="text" id="couponInput" placeholder="Coupon code (GREEN10, GARDEN20, ORGANIC)" value="${appliedCoupon || ''}">
-                    <button class="apply-btn-premium" id="applyCouponBtn">Apply</button>
-                </div>
-                <div class="total-premium">
-                    <span>Total payable</span>
-                    <span id="grandTotal" style="background:linear-gradient(135deg,#2e7d32,#ff9800); -webkit-background-clip:text; background-clip:text; color:transparent; font-weight:800;">₹${totals.total.toLocaleString('en-IN')}</span>
-                </div>
-                <button class="btn-premium" id="placeOrderBtn">
-                    <i class="fas fa-leaf"></i> Place Order
-                    <i class="fas fa-arrow-right"></i>
-                </button>
-            </div>
-        `;
-        
-        renderPaymentForm(selectedPayment, totals.total);
-        
-        document.querySelectorAll('.payment-tile-premium').forEach(tile => {
-            tile.addEventListener('click', () => {
-                const method = tile.getAttribute('data-method');
-                localStorage.setItem('checkout_payment', method);
-                renderCheckout();
-            });
-        });
-        
-        document.getElementById('applyCouponBtn')?.addEventListener('click', () => {
-            const input = document.getElementById('couponInput');
-            const code = input.value.trim().toUpperCase();
-            if (coupons[code]) {
-                localStorage.setItem('checkout_coupon', code);
-                showToast(`✓ ${code} applied! Saved ₹${coupons[code]}`, false);
-                renderCheckout();
-            } else {
-                showToast('Invalid coupon code', true);
-            }
-        });
-        
-        document.getElementById('placeOrderBtn')?.addEventListener('click', () => {
-            const name = document.getElementById('fullName')?.value.trim();
-            const address = document.getElementById('address')?.value.trim();
-            const phone = document.getElementById('phone')?.value.trim();
-            
-            if (!name || !address || !phone) {
-                showToast('Please fill all delivery details', true);
-                return;
-            }
-            if (!/^\d{10}$/.test(phone)) {
-                showToast('Enter valid 10-digit phone number', true);
-                return;
-            }
-            
-            const paymentMethod = localStorage.getItem('checkout_payment') || 'upi';
-            if (paymentMethod === 'upi') {
-                const upiId = document.getElementById('upiId')?.value.trim();
-                if (!upiId || !upiId.includes('@')) {
-                    showToast('Valid UPI ID required', true);
-                    return;
-                }
-            } else if (paymentMethod === 'card') {
-                const cardNum = document.getElementById('cardNum')?.value.replace(/\s/g, '');
-                if (!cardNum || cardNum.length < 15) {
-                    showToast('Valid card number required', true);
-                    return;
-                }
-            }
-            
-            const currentCart = getCart();
-            const currentCoupon = localStorage.getItem('checkout_coupon');
-            const currentPayment = localStorage.getItem('checkout_payment') || 'upi';
-            const finalTotals = calculateCartTotals(currentCart, currentCoupon, currentPayment);
-            
-            const orderId = 'GRD' + Date.now().toString().slice(-8) + Math.floor(Math.random() * 1000);
-            const orderData = {
-                orderId,
-                customer: { name, address, phone },
-                items: currentCart.map(item => ({
-                    ...item,
-                    price: typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0,
-                    quantity: item.quantity || 1,
-                    image: item.image || null
-                })),
-                coupon: currentCoupon || null,
-                payment: currentPayment,
-                subtotal: finalTotals.subtotal,
-                platformFee: finalTotals.platformFee,
-                codFee: currentPayment === 'cod' ? 50 : 0,
-                couponDiscount: finalTotals.couponDiscount,
-                total: finalTotals.total,
-                date: new Date().toISOString(),
-                status: currentPayment === 'cod' ? 'processing' : 'paid'
-            };
-            
-            let orders = JSON.parse(localStorage.getItem('green_garden_orders')) || [];
-            orders.unshift(orderData);
-            localStorage.setItem('green_garden_orders', JSON.stringify(orders));
-            
-            localStorage.setItem('cart', JSON.stringify([]));
-            localStorage.removeItem('checkout_coupon');
-            localStorage.removeItem('checkout_payment');
-            
-            showToast(`🎉 Order placed! ID: ${orderId.slice(-8)}`, false);
-            setTimeout(() => {
-                window.location.href = 'orders.html';
-            }, 1500);
-        });
-    }
-    
     document.addEventListener('DOMContentLoaded', () => {
-        updateLogoImage();
-        renderCheckout();
-        
-        document.getElementById('backBtn')?.addEventListener('click', () => {
-            window.location.href = 'products.html';
-        });
-        
-        document.getElementById('brandLogo')?.addEventListener('click', () => {
-            window.location.href = '404.html';
-        });
-        
-        document.getElementById('cartBadge')?.addEventListener('click', () => {
-            window.location.href = 'cart.html';
-        });
+      Store.renderHeader('cart');
+      Store.renderFooter();
+
+      const cart = Store.getCart();
+      if (cart.length === 0) {
+        window.location.href = 'cart.html';
+        return;
+      }
+
+      // Pre-fill user data if logged in
+      const user = AuthService.getCurrentUser();
+      if (user) {
+        document.getElementById('custName').value = user.name || '';
+        document.getElementById('custEmail').value = user.email || '';
+        const pts = RewardService.getBalance();
+        document.getElementById('availPointsDisplay').textContent = pts;
+      }
+
+      renderOrderSummary();
     });
-</script>
+
+    function selectPayOption(method) {
+      selectedPayMethod = method;
+      document.querySelectorAll('.pay-option-card').forEach(c => c.classList.remove('selected'));
+      document.getElementById(method === 'razorpay' ? 'optRazorpay' : 'optCod').classList.add('selected');
+      document.querySelector(`input[name="paymentOption"][value="${method}"]`).checked = true;
+    }
+
+    function toggleRedeemPoints(checked) {
+      pointsToRedeem = checked ? 50 : 0;
+      renderOrderSummary();
+    }
+
+    function renderOrderSummary() {
+      const cart = Store.getCart();
+      const totals = Store.calculateTotals(activeCoupon, pointsToRedeem);
+
+      document.getElementById('checkoutItemsList').innerHTML = cart.map(item => `
+        <div class="checkout-item-preview">
+          <img src="${item.image}" onerror="this.src='garden.jpg'">
+          <div style="flex: 1;">
+            <div style="font-weight: 700; font-size: 0.88rem; color: var(--forest-900);">${item.name}</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">${item.quantity} × ₹${item.price}</div>
+          </div>
+          <div style="font-weight: 700; font-size: 0.95rem;">₹${item.price * item.quantity}</div>
+        </div>
+      `).join('');
+
+      document.getElementById('coSubtotal').textContent = `₹${totals.subtotal}`;
+      document.getElementById('coShipping').textContent = totals.shippingFee === 0 ? 'FREE' : `₹${totals.shippingFee}`;
+      document.getElementById('coTax').textContent = `₹${totals.gstTax}`;
+      document.getElementById('coFinalTotal').textContent = `₹${totals.finalTotal}`;
+
+      const discRow = document.getElementById('coDiscountRow');
+      if (totals.discount > 0) {
+        discRow.style.display = 'flex';
+        document.getElementById('coDiscount').textContent = `-₹${totals.discount}`;
+      } else {
+        discRow.style.display = 'none';
+      }
+    }
+
+    async function processOrderPlacement() {
+      const form = document.getElementById('shippingForm');
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const shippingAddress = {
+        name: document.getElementById('custName').value.trim(),
+        phone: document.getElementById('custPhone').value.trim(),
+        email: document.getElementById('custEmail').value.trim(),
+        address: document.getElementById('custAddress').value.trim(),
+        city: document.getElementById('custCity').value.trim(),
+        state: document.getElementById('custState').value.trim(),
+        pincode: document.getElementById('custPincode').value.trim(),
+        notes: document.getElementById('custNotes').value.trim()
+      };
+
+      const cart = Store.getCart();
+      const totals = Store.calculateTotals(activeCoupon, pointsToRedeem);
+      const btn = document.getElementById('btnPlaceOrder');
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Initializing Gateway...';
+
+      const tempOrderId = 'GG-' + Math.floor(100000 + Math.random() * 900000);
+
+      if (selectedPayMethod === 'razorpay') {
+        PaymentService.initiatePayment({
+          orderId: tempOrderId,
+          amount: totals.finalTotal,
+          customerName: shippingAddress.name,
+          customerEmail: shippingAddress.email,
+          customerPhone: shippingAddress.phone,
+          onSuccess: async (rzpResp) => {
+            btn.innerHTML = '<i class="fas fa-check-circle"></i> Payment Verified! Generating Order...';
+            
+            // Redeem reward points if selected
+            if (pointsToRedeem > 0) {
+              RewardService.redeemPoints(pointsToRedeem);
+            }
+
+            const res = await OrderService.createOrder({
+              items: cart,
+              subtotal: totals.subtotal,
+              discount: totals.discount,
+              couponCode: activeCoupon,
+              shippingFee: totals.shippingFee,
+              rewardPointsUsed: pointsToRedeem,
+              totalAmount: totals.finalTotal,
+              paymentMethod: 'razorpay',
+              paymentStatus: 'Paid',
+              razorpayPaymentId: rzpResp.razorpayPaymentId,
+              razorpayOrderId: rzpResp.razorpayOrderId,
+              shippingAddress: shippingAddress
+            });
+
+            if (res.success) {
+              localStorage.removeItem('gg_active_coupon');
+              Store.showToast("🎉 Order Placed Successfully!");
+              setTimeout(() => {
+                window.location.href = `orders.html?newOrder=${res.order.orderId}`;
+              }, 800);
+            }
+          },
+          onFailure: (err) => {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-lock"></i> Authorize & Place Order';
+            Store.showToast("Payment was not completed. You can retry anytime.", true);
+          }
+        });
+      } else {
+        // Cash on Delivery
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Confirming COD Order...';
+        
+        if (pointsToRedeem > 0) {
+          RewardService.redeemPoints(pointsToRedeem);
+        }
+
+        const res = await OrderService.createOrder({
+          items: cart,
+          subtotal: totals.subtotal,
+          discount: totals.discount,
+          couponCode: activeCoupon,
+          shippingFee: totals.shippingFee,
+          rewardPointsUsed: pointsToRedeem,
+          totalAmount: totals.finalTotal,
+          paymentMethod: 'cod',
+          paymentStatus: 'Pending (Cash on Delivery)',
+          shippingAddress: shippingAddress
+        });
+
+        if (res.success) {
+          localStorage.removeItem('gg_active_coupon');
+          Store.showToast("🌱 Order Placed with Cash on Delivery!");
+          setTimeout(() => {
+            window.location.href = `orders.html?newOrder=${res.order.orderId}`;
+          }, 800);
+        }
+      }
+    }
+  </script>
 </body>
 </html>

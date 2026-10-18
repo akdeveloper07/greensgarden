@@ -1,0 +1,152 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Admin check helper
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'akd04376@gmail.com' ||
+        request.auth.token.email == 'admin@greengarden.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      // Allow users to create/update their own profile, but only admin can set role to 'admin'
+      allow create: if isAuthenticated() && request.auth.uid == userId && 
+                     (!request.resource.data.keys().hasAny(['role']) || request.resource.data.role == 'customer');
+      allow update: if (isOwner(userId) && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']))) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Admins registry
+    match /admins/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // Products catalog
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Categories
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Inventory
+    match /inventory/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Carts (keyed by userId)
+    match /carts/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+    }
+
+    // Wishlists (keyed by userId)
+    match /wishlists/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+    }
+
+    // Orders
+    match /orders/{orderId} {
+      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      // Allow user to cancel or update if status is pending/processing, or admin can update status
+      allow update: if (isAuthenticated() && resource.data.userId == request.auth.uid && 
+                        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'cancellationReason', 'updatedAt'])) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Coupons
+    match /coupons/{couponCode} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // Reviews
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
+    }
+
+    // Plant Passports
+    match /plant_passports/{passportId} {
+      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid) || 
+                     (resource.data.isPublic == true) || isAdmin();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
+    }
+
+    // Care Tasks / Reminders
+    match /care_tasks/{taskId} {
+      allow read, write: if (isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid)) || isAdmin();
+    }
+
+    // Plant Doctor Diagnoses
+    match /plant_diagnoses/{diagnosisId} {
+      allow read, write: if (isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid)) || isAdmin();
+    }
+
+    // Community Posts
+    match /community_posts/{postId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
+    }
+
+    // Community Comments
+    match /community_posts/{postId}/comments/{commentId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
+    }
+
+    // Garden Designs
+    match /garden_designs/{designId} {
+      allow read, write: if (isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid)) || isAdmin();
+    }
+
+    // Subscriptions
+    match /subscriptions/{subscriptionId} {
+      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Restock & Price Alerts
+    match /alerts/{alertId} {
+      allow read, write: if (isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid)) || isAdmin();
+    }
+
+    // Rewards & Points
+    match /reward_transactions/{transactionId} {
+      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // Audit Logs
+    match /audit_logs/{logId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

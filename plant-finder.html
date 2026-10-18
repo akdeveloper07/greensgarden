@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Find My Perfect Plant | Green Garden Interactive Matcher</title>
+  <link rel="icon" type="image/png" href="icon-512.png">
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/botanical-theme.css">
+
+  <style>
+    .finder-page-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .finder-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      padding: 40px;
+    }
+
+    .finder-step {
+      display: none;
+    }
+
+    .finder-step.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .finder-options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin: 24px 0 32px;
+    }
+
+    .finder-option-btn {
+      background: var(--ivory-50);
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: var(--transition-fast);
+    }
+
+    .finder-option-btn:hover {
+      background: #fff;
+      border-color: var(--sage-400);
+      transform: translateY(-2px);
+    }
+
+    .finder-option-btn.selected {
+      background: var(--ivory-100);
+      border-color: var(--forest-800);
+    }
+
+    .finder-option-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--forest-900);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .finder-option-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 640px) {
+      .finder-options-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="global-header"></div>
+
+  <main class="finder-page-wrap">
+    <div style="text-align: center; margin-bottom: 32px;">
+      <span class="badge-ai" style="padding: 4px 12px; font-size: 0.8rem; margin-bottom: 12px; display: inline-block;">SMART MATCHING</span>
+      <h1 style="font-size: 2.5rem; margin-bottom: 8px;">Find Your Perfect Botanical Match</h1>
+      <p style="color: var(--text-secondary); font-size: 1.05rem;">Answer 4 quick questions about your living space to discover plants guaranteed to flourish in your care.</p>
+    </div>
+
+    <div class="finder-card">
+      <!-- Step 1: Location -->
+      <div class="finder-step active" id="step1">
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--sage-500); text-transform: uppercase;">Step 1 of 4</span>
+        <h2 style="font-size: 1.8rem; margin: 6px 0 16px;">Where will your plant live?</h2>
+        
+        <div class="finder-options-grid">
+          <button class="finder-option-btn" onclick="selectAnswer('location', 'Indoor Desk', this)">
+            <span class="finder-option-title">💻 Indoor Desk / Living Room</span>
+            <span class="finder-option-desc">Filtered ambient room light, air-conditioned or bedroom space.</span>
+          </button>
+          <button class="finder-option-btn" onclick="selectAnswer('location', 'Sunny Balcony', this)">
+            <span class="finder-option-title">☀️ Sunny Balcony / Railing</span>
+            <span class="finder-option-desc">Gets direct sunlight for 4 to 8 hours daily.</span>
+          </button>
+          <button class="finder-option-btn" onclick="selectAnswer('location', 'Kitchen Garden', this)">
+            <span class="finder-option-title">🥗 Kitchen Garden / Veggie Patch</span>
+            <span class="finder-option-desc">Dedicated to fresh edible greens, herbs, and cooking produce.</span>
+          </button>
+          <button class="finder-option-btn" onclick="selectAnswer('location', 'Pond', this)">
+            <span class="finder-option-title">🪷 Aquatic Water Basin / Terrace</span>
+            <span class="finder-option-desc">Shallow water tub or ceramic lotus pond with direct overhead sky.</span>
+          </button>
+        </div>
+
+        <button class="btn-botanical btn-botanical-primary" onclick="goToStep(2)">Next Question <i class="fas fa-arrow-right"></i></button>
+      </div>
+
+      <!-- Step 2: Light -->
+      <div class="finder-step" id="step2">
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--sage-500); text-transform: uppercase;">Step 2 of 4</span>
+        <h2 style="font-size: 1.8rem; margin: 6px 0 16px;">How much sunlight reaches this spot?</h2>
+        
+        <div class="finder-options-grid">
+          <button class="finder-option-btn" onclick="selectAnswer('sunlight', 'Full Sun', this)">
+            <span class="finder-option-title">☀️ Direct Sun (6+ Hours)</span>
+            <span class="finder-option-desc">Hot, bright rays for a majority of the afternoon.</span>
+          </button>
+          <button class="finder-option-btn" onclick="selectAnswer('sunlight', 'Partial', this)">
+            <span class="finder-option-title">🌤️ Partial Sun / Morning Rays</span>
+            <span class="finder-option-desc">Gentle morning sunlight with afternoon shade.</span>
+          </button>
+          <button class="finder-option-btn" onclick="selectAnswer('sunlight', 'Indirect', this)">
+            <span class="finder-option-title">💡 Bright Indirect Light</span>
+            <span class="finder-option-desc">Bright room near a window, but no scorching rays.</span>
+          </button>
+          <button class="finder-option-btn" onclick="selectAnswer('sunlight', 'Low', this)">
+            <span class="finder-option-title">🌑 Low to Medium Light</span>
+            <span class="finder-option-desc">Interior corridor, bathroom, or dim desk setup.</span>
+          </button>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+          <button class="btn-botanical btn-botanical-secondary" onclick="goToStep(1)">Back</button>
+          <button class="btn-botanical btn-botanical-primary" onclick="goToStep(3)">Next Question <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Step 3: Pet Safety -->
+      <div class="finder-step" id="step3">
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--sage-500); text-transform: uppercase;">Step 3 of 4</span>
+        <h2 style="font-size: 1.8rem; margin: 6px 0 16px;">Do you have curious pets?</h2>
+        
+        <div class="finder-options-grid">
+          <button class="finder-option-btn" onclick="selectAnswer('pets', 'safe_only', this)">
+            <span class="finder-option-title">🐾 Yes — Must Be 100% Pet-Safe</span>
+            <span class="finder-option-desc">Strictly non-toxic to cats and dogs if nibbled.</span>
+          </button>
+          <button class="finder-option-btn" onclick="selectAnswer('pets', 'any', this)">
+            <span class="finder-option-title">🌱 No Pets / Kept Out of Reach</span>
+            <span class="finder-option-desc">Show all botanical cultivars regardless of pet toxicity.</span>
+          </button>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+          <button class="btn-botanical btn-botanical-secondary" onclick="goToStep(2)">Back</button>
+          <button class="btn-botanical btn-botanical-primary" onclick="goToStep(4)">Next Question <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Step 4: Gardener Experience -->
+      <div class="finder-step" id="step4">
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--sage-500); text-transform: uppercase;">Step 4 of 4</span>
+        <h2 style="font-size: 1.8rem; margin: 6px 0 16px;">What is your gardening routine?</h2>
+        
+        <div class="finder-options-grid">
+          <button class="finder-option-btn" onclick="selectAnswer('routine', 'low', this)">
+            <span class="finder-option-title">⏳ Low Maintenance (Busy Lifestyle)</span>
+            <span class="finder-option-desc">Forgiving plants that thrive on water every 7-10 days.</span>
+          </button>
+          <button class="finder-option-btn" onclick="selectAnswer('routine', 'active', this)">
+            <span class="finder-option-title">🌿 Daily Hands-On Green Thumb</span>
+            <span class="finder-option-desc">Enjoys misting, pruning, and harvesting regularly.</span>
+          </button>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+          <button class="btn-botanical btn-botanical-secondary" onclick="goToStep(3)">Back</button>
+          <button class="btn-botanical btn-botanical-accent" onclick="showMatches()">
+            <i class="fas fa-magic"></i> Reveal My Recommended Plants
+          </button>
+        </div>
+      </div>
+
+      <!-- Matches Results View -->
+      <div class="finder-step" id="stepResults">
+        <div style="text-align: center; margin-bottom: 28px;">
+          <div style="font-size: 3rem;">✨</div>
+          <h2 style="font-size: 2rem; color: var(--forest-900);">Here Are Your Botanical Soulmates</h2>
+          <p style="color: var(--text-secondary);">Filtered based on your sunlight exposure, space dimensions, and pet-friendly needs.</p>
+        </div>
+
+        <div id="matchesResultsGrid" class="product-grid" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));">
+          <!-- Injected dynamically -->
+        </div>
+
+        <div style="text-align: center; margin-top: 36px;">
+          <button class="btn-botanical btn-botanical-secondary" onclick="restartQuiz()">
+            <i class="fas fa-redo"></i> Retake Questionnaire
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="global-footer"></div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  
+  <script src="js/catalog.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/store.js"></script>
+
+  <script>
+    const userAnswers = {
+      location: 'Indoor Desk',
+      sunlight: 'Full Sun',
+      pets: 'safe_only',
+      routine: 'low'
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      Store.renderHeader('finder');
+      Store.renderFooter();
+    });
+
+    function selectAnswer(key, val, btn) {
+      userAnswers[key] = val;
+      btn.parentElement.querySelectorAll('.finder-option-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    }
+
+    function goToStep(num) {
+      document.querySelectorAll('.finder-step').forEach(s => s.classList.remove('active'));
+      document.getElementById('step' + num).classList.add('active');
+    }
+
+    function restartQuiz() {
+      goToStep(1);
+    }
+
+    async function showMatches() {
+      goToStep('Results');
+      const all = await ProductService.getAll();
+      let matched = [...all];
+
+      if (userAnswers.pets === 'safe_only') {
+        matched = matched.filter(p => p.petSafe === true);
+      }
+
+      if (userAnswers.location === 'Kitchen Garden') {
+        matched = matched.filter(p => p.category === 'Vegetable Seeds');
+      } else if (userAnswers.location === 'Pond') {
+        matched = matched.filter(p => p.name.includes('Lotus') || p.name.includes('Kamal') || p.category === 'Flower Seeds');
+      }
+
+      const topPicks = matched.slice(0, 4);
+      const container = document.getElementById('matchesResultsGrid');
+
+      container.innerHTML = topPicks.map(p => `
+        <div class="botanical-card" onclick="window.location.href='productdetails.html?id=${p.id}'" style="cursor: pointer;">
+          <div class="card-img-wrap">
+            <img src="${p.image}" alt="${p.name}" onerror="this.src='garden.jpg'">
+            <span class="card-badge"><i class="fas fa-check"></i> Ideal Match</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">${p.name}</h3>
+            <div style="font-size: 0.8rem; color: #2e7d32; font-weight: 700; margin-bottom: 8px;">
+              ✓ Why it fits: Matches ${userAnswers.sunlight} & ${p.petSafe ? '100% Pet-Safe' : 'Nursery Hardy'}
+            </div>
+            <div class="card-footer">
+              <span class="price-current">₹${p.salePrice || p.price}</span>
+              <button class="btn-card-add" onclick="event.stopPropagation(); Store.addToCart(INITIAL_CATALOG.find(x => x.id === ${p.id}));">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>
