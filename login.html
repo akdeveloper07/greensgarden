@@ -151,6 +151,17 @@
           <span>Sign In to Green Garden</span>
           <i class="fas fa-arrow-right"></i>
         </button>
+
+        <div style="display: flex; align-items: center; margin: 20px 0; gap: 12px;">
+          <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
+          <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">or</span>
+          <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
+        </div>
+
+        <button type="button" id="googleLoginBtn" onclick="handleGoogleLogin()" style="width: 100%; padding: 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-full); background: #ffffff; color: var(--forest-900); font-family: var(--font-display); font-size: 0.92rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: var(--shadow-sm); transition: var(--transition-fast);">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" style="width: 18px; height: 18px;">
+          <span>Continue with Google</span>
+        </button>
       </form>
 
       <div style="text-align: center; margin-top: 24px; font-size: 0.9rem; color: var(--text-secondary);">
@@ -255,6 +266,34 @@
         alertBox.style.background = '#ffebee';
         alertBox.style.color = '#c62828';
         alertBox.textContent = res.error || "Login failed. Please check your credentials.";
+      }
+    }
+
+    async function handleGoogleLogin() {
+      const btn = document.getElementById('googleLoginBtn');
+      const alertBox = document.getElementById('authAlert');
+      alertBox.style.display = 'none';
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting to Google...';
+
+      const res = await AuthService.loginWithGoogle();
+      if (res.success) {
+        Store.showToast("Welcome, " + res.user.name + "!");
+        setTimeout(() => {
+          if (res.user.role === 'admin') {
+            window.location.href = 'admin.html';
+          } else {
+            const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || 'index.html';
+            window.location.href = redirectUrl;
+          }
+        }, 600);
+      } else {
+        btn.disabled = false;
+        btn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" style="width: 18px; height: 18px;"><span>Continue with Google</span>';
+        alertBox.style.display = 'block';
+        alertBox.style.background = '#ffebee';
+        alertBox.style.color = '#c62828';
+        alertBox.textContent = res.error || "Google Sign-In failed.";
       }
     }
 

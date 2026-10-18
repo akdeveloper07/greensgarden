@@ -518,6 +518,17 @@
                     <span>Sign Up</span>
                     <i class="fas fa-arrow-right"></i>
                 </button>
+
+                <div style="display: flex; align-items: center; margin: 20px 0; gap: 12px;">
+                    <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+                    <span style="font-size: 0.8rem; color: #94a3b8; text-transform: uppercase;">or</span>
+                    <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+                </div>
+
+                <button type="button" id="googleSignUpBtn" onclick="handleGoogleSignUp()" style="width: 100%; padding: 14px; border: 1px solid #e2e8f0; border-radius: 16px; background: #ffffff; color: #0f172a; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" style="width: 18px; height: 18px;">
+                    <span>Continue with Google</span>
+                </button>
             </form>
 
             <div class="footer-link">
@@ -784,6 +795,29 @@
             showAlert(err.message || 'An error occurred during registration.', 'error');
         }
     });
+
+    async function handleGoogleSignUp() {
+        const btn = document.getElementById('googleSignUpBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting to Google...';
+
+        const res = await AuthService.loginWithGoogle();
+        if (res.success) {
+            showAlert('Welcome, ' + res.user.name + '! Redirecting...', 'success');
+            showToast('Welcome to Green Garden! 🌱 (+100 Points)');
+            setTimeout(() => {
+                if (res.user.role === 'admin') {
+                    window.location.href = 'admin.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+            }, 600);
+        } else {
+            btn.disabled = false;
+            btn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" style="width: 18px; height: 18px;"><span>Continue with Google</span>';
+            showAlert(res.error || 'Google Sign-In failed.', 'error');
+        }
+    }
     
     // Add shake animation CSS
     const style = document.createElement('style');
