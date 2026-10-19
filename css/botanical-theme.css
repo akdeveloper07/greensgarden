@@ -170,8 +170,22 @@ a {
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.brand-logo:hover .brand-icon-wrap {
-  transform: rotate(8deg) scale(1.06);
+.brand-logo-img {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 14px rgba(20, 54, 38, 0.25);
+  border: 2px solid #d4af37;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.brand-logo:hover .brand-icon-wrap,
+.brand-logo:hover .brand-logo-img {
+  transform: rotate(6deg) scale(1.08);
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.45);
 }
 
 .brand-tagline {

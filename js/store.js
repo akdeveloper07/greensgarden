@@ -210,7 +210,7 @@ const Store = {
       <header class="gg-header">
         <div class="nav-container">
           <a href="index.html" class="brand-logo">
-            <div class="brand-icon-wrap">🌿</div>
+            <img src="green-garden-logo.png" alt="Green Garden Logo" class="brand-logo-img" onerror="this.src='logo.png'">
             <div>
               <span>Green Garden</span>
               <span class="brand-tagline">Botanical Haven</span>
@@ -225,6 +225,7 @@ const Store = {
             <li><a href="plant-care.html" class="nav-item-link ${activePage === 'care' ? 'active' : ''}">Care Calendar</a></li>
             <li><a href="garden-kit.html" class="nav-item-link ${activePage === 'kit' ? 'active' : ''}">Garden Kits</a></li>
             <li><a href="community.html" class="nav-item-link ${activePage === 'community' ? 'active' : ''}">Community</a></li>
+            <li><a href="contact.html" class="nav-item-link ${activePage === 'contact' ? 'active' : ''}">Contact</a></li>
             ${isAdmin ? `<li><a href="admin.html" class="nav-item-link ${activePage === 'admin' ? 'active' : ''}" style="color: #c58b49;"><i class="fas fa-shield-alt"></i> Admin</a></li>` : ''}
           </ul>
 
@@ -312,7 +313,7 @@ const Store = {
         <div class="footer-container">
           <div class="footer-col">
             <div class="brand-logo" style="color: #fff; margin-bottom: 16px;">
-              <div class="brand-icon-wrap" style="background: var(--sage-500);">🌿</div>
+              <img src="green-garden-logo.png" alt="Green Garden Logo" class="brand-logo-img" onerror="this.src='logo.png'" style="width: 50px; height: 50px;">
               <span>Green Garden</span>
             </div>
             <p style="color: var(--sage-200); font-size: 0.9rem; line-height: 1.7; margin-bottom: 20px;">
@@ -354,6 +355,7 @@ const Store = {
           <div class="footer-col">
             <h5>Customer Support</h5>
             <ul class="footer-links">
+              <li><a href="contact.html">📞 Contact Us & Support</a></li>
               <li><a href="orders.html">📦 Track Live Order</a></li>
               <li><a href="subscription.html">🌿 Plant Subscription Club</a></li>
               <li><a href="community.html">💬 Gardening Community</a></li>

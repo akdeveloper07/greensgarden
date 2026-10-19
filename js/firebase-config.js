@@ -296,32 +296,52 @@ const AuthService = {
 // PRODUCTS SERVICE (REAL-TIME FIRESTORE + CACHE)
 // ============================================
 const ProductService = {
-  // Get all products (merged with Firestore updates)
-  getAll: async function() {
-    let products = (typeof INITIAL_CATALOG !== 'undefined') ? [...INITIAL_CATALOG] : [];
+  // Synchronous, non-blocking catalog reader
+  getSync: function(targetId = null) {
+    let products = (typeof INITIAL_CATALOG !== 'undefined') 
+      ? [...INITIAL_CATALOG] 
+      : ((typeof window !== 'undefined' && window.INITIAL_CATALOG) ? [...window.INITIAL_CATALOG] : []);
     
     // Check locally saved products (for admin edits when offline)
-    const localOverrides = JSON.parse(localStorage.getItem('gg_custom_products') || '[]');
-    if (localOverrides.length > 0) {
-      localOverrides.forEach(p => {
-        const idx = products.findIndex(item => item.id === p.id);
-        if (idx !== -1) {
-          products[idx] = { ...products[idx], ...p };
-        } else {
-          products.unshift(p);
-        }
-      });
+    try {
+      const localOverrides = JSON.parse(localStorage.getItem('gg_custom_products') || '[]');
+      if (localOverrides.length > 0) {
+        localOverrides.forEach(p => {
+          const idx = products.findIndex(item => item.id == p.id);
+          if (idx !== -1) {
+            products[idx] = { ...products[idx], ...p };
+          } else {
+            products.unshift(p);
+          }
+        });
+      }
+    } catch (e) {
+      console.warn("Local catalog parse error:", e);
     }
+
+    if (targetId !== null) {
+      return products.find(p => p.id == targetId) || products[0] || null;
+    }
+    return products;
+  },
+
+  // Get all products (merged with Firestore updates safely with timeout)
+  getAll: async function() {
+    let products = ProductService.getSync();
     
-    // Live Firestore sync if available
+    // Live Firestore sync if available (with strict 2s timeout so pages never hang)
     if (fbDb) {
       try {
-        const snap = await fbDb.collection('products').get();
+        const fetchPromise = fbDb.collection('products').get();
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Firestore read timeout')), 2000)
+        );
+        const snap = await Promise.race([fetchPromise, timeoutPromise]);
         if (!snap.empty) {
           snap.forEach(doc => {
             const data = doc.data();
             const id = data.id || parseInt(doc.id.replace('prod_', '')) || doc.id;
-            const idx = products.findIndex(item => item.id === id);
+            const idx = products.findIndex(item => item.id == id);
             if (idx !== -1) {
               products[idx] = { ...products[idx], ...data, id: id };
             } else {
@@ -330,28 +350,29 @@ const ProductService = {
           });
         }
       } catch (e) {
-        console.warn("Firestore products read note:", e.message);
+        // Fallback to instantly loaded products without stalling
       }
     }
     
     return products;
   },
 
-  // Real-time listener for product changes
+  // Real-time listener for product changes with instant synchronous delivery
   subscribeToProducts: function(callback) {
+    // 1. Immediately emit synchronous products
+    try {
+      callback(ProductService.getSync());
+    } catch (e) {}
+
+    // 2. Real-time updates from Firestore
     if (fbDb) {
       try {
         return fbDb.collection('products').onSnapshot(snap => {
           ProductService.getAll().then(products => callback(products));
         }, err => {
           console.warn("Snapshot listener fallback:", err.message);
-          ProductService.getAll().then(callback);
         });
-      } catch (e) {
-        ProductService.getAll().then(callback);
-      }
-    } else {
-      ProductService.getAll().then(callback);
+      } catch (e) {}
     }
   },
 
@@ -427,13 +448,19 @@ const OrderService = {
       rewardPointsUsed: orderData.rewardPointsUsed || 0,
       totalAmount: orderData.totalAmount,
       paymentMethod: orderData.paymentMethod, // 'razorpay' or 'cod'
-      paymentStatus: orderData.paymentStatus || 'Pending',
+      paymentStatus: orderData.paymentStatus || (orderData.paymentMethod === 'cod' ? 'Pending (Cash on Delivery)' : 'Paid'),
       razorpayPaymentId: orderData.razorpayPaymentId || null,
       razorpayOrderId: orderData.razorpayOrderId || null,
       shippingAddress: orderData.shippingAddress,
       status: 'Placed', // Placed -> Confirmed -> Packing -> Dispatched -> Out for Delivery -> Delivered
       timeline: [
-        { status: 'Order Placed', timestamp: new Date().toISOString(), note: 'Order successfully placed with Green Garden' }
+        { 
+          status: 'Order Placed', 
+          timestamp: new Date().toISOString(), 
+          note: orderData.paymentMethod === 'cod' 
+            ? 'Cash on Delivery confirmed. Payment to be collected upon courier arrival.' 
+            : 'Order successfully placed with Green Garden' 
+        }
       ],
       estimatedDelivery: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
       createdAt: new Date().toISOString()
@@ -447,61 +474,100 @@ const OrderService = {
       });
     }
 
-    // Save to Firestore
-    if (fbDb) {
-      try {
-        await fbDb.collection('orders').doc(orderId).set(finalOrder);
-      } catch (e) {
-        console.warn("Firestore order create note:", e.message);
-      }
-    }
-    
-    // Save locally
-    const orders = JSON.parse(localStorage.getItem('gg_orders') || '[]');
-    orders.unshift(finalOrder);
-    localStorage.setItem('gg_orders', JSON.stringify(orders));
-    
-    // Deduct stock locally and in Firestore
-    for (const item of finalOrder.items) {
-      try {
-        const prodId = item.id;
-        if (fbDb) {
-          fbDb.collection('products').doc('prod_' + prodId).update({
-            stock: firebase.firestore.FieldValue.increment(-item.quantity)
-          }).catch(() => {});
-        }
-      } catch (e) {}
-    }
-    
-    // Award 5% reward points
-    if (user) {
-      const earnedPoints = Math.floor(finalOrder.totalAmount * 0.05);
-      RewardService.addPoints(earnedPoints, `Earned on Order #${orderId}`);
+    // 1. ALWAYS SAVE LOCALLY FIRST so order is NEVER lost and COD never blocks!
+    try {
+      const orders = JSON.parse(localStorage.getItem('gg_orders') || '[]');
+      orders.unshift(finalOrder);
+      localStorage.setItem('gg_orders', JSON.stringify(orders));
+    } catch (err) {
+      console.warn("Local storage write error:", err);
     }
 
-    // Clear cart
-    localStorage.removeItem('cart');
+    // 2. Clear cart immediately
+    try {
+      localStorage.removeItem('cart');
+      if (window.Store && typeof Store.updateBadgeCounters === 'function') {
+        Store.updateBadgeCounters();
+      }
+    } catch (e) {}
+
+    // 3. Deduct stock locally
+    try {
+      const customProducts = JSON.parse(localStorage.getItem('gg_custom_products') || '[]');
+      for (const item of finalOrder.items) {
+        const prod = customProducts.find(x => x.id == item.id);
+        if (prod) {
+          prod.stock = Math.max(0, (prod.stock || 0) - (item.quantity || 1));
+        }
+      }
+      localStorage.setItem('gg_custom_products', JSON.stringify(customProducts));
+    } catch (e) {}
+
+    // 4. Award 5% reward points
+    if (user && window.RewardService) {
+      try {
+        const earnedPoints = Math.floor(finalOrder.totalAmount * 0.05);
+        RewardService.addPoints(earnedPoints, `Earned on Order #${orderId}`);
+      } catch (e) {}
+    }
+
+    // 5. Asynchronously sync to Firestore with a fast non-blocking timeout
+    if (fbDb) {
+      const firestoreSyncPromise = (async () => {
+        try {
+          await fbDb.collection('orders').doc(orderId).set(finalOrder);
+          for (const item of finalOrder.items) {
+            try {
+              const prodId = item.id;
+              fbDb.collection('products').doc('prod_' + prodId).update({
+                stock: firebase.firestore.FieldValue.increment(-item.quantity)
+              }).catch(() => {});
+            } catch (e) {}
+          }
+        } catch (syncErr) {
+          console.warn("Firestore order sync note (order safely stored locally):", syncErr.message);
+        }
+      })();
+
+      try {
+        // Wait at most 1200ms for Firestore so COD never lags
+        await Promise.race([
+          firestoreSyncPromise,
+          new Promise(resolve => setTimeout(resolve, 1200))
+        ]);
+      } catch (e) {}
+    }
     
     return { success: true, order: finalOrder };
   },
 
   getUserOrders: async function(userId) {
+    const local = JSON.parse(localStorage.getItem('gg_orders') || '[]');
+    let userOrders = local;
+    if (userId) {
+      userOrders = local.filter(o => o.userId === userId || !o.userId || (typeof o.userId === 'string' && o.userId.startsWith('guest_')));
+    }
+
+    // Sync with Firestore with a 2-second timeout so page never freezes
     if (fbDb && userId) {
       try {
-        const snap = await fbDb.collection('orders').where('userId', '==', userId).get();
+        const fetchPromise = fbDb.collection('orders').where('userId', '==', userId).get();
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 2000));
+        const snap = await Promise.race([fetchPromise, timeoutPromise]);
         if (!snap.empty) {
           const list = [];
           snap.forEach(d => list.push(d.data()));
-          return list.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+          const orderMap = new Map();
+          userOrders.forEach(o => orderMap.set(o.orderId, o));
+          list.forEach(o => orderMap.set(o.orderId, o));
+          return Array.from(orderMap.values()).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
         }
-      } catch (e) {}
+      } catch (e) {
+        console.warn("Firestore orders read fallback:", e.message);
+      }
     }
     
-    const local = JSON.parse(localStorage.getItem('gg_orders') || '[]');
-    if (userId) {
-      return local.filter(o => o.userId === userId || !o.userId);
-    }
-    return local;
+    return userOrders.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
   },
 
   getAllOrders: async function() {

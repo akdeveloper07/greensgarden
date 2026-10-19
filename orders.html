@@ -241,6 +241,14 @@
       Store.renderHeader('orders');
       Store.renderFooter();
 
+      // Immediately render local orders so new orders are instantly visible
+      try {
+        const localOrders = JSON.parse(localStorage.getItem('gg_orders') || '[]');
+        if (localOrders && localOrders.length > 0) {
+          renderOrders(localOrders);
+        }
+      } catch(e) {}
+
       const user = AuthService.getCurrentUser();
       const orders = await OrderService.getUserOrders(user ? user.uid : null);
       renderOrders(orders);

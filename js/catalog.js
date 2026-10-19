@@ -1133,6 +1133,11 @@ const CatalogService = {
   }
 };
 
+if (typeof window !== 'undefined') {
+  window.INITIAL_CATALOG = INITIAL_CATALOG;
+  window.CatalogService = CatalogService;
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { INITIAL_CATALOG, CatalogService };
 }

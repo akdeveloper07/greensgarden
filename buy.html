@@ -249,7 +249,7 @@
 
           <!-- Razorpay Option -->
           <div class="pay-option-card selected" id="optRazorpay" onclick="selectPayOption('razorpay')">
-            <input type="radio" name="paymentOption" value="razorpay" checked>
+            <input type="radio" name="paymentOption" id="radioRazorpay" value="razorpay" onchange="selectPayOption('razorpay')" checked>
             <div style="flex: 1;">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <strong style="color: var(--forest-900);">Razorpay Online Gateway</strong>
@@ -263,11 +263,11 @@
 
           <!-- Cash On Delivery Option -->
           <div class="pay-option-card" id="optCod" onclick="selectPayOption('cod')">
-            <input type="radio" name="paymentOption" value="cod">
+            <input type="radio" name="paymentOption" id="radioCod" value="cod" onchange="selectPayOption('cod')">
             <div style="flex: 1;">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <strong style="color: var(--forest-900);">Cash On Delivery (COD)</strong>
-                <span style="background: var(--ivory-200); color: var(--forest-900); font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 4px;">VERIFIED OTP</span>
+                <span style="background: #e8f5e9; color: #1b4332; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 4px;">AVAILABLE</span>
               </div>
               <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
                 Pay with cash or UPI QR upon courier arrival at your doorstep.
@@ -478,29 +478,38 @@
         // Cash on Delivery
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Confirming COD Order...';
         
-        if (pointsToRedeem > 0) {
-          RewardService.redeemPoints(pointsToRedeem);
-        }
+        try {
+          if (pointsToRedeem > 0 && window.RewardService) {
+            RewardService.redeemPoints(pointsToRedeem);
+          }
 
-        const res = await OrderService.createOrder({
-          items: cart,
-          subtotal: totals.subtotal,
-          discount: totals.discount,
-          couponCode: activeCoupon,
-          shippingFee: totals.shippingFee,
-          rewardPointsUsed: pointsToRedeem,
-          totalAmount: totals.finalTotal,
-          paymentMethod: 'cod',
-          paymentStatus: 'Pending (Cash on Delivery)',
-          shippingAddress: shippingAddress
-        });
+          const res = await OrderService.createOrder({
+            items: cart,
+            subtotal: totals.subtotal,
+            discount: totals.discount,
+            couponCode: activeCoupon,
+            shippingFee: totals.shippingFee,
+            rewardPointsUsed: pointsToRedeem,
+            totalAmount: totals.finalTotal,
+            paymentMethod: 'cod',
+            paymentStatus: 'Pending (Cash on Delivery)',
+            shippingAddress: shippingAddress
+          });
 
-        if (res.success) {
-          localStorage.removeItem('gg_active_coupon');
-          Store.showToast("🌱 Order Placed with Cash on Delivery!");
-          setTimeout(() => {
-            window.location.href = `orders.html?newOrder=${res.order.orderId}`;
-          }, 800);
+          if (res && res.success) {
+            localStorage.removeItem('gg_active_coupon');
+            Store.showToast("🌱 Order Placed with Cash on Delivery!");
+            setTimeout(() => {
+              window.location.href = `orders.html?newOrder=${res.order.orderId}`;
+            }, 500);
+          } else {
+            throw new Error((res && res.error) || "Unable to confirm COD order.");
+          }
+        } catch (codErr) {
+          console.error("COD placement error:", codErr);
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-lock"></i> Authorize & Place Order';
+          Store.showToast("Could not place COD order. Please try again.", true);
         }
       }
     }

@@ -300,10 +300,12 @@
             <div class="cart-items-list">
               ${cart.map(item => `
                 <div class="cart-item-row">
-                  <img src="${item.image}" alt="${item.name}" class="cart-item-img" onerror="this.src='garden.jpg'">
+                  <a href="productdetails.html?id=${item.id}">
+                    <img src="${item.image}" alt="${item.name}" class="cart-item-img" onerror="this.src='garden.jpg'" style="cursor: pointer;">
+                  </a>
                   <div>
                     <span class="cart-item-category">${item.category || 'Gardening'}</span>
-                    <h3 class="cart-item-name">${item.name}</h3>
+                    <h3 class="cart-item-name"><a href="productdetails.html?id=${item.id}" style="color: inherit; text-decoration: none;">${item.name}</a></h3>
                     ${item.variant ? `<div style="font-size: 0.8rem; color: var(--text-muted);">${item.variant}</div>` : ''}
                     <div class="cart-item-price">₹${item.price} each</div>
                   </div>

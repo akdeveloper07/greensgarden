@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact — Green Garden</title>
+    <link rel="icon" type="image/png" href="green-garden-logo.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Firebase SDK for real-time message logging -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --void: #0a0616;
+            --ink: #120a24;
+            --plum: #1e1236;
+            --violet: #7c5cff;
+            --orchid: #b98cff;
+            --amber: #f0c060;
+            --pearl: #f2eefb;
+        }
+        html, body { height: 100%; }
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--void);
+            color: var(--pearl);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        .font-display { font-family: 'Fraunces', serif; font-optical-sizing: auto; }
+
+        .aurora {
+            position: fixed; inset: -20%;
+            z-index: 0;
+            pointer-events: none;
+            filter: blur(80px);
+            opacity: 0.6;
+            animation: drift 22s ease-in-out infinite alternate;
+        }
+        @keyframes drift {
+            0%   { transform: translate(0,0) rotate(0deg) scale(1); }
+            50%  { transform: translate(4%, -3%) rotate(8deg) scale(1.08); }
+            100% { transform: translate(-3%, 4%) rotate(-6deg) scale(0.98); }
+        }
+        .aurora-blob { position: absolute; border-radius: 50%; }
+
+        .grain {
+            position: fixed; inset: 0; z-index: 1; pointer-events: none;
+            opacity: 0.05; mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        .glass {
+            background: linear-gradient(150deg,
+                rgba(255,255,255,0.09) 0%,
+                rgba(255,255,255,0.02) 45%,
+                rgba(255,255,255,0.05) 100%);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.11);
+            box-shadow:
+                0 40px 80px -30px rgba(0,0,0,0.85),
+                0 2px 0 0 rgba(255,255,255,0.06) inset,
+                0 -1px 0 0 rgba(0,0,0,0.3) inset;
+        }
+
+        .logo-frame {
+            position: relative;
+            isolation: isolate;
+            background: linear-gradient(150deg,
+                rgba(255,255,255,0.10) 0%,
+                rgba(124,92,255,0.12) 50%,
+                rgba(240,192,96,0.08) 100%);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow:
+                0 30px 60px -20px rgba(0,0,0,0.8),
+                0 0 80px -20px rgba(124,92,255,0.45),
+                0 0 100px -30px rgba(240,192,96,0.30),
+                0 2px 0 0 rgba(255,255,255,0.10) inset;
+        }
+        .logo-frame::after {
+            content: "";
+            position: absolute; inset: 0;
+            border-radius: inherit;
+            padding: 1.5px;
+            background: conic-gradient(from 140deg, rgba(240,192,96,0.9), rgba(124,92,255,0.9), rgba(240,192,96,0.9), rgba(185,140,255,0.9), rgba(240,192,96,0.9));
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+                    mask-composite: exclude;
+            opacity: 0.9;
+            pointer-events: none;
+            animation: spinBorder 12s linear infinite;
+        }
+        @keyframes spinBorder {
+            from { filter: hue-rotate(0deg); }
+            to   { filter: hue-rotate(360deg); }
+        }
+
+        .tile {
+            position: relative;
+            isolation: isolate;
+            background: linear-gradient(160deg, rgba(30,18,54,0.45), rgba(10,6,22,0.55));
+            backdrop-filter: blur(22px) saturate(160%);
+            -webkit-backdrop-filter: blur(22px) saturate(160%);
+            border: 1px solid rgba(255,255,255,0.09);
+            border-radius: 22px;
+            box-shadow:
+                0 24px 48px -20px rgba(0,0,0,0.65),
+                0 1px 0 0 rgba(255,255,255,0.10) inset;
+            transition: transform .5s cubic-bezier(.19,1,.22,1),
+                        box-shadow .5s cubic-bezier(.19,1,.22,1),
+                        border-color .4s ease;
+        }
+        .tile::after {
+            content: "";
+            position: absolute; inset: 0;
+            border-radius: 22px;
+            padding: 1px;
+            background: linear-gradient(140deg, rgba(240,192,96,0), rgba(240,192,96,0.55), rgba(124,92,255,0), rgba(240,192,96,0));
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+                    mask-composite: exclude;
+            opacity: 0;
+            transition: opacity .45s ease;
+            pointer-events: none;
+        }
+        .tile:hover {
+            transform: translateY(-6px);
+            border-color: rgba(124,92,255,0.35);
+            box-shadow:
+                0 40px 70px -25px rgba(0,0,0,0.8),
+                0 0 60px -20px rgba(124,92,255,0.35),
+                0 1px 0 0 rgba(255,255,255,0.16) inset;
+        }
+        .tile:hover::after { opacity: 1; }
+
+        .ink-gold {
+            background: linear-gradient(120deg, #fff4cf 0%, #f0c060 45%, #c99028 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 3px 14px rgba(240,192,96,0.28));
+        }
+
+        .ink-violet {
+            background: linear-gradient(120deg, #e4d6ff 0%, #b98cff 45%, #7c5cff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 3px 14px rgba(124,92,255,0.35));
+        }
+
+        .act {
+            position: relative;
+            overflow: hidden;
+            border-radius: 14px;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            transition: transform .35s cubic-bezier(.19,1,.22,1), box-shadow .35s ease, filter .35s ease;
+        }
+        .act:hover { transform: translateY(-2px) scale(1.03); }
+        .act:active { transform: translateY(0) scale(0.98); }
+        .act-gold {
+            background: linear-gradient(135deg, #ffe08a 0%, #f0c060 50%, #c99028 100%);
+            color: #0a0616;
+            box-shadow: 0 12px 26px -10px rgba(240,192,96,0.55), 0 1px 0 0 rgba(255,255,255,0.35) inset;
+        }
+        .act-gold:hover { box-shadow: 0 18px 36px -10px rgba(240,192,96,0.75); filter: brightness(1.05); }
+        .act-violet {
+            background: linear-gradient(135deg, rgba(124,92,255,0.55), rgba(30,18,54,0.75));
+            color: var(--pearl);
+            border: 1px solid rgba(185,140,255,0.45);
+            box-shadow: 0 12px 26px -12px rgba(0,0,0,0.7), 0 1px 0 0 rgba(255,255,255,0.10) inset;
+        }
+        .act-violet:hover { border-color: rgba(185,140,255,0.85); box-shadow: 0 18px 34px -12px rgba(124,92,255,0.45); }
+        .act::before {
+            content: "";
+            position: absolute; top: 0; left: -60%;
+            width: 40%; height: 100%;
+            background: linear-gradient(100deg, transparent, rgba(255,255,255,0.45), transparent);
+            transform: skewX(-18deg);
+            transition: left .7s cubic-bezier(.19,1,.22,1);
+            pointer-events: none;
+        }
+        .act:hover::before { left: 130%; }
+
+        .chip {
+            border: 1px solid rgba(124,92,255,0.30);
+            background: linear-gradient(140deg, rgba(10,6,22,0.9), rgba(30,18,54,0.45));
+            backdrop-filter: blur(18px) saturate(160%);
+            -webkit-backdrop-filter: blur(18px) saturate(160%);
+            box-shadow: 0 14px 30px -12px rgba(0,0,0,0.75), 0 1px 0 0 rgba(255,255,255,0.10) inset;
+            transition: all .35s cubic-bezier(.19,1,.22,1);
+        }
+        .chip:hover {
+            border-color: var(--orchid);
+            color: var(--orchid);
+            transform: translateX(-6px);
+            box-shadow: 0 18px 40px -12px rgba(0,0,0,0.85), 0 0 30px -8px rgba(124,92,255,0.55);
+        }
+
+        @keyframes ringPulse {
+            0% { transform: scale(1); opacity: 0.75; }
+            80%,100% { transform: scale(2.4); opacity: 0; }
+        }
+        .ring-pulse { animation: ringPulse 2.4s cubic-bezier(.19,1,.22,1) infinite; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--void); }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--violet), var(--amber)); border-radius: 4px; }
+
+        a, button { cursor: pointer; }
+        .divider-soft {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+        }
+
+        .pill {
+            background: linear-gradient(140deg, rgba(30,18,54,0.55), rgba(10,6,22,0.65));
+            border: 1px solid rgba(124,92,255,0.28);
+            transition: all .3s ease;
+        }
+        .pill:hover {
+            border-color: rgba(240,192,96,0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px -10px rgba(240,192,96,0.35);
+        }
+
+        /* ===== FORM INPUTS ===== */
+        .field {
+            width: 100%;
+            background: rgba(10,6,22,0.6);
+            border: 1px solid rgba(124,92,255,0.25);
+            border-radius: 14px;
+            padding: 12px 16px;
+            font-size: 14px;
+            color: var(--pearl);
+            transition: border-color .3s ease, box-shadow .3s ease, background .3s ease;
+            outline: none;
+            font-family: inherit;
+        }
+        .field::placeholder { color: #6b5d8a; }
+        .field:focus {
+            border-color: rgba(124,92,255,0.8);
+            box-shadow: 0 0 0 3px rgba(124,92,255,0.15), 0 0 20px -5px rgba(124,92,255,0.4);
+            background: rgba(10,6,22,0.8);
+        }
+
+        /* status dot animation */
+        @keyframes statusPing {
+            0% { transform: scale(1); opacity: 0.8; }
+            75%, 100% { transform: scale(2.2); opacity: 0; }
+        }
+        .status-ping { animation: statusPing 1.8s cubic-bezier(0,0,0.2,1) infinite; }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+/* ============ CONFIG ============ */
+const LOGO_URL      = "green-garden-logo.png";
+const HOME_URL      = "index.html";
+const GITHUB_URL    = "https://github.com/akdeveloper07";
+const LINKEDIN_URL  = "https://www.linkedin.com/in/akashr-ram?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app";
+const EMAIL         = "greengarden2427@gmail.com";
+const PHONE         = "+9199942713";
+const WHATSAPP      = "9199942713";
+const ADDRESS       = "07 Garden Ave, Vellore";
+
+/* ============ BACKDROP ============ */
+const Aurora = () => (
+    <>
+        <div className="aurora">
+            <div className="aurora-blob" style={{width:'55vw',height:'55vw',background:'radial-gradient(circle,#7c5cff,transparent 65%)',top:'-10%',left:'-8%'}} />
+            <div className="aurora-blob" style={{width:'60vw',height:'60vw',background:'radial-gradient(circle,#1e1236,transparent 65%)',bottom:'-20%',right:'-12%'}} />
+            <div className="aurora-blob" style={{width:'35vw',height:'35vw',background:'radial-gradient(circle,rgba(240,192,96,0.55),transparent 70%)',top:'35%',left:'30%'}} />
+            <div className="aurora-blob" style={{width:'28vw',height:'28vw',background:'radial-gradient(circle,rgba(185,140,255,0.55),transparent 70%)',top:'10%',right:'22%'}} />
+        </div>
+        <div className="grain" />
+    </>
+);
+
+/* ============ BACK ============ */
+const BackChip = () => {
+    const ref = useRef(null);
+    useEffect(() => {
+        gsap.fromTo(ref.current, {opacity:0, x:-24}, {opacity:1, x:0, duration:.7, ease:"power2.out"});
+    }, []);
+    return (
+        <a href={HOME_URL} ref={ref}
+           className="chip fixed top-6 left-6 z-50 rounded-full pl-3 pr-5 py-2.5 flex items-center gap-2 text-[#f2eefb] group">
+            <svg className="w-5 h-5 transition-transform group-hover:-translate-x-1.5" fill="none" stroke="currentColor" strokeWidth={2.4} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
+            </svg>
+            <span className="text-[13px] font-medium tracking-wide">Back to Haven</span>
+        </a>
+    );
+};
+
+/* ============ HERO ============ */
+const Hero = () => {
+    const ref = useRef(null);
+    useEffect(() => {
+        const el = ref.current;
+        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        tl.fromTo(el.querySelector('.logo-frame'), {opacity:0, scale:.55, rotate:-8},
+                {opacity:1, scale:1, rotate:0, duration:1.2, ease:"back.out(1.5)"}, 0.1)
+          .fromTo(el.querySelector('.badge'), {opacity:0, y:-18}, {opacity:1, y:0, duration:.7}, 0.55)
+          .fromTo(el.querySelector('h1'), {opacity:0, y:30}, {opacity:1, y:0, duration:.9}, 0.7)
+          .fromTo(el.querySelector('.tag'), {opacity:0, y:14}, {opacity:1, y:0, duration:.7}, 0.9);
+    }, []);
+
+    return (
+        <header ref={ref} className="relative z-10 flex flex-col items-center text-center mb-16 pt-20 md:pt-10">
+            <div className="relative mb-8">
+                <span className="absolute inset-0 rounded-[2rem] border border-[#f0c060]/40 ring-pulse pointer-events-none" />
+                <span className="absolute inset-0 rounded-[2rem] border border-[#b98cff]/35 ring-pulse pointer-events-none" style={{animationDelay:'1.2s'}} />
+                <div className="logo-frame relative rounded-[2rem] p-4 md:p-5">
+                    <div className="absolute -inset-6 rounded-[2.5rem] bg-[radial-gradient(circle_at_center,rgba(124,92,255,0.35),transparent_70%)] blur-2xl pointer-events-none -z-10" />
+                    <div className="absolute -inset-10 rounded-[3rem] bg-[radial-gradient(circle_at_center,rgba(240,192,96,0.20),transparent_70%)] blur-3xl pointer-events-none -z-10" />
+                    <img
+                        src={LOGO_URL}
+                        alt="Green Garden Logo"
+                        className="relative w-40 h-40 md:w-48 md:h-48 rounded-full object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)] border-2 border-[#f0c060]/60"
+                        onError={(e)=>{
+                            e.target.src = "logo.png";
+                        }}
+                    />
+                </div>
+            </div>
+
+            <span className="badge inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.35em] text-[#b98cff] mb-5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#f0c060] shadow-[0_0_8px_#f0c060]" />
+                Green Garden
+                <span className="w-1.5 h-1.5 rounded-full bg-[#f0c060] shadow-[0_0_8px_#f0c060]" />
+            </span>
+
+            <h1 className="font-display font-light text-[2.9rem] leading-[1.05] md:text-[4.4rem] tracking-tight">
+                <span className="ink-violet font-medium">Let's talk</span>
+                <span className="block text-[#f2eefb]/90 italic font-normal text-[2rem] md:text-[2.8rem] mt-1">
+                    & grow together
+                </span>
+            </h1>
+
+            <div className="divider-soft w-40 my-7" />
+
+            <p className="tag max-w-md text-[15px] leading-relaxed text-[#c9c0e4]">
+                Questions, botanical advice, custom planter orders, or wholesale inquiries — reach out through whichever door feels right.
+            </p>
+        </header>
+    );
+};
+
+/* ============ CONTACT TILE ============ */
+const Tile = ({ glyph, tag, title, note, href, cta, variant, index }) => {
+    const ref = useRef(null);
+    useEffect(() => {
+        gsap.fromTo(ref.current,
+            {opacity:0, y:44, rotateX:-8},
+            {opacity:1, y:0, rotateX:0, duration:.85, delay:0.5+index*0.12, ease:"power3.out"});
+    }, []);
+
+    const external = href.startsWith('http') && !href.startsWith('tel:') && !href.startsWith('mailto:');
+
+    return (
+        <div ref={ref} className="tile p-5 md:p-6 flex items-center gap-5">
+            <div className="shrink-0 w-14 h-14 rounded-2xl grid place-items-center
+                            bg-gradient-to-br from-[#1e1236]/80 to-[#0a0616]/70
+                            border border-[#7c5cff]/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.10)]">
+                {glyph}
+            </div>
+
+            <div className="flex-1 min-w-0">
+                <p className="text-[10px] uppercase tracking-[0.3em] text-[#b98cff] mb-1">{tag}</p>
+                <p className="text-[#f2eefb] font-semibold text-[17px] truncate">{title}</p>
+                {note && <p className="text-[12px] text-[#9d90c0] mt-0.5 truncate">{note}</p>}
+            </div>
+
+            <a href={href} target={external ? "_blank" : "_self"} rel="noopener noreferrer"
+               className={`act ${variant === 'gold' ? 'act-gold' : 'act-violet'}
+                          shrink-0 px-5 py-2.5 text-[13px] whitespace-nowrap`}>
+                {cta}
+            </a>
+        </div>
+    );
+};
+
+/* ============ LIVE OPEN STATUS HOOK ============ */
+const useOpenStatus = () => {
+    const [status, setStatus] = useState({ open: false, label: 'Checking…' });
+    useEffect(() => {
+        const tick = () => {
+            const now = new Date();
+            const day = now.getDay();      // 0 Sun, 1 Mon … 6 Sat
+            const h = now.getHours();
+
+            // Open Mon–Sat, 9:00 – 18:00 IST
+            const isOpen = day >= 1 && day <= 6 && (h >= 9) && h < 18;
+
+            if (isOpen) {
+                const closeH = 18 - h;
+                const closeLabel = closeH === 1 ? 'closes in 1 hour' : `closes in ${closeH} hours`;
+                setStatus({ open: true, label: `Open now · ${closeLabel}` });
+            } else {
+                let nextOpen = 'tomorrow at 9am';
+                if (day === 0) nextOpen = 'tomorrow (Mon) at 9am';
+                else if (day === 6 && h >= 18) nextOpen = 'Monday at 9am';
+                else if (h < 9 && day >= 1 && day <= 6) nextOpen = 'today at 9am';
+                setStatus({ open: false, label: `Closed · opens ${nextOpen}` });
+            }
+        };
+        tick();
+        const id = setInterval(tick, 60000);
+        return () => clearInterval(id);
+    }, []);
+    return status;
+};
+
+/* ============ LOCATION TILE (with live status + vCard) ============ */
+const LocationTile = () => {
+    const ref = useRef(null);
+    const status = useOpenStatus();
+    const [downloaded, setDownloaded] = useState(false);
+
+    useEffect(() => {
+        gsap.fromTo(ref.current, {opacity:0, y:40}, {opacity:1, y:0, duration:.9, delay:.9, ease:"power3.out"});
+    }, []);
+
+    const downloadVCard = () => {
+        const vcard = `BEGIN:VCARD
+VERSION:3.0
+FN:Green Garden Botanical Haven
+ORG:Green Garden
+TEL;TYPE=WORK,VOICE:${PHONE}
+EMAIL;TYPE=WORK:${EMAIL}
+URL:https://wa.me/${WHATSAPP}
+ADR;TYPE=WORK:;;${ADDRESS};;;India
+NOTE:Harmony in every leaf - Premium Plants, Organic Seeds & Botanical Sanctuary
+END:VCARD`;
+        const blob = new Blob([vcard], { type: 'text/vcard;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'green-garden-contact.vcf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        setDownloaded(true);
+        setTimeout(() => setDownloaded(false), 2400);
+    };
+
+    return (
+        <div ref={ref} className="tile overflow-hidden">
+            <div className="relative h-44">
+                <img src="garden.jpg"
+                     alt="Green Garden Conservatory"
+                     onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1200&auto=format&fit=crop"; }}
+                     className="w-full h-full object-cover opacity-65 hover:opacity-85 hover:scale-105 transition-all duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0616] via-[#0a0616]/50 to-transparent" />
+                <div className="absolute bottom-4 left-5 flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full grid place-items-center
+                                    bg-gradient-to-br from-[#ffe08a] to-[#c99028] shadow-lg">
+                        <svg className="w-4 h-4 text-[#0a0616]" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p className="text-[10px] uppercase tracking-[0.25em] text-[#f0c060]">Our Sanctuary</p>
+                        <p className="font-semibold text-[#f2eefb]">{ADDRESS}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex items-center justify-between px-5 py-4 border-t border-white/10 flex-wrap gap-3">
+                <div className="flex items-center gap-2.5">
+                    <span className="relative flex h-2.5 w-2.5">
+                        <span className={`status-ping absolute h-2.5 w-2.5 rounded-full opacity-70 ${status.open ? 'bg-[#6fbf9a]' : 'bg-[#ff7a7a]'}`}></span>
+                        <span className={`relative rounded-full h-2.5 w-2.5 ${status.open ? 'bg-[#6fbf9a] shadow-[0_0_10px_#6fbf9a]' : 'bg-[#ff7a7a] shadow-[0_0_10px_#ff7a7a]'}`}></span>
+                    </span>
+                    <span className="text-[12px] text-[#c9c0e4]">{status.label}</span>
+                </div>
+                <a href={`https://maps.google.com/?q=${encodeURIComponent('Green Garden Vellore')}`}
+                   target="_blank" rel="noopener noreferrer"
+                   className="text-[13px] font-medium text-[#f0c060] hover:underline underline-offset-4">
+                    Directions →
+                </a>
+            </div>
+
+            {/* VCard button */}
+            <div className="px-5 pb-5">
+                <button onClick={downloadVCard}
+                        className="act act-violet w-full py-3 text-[13px] flex items-center justify-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M5 20h14"/>
+                    </svg>
+                    {downloaded ? '✓ Botanical Contact Saved!' : 'Save Contact (vCard)'}
+                </button>
+            </div>
+        </div>
+    );
+};
+
+/* ============ REAL-TIME CONTACT FORM ============ */
+const ContactForm = () => {
+    const ref = useRef(null);
+    const [form, setForm] = useState({ name: '', email: '', message: '' });
+    const [submitting, setSubmitting] = useState(false);
+    const [sent, setSent] = useState(false);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        gsap.fromTo(ref.current, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .9, delay: 1.0, ease: "power3.out" });
+
+        // Auto pre-fill if logged in user exists
+        try {
+            const user = (window.AuthService && typeof AuthService.getCurrentUser === 'function')
+                ? AuthService.getCurrentUser()
+                : JSON.parse(localStorage.getItem('gg_user') || 'null');
+            if (user) {
+                setForm(prev => ({
+                    ...prev,
+                    name: user.name || prev.name,
+                    email: user.email || prev.email
+                }));
+            }
+        } catch(e) {}
+    }, []);
+
+    const submit = async (e) => {
+        e.preventDefault();
+        if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
+            setError('Please fill in your name, email, and message.');
+            return;
+        }
+        setError('');
+        setSubmitting(true);
+
+        const newMsg = {
+            id: 'msg_' + Date.now(),
+            name: form.name.trim(),
+            email: form.email.trim(),
+            message: form.message.trim(),
+            createdAt: new Date().toISOString(),
+            status: 'unread'
+        };
+
+        // 1. Instant local persistence (real-time zero loss)
+        try {
+            const localMsgs = JSON.parse(localStorage.getItem('gg_contact_messages') || '[]');
+            localMsgs.unshift(newMsg);
+            localStorage.setItem('gg_contact_messages', JSON.stringify(localMsgs));
+        } catch(err) {
+            console.warn("Local storage write note:", err);
+        }
+
+        // 2. Real-time Firebase Firestore synchronization
+        try {
+            if (window.fbDb) {
+                await window.fbDb.collection('contact_messages').add(newMsg);
+            }
+        } catch (fsErr) {
+            console.warn("Firestore contact message note (stored locally):", fsErr);
+        }
+
+        // 3. Pre-fill mailto for mail client
+        const subject = `Message from ${form.name} (Green Garden)`;
+        const body = `${form.message}\n\n—\nSender: ${form.name}\nEmail: ${form.email}\nSent on: ${new Date().toLocaleString()}`;
+        
+        setTimeout(() => {
+            window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }, 400);
+
+        setSubmitting(false);
+        setSent(true);
+        setForm({ name: '', email: '', message: '' });
+        setTimeout(() => setSent(false), 6000);
+    };
+
+    return (
+        <div ref={ref} className="tile p-6 md:p-7 mt-3.5">
+            <div className="flex items-center justify-between mb-5">
+                <h3 className="font-display text-2xl md:text-[1.7rem] font-medium ink-violet">Send a message</h3>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[#9d90c0] flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse"></span>
+                    Live Dispatch
+                </span>
+            </div>
+
+            <form onSubmit={submit} className="space-y-3.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <input
+                        className="field"
+                        placeholder="Your name"
+                        value={form.name}
+                        onChange={(e) => setForm({ ...form, name: e.target.value })}
+                        autoComplete="name"
+                        required
+                    />
+                    <input
+                        className="field"
+                        type="email"
+                        placeholder="Your email"
+                        value={form.email}
+                        onChange={(e) => setForm({ ...form, email: e.target.value })}
+                        autoComplete="email"
+                        required
+                    />
+                </div>
+                <textarea
+                    className="field resize-none"
+                    rows={4}
+                    placeholder="How can we help your botanical journey grow?"
+                    value={form.message}
+                    onChange={(e) => setForm({ ...form, message: e.target.value })}
+                    required
+                />
+
+                {error && <p className="text-[#ff7a7a] text-[12px]">{error}</p>}
+
+                <button type="submit" disabled={submitting} className="act act-gold w-full py-3.5 text-[14px] flex items-center justify-center gap-2">
+                    {submitting ? (
+                        <>
+                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-[#0a0616]" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                            </svg>
+                            Sending in real-time…
+                        </>
+                    ) : (
+                        <>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                            </svg>
+                            {sent ? 'Message Saved & Sent!' : 'Send message'}
+                        </>
+                    )}
+                </button>
+
+                {sent && (
+                    <div className="p-3 rounded-xl bg-[#065f46]/30 border border-[#10b981]/40 text-[#6fbf9a] text-[12.5px] text-center">
+                        ✓ Message recorded in real-time! Opening your email client to notify our horticulture specialists.
+                    </div>
+                )}
+
+                <p className="text-[11px] text-center text-[#6b5d8a]">
+                    Or email directly at <a href={`mailto:${EMAIL}`} className="text-[#b98cff] hover:underline font-semibold">{EMAIL}</a>
+                </p>
+            </form>
+        </div>
+    );
+};
+
+/* ============ CREATOR CARD ============ */
+const Creator = ({ onOpen }) => {
+    const ref = useRef(null);
+    useEffect(() => {
+        gsap.fromTo(ref.current, {opacity:0, y:26}, {opacity:1, y:0, duration:.8, delay:1.1, ease:"power3.out"});
+    }, []);
+    return (
+        <section ref={ref} className="mt-16 text-center">
+            <p className="text-[10px] uppercase tracking-[0.4em] text-[#b98cff] mb-4">Crafted by</p>
+            <div onClick={onOpen}
+                 className="glass rounded-3xl p-5 max-w-sm mx-auto cursor-pointer group
+                            transition-all duration-500 hover:border-[#7c5cff]/55
+                            hover:shadow-[0_0_60px_-15px_rgba(124,92,255,0.55)]">
+                <div className="flex items-center gap-4">
+                    <div className="relative shrink-0">
+                        <img src="Ak1.jpg" alt="Akash"
+                             className="w-16 h-16 rounded-full object-cover border-2 border-[#f0c060]/80 shadow-lg"
+                             onError={(e)=>{ e.target.src='Ak.jpg'; }} />
+                        <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#b98cff] border-2 border-[#0a0616] shadow-[0_0_10px_#b98cff]" />
+                    </div>
+                    <div className="text-left flex-1 min-w-0">
+                        <h3 className="font-display text-2xl font-medium ink-gold">Akash</h3>
+                        <p className="text-[11px] uppercase tracking-[0.2em] text-[#9d90c0] mt-0.5">Full-Stack Developer</p>
+                    </div>
+                    <svg className="w-5 h-5 text-[#f0c060] shrink-0 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                        <path d="M9 5l7 7-7 7"/>
+                    </svg>
+                </div>
+                <button className="act act-gold w-full mt-4 py-3 text-[13px]">View Creator Profile & Work</button>
+            </div>
+        </section>
+    );
+};
+
+/* ============ PORTFOLIO MODAL ============ */
+const Portfolio = ({ open, close }) => {
+    const backdrop = useRef(null);
+    const panel = useRef(null);
+
+    useEffect(() => {
+        if (open) {
+            document.body.style.overflow = 'hidden';
+            gsap.fromTo(backdrop.current, {opacity:0}, {opacity:1, duration:.3});
+            gsap.fromTo(panel.current, {scale:.85, y:50, opacity:0},
+                        {scale:1, y:0, opacity:1, duration:.55, ease:"back.out(1.3)"});
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [open]);
+
+    if (!open) return null;
+
+    return (
+        <div ref={backdrop} onClick={close}
+             className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#0a0616]/85 backdrop-blur-lg">
+            <div ref={panel} onClick={e=>e.stopPropagation()}
+                 className="glass rounded-3xl w-full max-w-md p-6 border-t-2 border-[#f0c060]/70 relative
+                            max-h-[92vh] overflow-y-auto">
+                <button onClick={close}
+                        className="absolute top-4 right-4 w-9 h-9 rounded-full grid place-items-center
+                                   text-[#c9c0e4] hover:text-white hover:bg-white/10 transition">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+
+                <div className="flex flex-col items-center pt-1">
+                    <img src="Ak1.jpg" alt="Akash"
+                         className="w-24 h-24 rounded-full border-[3px] border-[#f0c060] object-cover mb-4
+                                    shadow-[0_0_40px_-8px_rgba(240,192,96,0.6)]"
+                         onError={(e)=>{ e.target.src='Ak.jpg'; }} />
+                    <h2 className="font-display text-3xl font-medium ink-gold">Akash</h2>
+                    <p className="text-[12px] text-[#9d90c0] mt-1">Full-Stack Developer</p>
+                </div>
+
+                <div className="divider-soft my-6" />
+
+                <div className="grid grid-cols-2 gap-2 text-[13px]">
+                    {['HTML','CSS','JavaScript','Java','Python','C / C++'].map((s,i)=>(
+                        <div key={i} className="pill rounded-xl px-3 py-2.5 text-[#f2eefb] text-center">{s}</div>
+                    ))}
+                </div>
+
+                <div className="mt-6">
+                    <h4 className="text-[10px] uppercase tracking-[0.3em] text-[#b98cff] mb-2.5">Recent work</h4>
+                    <div className="space-y-2">
+                        <a href="https://github.com/akdeveloper07/fake-transaction-detection" target="_blank" rel="noopener noreferrer"
+                           className="flex items-center justify-between bg-[#0a0616]/60 border border-[#7c5cff]/25
+                                      rounded-xl px-3.5 py-3 hover:border-[#7c5cff]/70 hover:bg-[#0a0616]/85 transition group">
+                            <span className="text-[13px] text-[#f2eefb] group-hover:text-[#b98cff] transition">Fake transaction detection</span>
+                            <span className="text-[11px] font-semibold text-[#f0c060] tracking-wide">MERN</span>
+                        </a>
+                        <a href="https://github.com/akdeveloper07/medlink-ai" target="_blank" rel="noopener noreferrer"
+                           className="flex items-center justify-between bg-[#0a0616]/60 border border-[#7c5cff]/25
+                                      rounded-xl px-3.5 py-3 hover:border-[#7c5cff]/70 hover:bg-[#0a0616]/85 transition group">
+                            <span className="text-[13px] text-[#f2eefb] group-hover:text-[#b98cff] transition">MEDLINK AI</span>
+                            <span className="text-[11px] font-semibold text-[#f0c060] tracking-wide">TensorFlow</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div className="flex gap-2 mt-6">
+                    <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer"
+                       className="act act-violet flex-1 py-3 text-[13px] text-center">GitHub</a>
+                    <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer"
+                       className="act act-violet flex-1 py-3 text-[13px] text-center">LinkedIn</a>
+                    <a href="mailto:akash520511@gmail.com"
+                       className="act act-gold flex-1 py-3 text-[13px] text-center">Email</a>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+/* ============ APP ============ */
+const App = () => {
+    const [open, setOpen] = useState(false);
+
+    return (
+        <div className="relative min-h-screen px-4 py-8">
+            <Aurora />
+            <BackChip />
+
+            <main className="relative z-10 max-w-xl mx-auto">
+                <Hero />
+
+                <div className="space-y-3.5">
+                    <Tile
+                        index={0}
+                        glyph={<svg className="w-6 h-6 text-[#f0c060]" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>}
+                        tag="Phone"
+                        title="+91 99942 713"
+                        note="Mon – Sat · 9am to 6pm IST"
+                        href={`tel:${PHONE}`}
+                        cta="Call now"
+                        variant="gold"
+                    />
+                    <Tile
+                        index={1}
+                        glyph={<svg className="w-6 h-6 text-[#b98cff]" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>}
+                        tag="WhatsApp"
+                        title="Chat with Botanical Team"
+                        note="Usually replies within minutes"
+                        href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Hello Green Garden! I have a question about my plants.')}`}
+                        cta="Start chat"
+                        variant="violet"
+                    />
+                    <Tile
+                        index={2}
+                        glyph={<svg className="w-6 h-6 text-[#f0c060]" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>}
+                        tag="Email"
+                        title={EMAIL}
+                        note="We reply within 24 hours"
+                        href={`mailto:${EMAIL}`}
+                        cta="Send email"
+                        variant="gold"
+                    />
+
+                    <LocationTile />
+
+                    <ContactForm />
+                </div>
+
+                <Creator onOpen={() => setOpen(true)} />
+
+                <footer className="mt-12 mb-4 text-center">
+                    <div className="divider-soft w-24 mx-auto mb-4" />
+                    <p className="text-[11px] tracking-[0.25em] uppercase text-[#5b4a7a]">
+                        © Green Garden — harmony in every leaf
+                    </p>
+                </footer>
+            </main>
+
+            <Portfolio open={open} close={() => setOpen(false)} />
+        </div>
+    );
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

@@ -5,7 +5,7 @@ const RAZORPAY_CONFIG = {
   keyId: "rzp_test_TpJmTwC4HbsI2z", // Razorpay Key ID
   currency: "INR",
   companyName: "Green Garden",
-  logo: "Ak.jpg",
+  logo: "green-garden-logo.png",
   themeColor: "#1b4332"
 };
 
