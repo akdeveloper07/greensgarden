@@ -215,6 +215,37 @@
         position: static;
       }
     }
+
+    @media (max-width: 600px) {
+      .cart-page-wrap {
+        padding: 20px 12px 60px;
+      }
+      .cart-items-panel, .summary-panel {
+        padding: 18px 14px;
+      }
+      .cart-header-title {
+        font-size: 1.35rem;
+      }
+      .cart-item-row {
+        grid-template-columns: 70px 1fr;
+        gap: 12px;
+        position: relative;
+      }
+      .cart-item-img {
+        width: 70px;
+        height: 70px;
+      }
+      .item-actions-col {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px dashed var(--border-subtle);
+      }
+    }
   </style>
 </head>
 <body>

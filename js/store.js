@@ -158,6 +158,10 @@ const Store = {
       b.textContent = totalCartCount;
       b.style.display = totalCartCount > 0 ? 'flex' : 'none';
     });
+    const drawerBadges = document.querySelectorAll('.cart-count-badge-text');
+    drawerBadges.forEach(b => {
+      b.textContent = totalCartCount;
+    });
 
     const wishlist = Store.getWishlist();
     const wishBadges = document.querySelectorAll('.wish-count-badge');
@@ -193,6 +197,221 @@ const Store = {
     }, 2800);
   },
 
+  // Dynamic user avatar resolver
+  getUserAvatar: function() {
+    const customAvatar = localStorage.getItem('gg_user_avatar');
+    if (customAvatar) return customAvatar;
+    if (window.AuthService) {
+      const u = window.AuthService.getCurrentUser();
+      if (u && u.photoURL) return u.photoURL;
+      if (u && u.name) return `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=2d6a4f&color=fff`;
+    }
+    return 'green-garden-logo.png';
+  },
+
+  // Mobile navigation drawer controls
+  toggleMobileMenu: function() {
+    const drawer = document.getElementById('mobileNavDrawer');
+    const backdrop = document.getElementById('mobileNavBackdrop');
+    if (drawer && backdrop) {
+      const isOpen = drawer.classList.contains('active');
+      if (isOpen) {
+        Store.closeMobileMenu();
+      } else {
+        drawer.classList.add('active');
+        backdrop.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+  },
+
+  closeMobileMenu: function() {
+    const drawer = document.getElementById('mobileNavDrawer');
+    const backdrop = document.getElementById('mobileNavBackdrop');
+    if (drawer) drawer.classList.remove('active');
+    if (backdrop) backdrop.classList.remove('active');
+    document.body.style.overflow = '';
+  },
+
+  // Profile Picture modal controls
+  openProfileModal: function() {
+    let modal = document.getElementById('profilePicModal');
+    if (!modal) {
+      Store.injectProfileModal();
+      modal = document.getElementById('profilePicModal');
+    }
+    const currentAvatar = Store.getUserAvatar();
+    const previewImg = document.getElementById('profileModalPreviewImg');
+    if (previewImg) previewImg.src = currentAvatar;
+    const urlInput = document.getElementById('profilePicUrlInput');
+    if (urlInput) urlInput.value = currentAvatar.startsWith('data:') ? '' : currentAvatar;
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    const drop = document.getElementById('userDropdownMenu');
+    if (drop) drop.style.display = 'none';
+  },
+
+  closeProfileModal: function() {
+    const modal = document.getElementById('profilePicModal');
+    if (modal) modal.classList.remove('active');
+    document.body.style.overflow = '';
+  },
+
+  handleProfilePicFile: function(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      Store.showToast("Please choose a valid image file", true);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const size = 256;
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+
+        const minSide = Math.min(img.width, img.height);
+        const sx = (img.width - minSide) / 2;
+        const sy = (img.height - minSide) / 2;
+
+        ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+
+        const previewImg = document.getElementById('profileModalPreviewImg');
+        if (previewImg) previewImg.src = dataUrl;
+        window._pendingProfileAvatar = dataUrl;
+        Store.showToast("Photo selected! Click 'Save Profile Picture' to apply.");
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  },
+
+  selectPresetAvatar: function(url) {
+    window._pendingProfileAvatar = url;
+    const previewImg = document.getElementById('profileModalPreviewImg');
+    if (previewImg) previewImg.src = url;
+    const urlInput = document.getElementById('profilePicUrlInput');
+    if (urlInput) urlInput.value = url;
+  },
+
+  saveProfileAvatar: async function() {
+    let finalAvatar = window._pendingProfileAvatar;
+    const urlInput = document.getElementById('profilePicUrlInput');
+    if (!finalAvatar && urlInput && urlInput.value.trim()) {
+      finalAvatar = urlInput.value.trim();
+    }
+    if (!finalAvatar) {
+      finalAvatar = Store.getUserAvatar();
+    }
+
+    localStorage.setItem('gg_user_avatar', finalAvatar);
+
+    if (window.AuthService) {
+      try {
+        await window.AuthService.updateProfile({ photoURL: finalAvatar });
+      } catch (err) {
+        console.warn('Firebase profile sync note:', err);
+      }
+    }
+
+    document.querySelectorAll('.user-avatar-mini, #headerUserAvatar, #drawerUserAvatar, .author-avatar').forEach(img => {
+      img.src = finalAvatar;
+    });
+
+    Store.showToast("🌿 Profile picture updated successfully!");
+    Store.closeProfileModal();
+    window._pendingProfileAvatar = null;
+  },
+
+  injectProfileModal: function() {
+    if (document.getElementById('profilePicModal')) return;
+    const modalEl = document.createElement('div');
+    modalEl.id = 'profilePicModal';
+    modalEl.className = 'gg-profile-modal-overlay';
+    modalEl.innerHTML = `
+      <div class="gg-profile-modal-card">
+        <div class="gg-modal-head">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <i class="fas fa-camera text-gold" style="font-size:1.3rem; color:#d4af37;"></i>
+            <h3 style="margin:0; font-family:var(--font-serif); font-size:1.35rem; color:var(--forest-900);">Change Profile Picture</h3>
+          </div>
+          <button class="gg-modal-close" onclick="Store.closeProfileModal()" aria-label="Close modal">&times;</button>
+        </div>
+
+        <div class="gg-modal-body">
+          <div class="profile-preview-box">
+            <div class="profile-preview-circle">
+              <img id="profileModalPreviewImg" src="${Store.getUserAvatar()}" alt="Preview Avatar">
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-top:8px;">Live Preview (Square 1:1 format)</p>
+          </div>
+
+          <div class="profile-option-section">
+            <label class="profile-sec-label"><i class="fas fa-upload"></i> Upload from Phone or Laptop</label>
+            <div class="file-upload-dropzone" onclick="document.getElementById('profilePicFileInput').click()">
+              <i class="fas fa-cloud-upload-alt" style="font-size:1.8rem; color:var(--sage-500); margin-bottom:6px;"></i>
+              <div style="font-weight:600; font-size:0.9rem; color:var(--forest-900);">Tap or Click to Select Photo</div>
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Camera roll, selfie, or desktop images (Auto-optimized)</div>
+              <input type="file" id="profilePicFileInput" accept="image/*" style="display:none;" onchange="Store.handleProfilePicFile(event)">
+            </div>
+          </div>
+
+          <div class="profile-option-section">
+            <label class="profile-sec-label"><i class="fas fa-seedling"></i> Or Choose a Botanical Avatar</label>
+            <div class="preset-avatar-grid">
+              <button type="button" class="preset-avatar-btn" onclick="Store.selectPresetAvatar('green-garden-logo.png')" title="Royal Green Garden Crest">
+                <img src="green-garden-logo.png" alt="Royal Crest">
+              </button>
+              <button type="button" class="preset-avatar-btn" onclick="Store.selectPresetAvatar('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80')" title="Urban Botanist">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80" alt="Botanist">
+              </button>
+              <button type="button" class="preset-avatar-btn" onclick="Store.selectPresetAvatar('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80')" title="Plant Enthusiast">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80" alt="Plant Enthusiast">
+              </button>
+              <button type="button" class="preset-avatar-btn" onclick="Store.selectPresetAvatar('https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=256&q=80')" title="Flora Whisperer">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=256&q=80" alt="Flora">
+              </button>
+              <button type="button" class="preset-avatar-btn" onclick="Store.selectPresetAvatar('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=256&q=80')" title="Greenhouse Keeper">
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=256&q=80" alt="Keeper">
+              </button>
+              <button type="button" class="preset-avatar-btn" onclick="Store.selectPresetAvatar('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=256&q=80')" title="Monstera Leaf">
+                <img src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=256&q=80" alt="Monstera">
+              </button>
+              <button type="button" class="preset-avatar-btn" onclick="Store.selectPresetAvatar('https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=256&q=80')" title="Pine Forest">
+                <img src="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=256&q=80" alt="Pine">
+              </button>
+              <button type="button" class="preset-avatar-btn" onclick="Store.selectPresetAvatar('https://images.unsplash.com/photo-1463936575829-25148e1db1b8?auto=format&fit=crop&w=256&q=80')" title="Succulent Bloom">
+                <img src="https://images.unsplash.com/photo-1463936575829-25148e1db1b8?auto=format&fit=crop&w=256&q=80" alt="Succulent">
+              </button>
+            </div>
+          </div>
+
+          <div class="profile-option-section">
+            <label class="profile-sec-label"><i class="fas fa-link"></i> Or Paste Image URL</label>
+            <input type="url" id="profilePicUrlInput" class="profile-url-input" placeholder="https://example.com/my-photo.jpg" oninput="if(this.value.trim()){ document.getElementById('profileModalPreviewImg').src = this.value.trim(); window._pendingProfileAvatar = this.value.trim(); }">
+          </div>
+        </div>
+
+        <div class="gg-modal-footer">
+          <button type="button" class="btn-botanical" style="background:#e9ecef; color:#495057; padding:10px 20px; font-size:0.9rem;" onclick="Store.closeProfileModal()">Cancel</button>
+          <button type="button" class="btn-botanical btn-botanical-primary" style="padding:10px 24px; font-size:0.9rem;" onclick="Store.saveProfileAvatar()">
+            <i class="fas fa-check-circle"></i> Save Profile Picture
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modalEl);
+  },
+
   // Unified Navbar Injection across all pages
   renderHeader: function(activePage = 'home') {
     const headerContainer = document.getElementById('global-header');
@@ -200,6 +419,7 @@ const Store = {
 
     const user = window.AuthService ? window.AuthService.getCurrentUser() : null;
     const isAdmin = user && user.role === 'admin';
+    const userAvatar = Store.getUserAvatar();
 
     headerContainer.innerHTML = `
       <div class="announcement-bar">
@@ -239,23 +459,26 @@ const Store = {
               <span class="counter-badge cart-count-badge" style="display:none;">0</span>
             </a>
 
-            <a href="orders.html" class="action-btn" title="My Orders & Tracking">
+            <a href="orders.html" class="action-btn d-none-xs" title="My Orders & Tracking">
               <i class="fas fa-box-open"></i>
             </a>
 
             ${user ? `
               <div class="dropdown-wrap" style="position: relative;">
                 <button class="user-account-btn" onclick="Store.toggleUserMenu(event)">
-                  <img src="Ak.jpg" alt="Avatar" class="user-avatar-mini" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=2d6a4f&color=fff'">
+                  <img src="${userAvatar}" alt="Avatar" id="headerUserAvatar" class="user-avatar-mini" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=2d6a4f&color=fff'">
                   <span class="user-name-label">${user.name.split(' ')[0]}</span>
                   <i class="fas fa-chevron-down" style="font-size: 0.75rem; color: var(--text-muted);"></i>
                 </button>
-                <div id="userDropdownMenu" style="display: none; position: absolute; right: 0; top: 110%; background: #fff; border-radius: 14px; box-shadow: var(--shadow-float); width: 220px; border: 1px solid var(--border-subtle); z-index: 1000; padding: 8px 0;">
+                <div id="userDropdownMenu" style="display: none; position: absolute; right: 0; top: 110%; background: #fff; border-radius: 14px; box-shadow: var(--shadow-float); width: 230px; border: 1px solid var(--border-subtle); z-index: 1000; padding: 8px 0;">
                   <div style="padding: 10px 16px; border-bottom: 1px solid #f0f0f0;">
                     <div style="font-weight: 700; font-size: 0.9rem; color: var(--forest-900);">${user.name}</div>
                     <div style="font-size: 0.75rem; color: var(--text-muted);">${user.email}</div>
                     <div style="font-size: 0.75rem; color: var(--sage-500); font-weight: 600; margin-top: 4px;">🏆 ${window.RewardService ? window.RewardService.getBalance() : 100} Green Points</div>
                   </div>
+                  <button onclick="Store.openProfileModal()" style="width: 100%; text-align: left; background: none; border: none; padding: 10px 16px; font-size: 0.88rem; color: var(--forest-900); cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-camera" style="color: var(--sage-500);"></i> Change Profile Picture
+                  </button>
                   <a href="orders.html" style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; font-size: 0.88rem; color: var(--text-primary);"><i class="fas fa-truck-moving" style="color: var(--sage-500);"></i> My Orders & Tracker</a>
                   <a href="plant-passport.html" style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; font-size: 0.88rem; color: var(--text-primary);"><i class="fas fa-passport" style="color: var(--sage-500);"></i> Digital Plant Passport</a>
                   <a href="plant-care.html" style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; font-size: 0.88rem; color: var(--text-primary);"><i class="fas fa-calendar-check" style="color: var(--sage-500);"></i> Care Schedule</a>
@@ -271,10 +494,88 @@ const Store = {
                 <i class="fas fa-user"></i> Login
               </a>
             `}
+
+            <button class="action-btn mobile-menu-toggle" onclick="Store.toggleMobileMenu()" aria-label="Toggle Navigation Menu" title="Menu">
+              <i class="fas fa-bars"></i>
+            </button>
           </div>
         </div>
       </header>
+
+      <!-- Mobile Navigation Drawer -->
+      <div id="mobileNavBackdrop" class="mobile-nav-backdrop" onclick="Store.closeMobileMenu()"></div>
+      <div id="mobileNavDrawer" class="mobile-nav-drawer">
+        <div class="mobile-drawer-header">
+          <a href="index.html" class="brand-logo" onclick="Store.closeMobileMenu()">
+            <img src="green-garden-logo.png" alt="Logo" class="brand-logo-img">
+            <div>
+              <span style="color: var(--forest-900); font-weight:700;">Green Garden</span>
+              <span class="brand-tagline">Botanical Haven</span>
+            </div>
+          </a>
+          <button class="mobile-drawer-close" onclick="Store.closeMobileMenu()" aria-label="Close menu">&times;</button>
+        </div>
+
+        <div class="mobile-drawer-user">
+          ${user ? `
+            <div style="display:flex; align-items:center; gap:12px; width:100%;">
+              <div style="position:relative;">
+                <img src="${userAvatar}" alt="${user.name}" id="drawerUserAvatar" class="user-avatar-mini" style="width:48px; height:48px; border:2px solid #d4af37;">
+                <button onclick="Store.openProfileModal()" title="Change Profile Picture" style="position:absolute; bottom:-3px; right:-3px; width:22px; height:22px; border-radius:50%; background:var(--forest-800); color:#fff; border:1px solid #fff; display:flex; align-items:center; justify-content:center; font-size:0.65rem; cursor:pointer;">
+                  <i class="fas fa-camera"></i>
+                </button>
+              </div>
+              <div style="flex:1; min-width:0;">
+                <div style="font-weight:700; font-size:0.95rem; color:var(--forest-900);">${user.name}</div>
+                <div style="font-size:0.75rem; color:var(--text-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${user.email}</div>
+                <button onclick="Store.openProfileModal()" style="background:none; border:none; padding:0; color:var(--sage-600); font-size:0.75rem; font-weight:600; cursor:pointer; text-decoration:underline; margin-top:2px;">
+                  <i class="fas fa-edit"></i> Change Photo
+                </button>
+              </div>
+            </div>
+          ` : `
+            <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+              <div style="font-size:0.88rem; color:var(--forest-900); font-weight:600;">Welcome to Green Garden!</div>
+              <a href="login.html" class="btn-botanical btn-botanical-primary" style="padding:6px 16px; font-size:0.82rem;" onclick="Store.closeMobileMenu()">
+                <i class="fas fa-user"></i> Login
+              </a>
+            </div>
+          `}
+        </div>
+
+        <div class="mobile-drawer-nav">
+          <div class="mobile-nav-group-title">EXPLORE SANCTUARY</div>
+          <a href="index.html" class="mobile-nav-link ${activePage === 'home' ? 'active' : ''}" onclick="Store.closeMobileMenu()"><i class="fas fa-home"></i> Home</a>
+          <a href="products.html" class="mobile-nav-link ${activePage === 'products' ? 'active' : ''}" onclick="Store.closeMobileMenu()"><i class="fas fa-seedling"></i> Shop Plants & Seeds</a>
+          <a href="ai-doctor.html" class="mobile-nav-link ${activePage === 'doctor' ? 'active' : ''}" onclick="Store.closeMobileMenu()"><i class="fas fa-stethoscope"></i> AI Plant Doctor <span class="badge-ai">AI</span></a>
+          <a href="plant-finder.html" class="mobile-nav-link ${activePage === 'finder' ? 'active' : ''}" onclick="Store.closeMobileMenu()"><i class="fas fa-search-location"></i> Plant Finder</a>
+          <a href="plant-care.html" class="mobile-nav-link ${activePage === 'care' ? 'active' : ''}" onclick="Store.closeMobileMenu()"><i class="fas fa-calendar-alt"></i> Care Calendar</a>
+          <a href="garden-kit.html" class="mobile-nav-link ${activePage === 'kit' ? 'active' : ''}" onclick="Store.closeMobileMenu()"><i class="fas fa-box"></i> Custom Garden Kits</a>
+          <a href="community.html" class="mobile-nav-link ${activePage === 'community' ? 'active' : ''}" onclick="Store.closeMobileMenu()"><i class="fas fa-comments"></i> Gardening Community</a>
+          <a href="contact.html" class="mobile-nav-link ${activePage === 'contact' ? 'active' : ''}" onclick="Store.closeMobileMenu()"><i class="fas fa-envelope"></i> Contact Us</a>
+          ${isAdmin ? `<a href="admin.html" class="mobile-nav-link ${activePage === 'admin' ? 'active' : ''}" style="color:#c58b49;" onclick="Store.closeMobileMenu()"><i class="fas fa-shield-alt"></i> Admin Dashboard</a>` : ''}
+
+          <div class="mobile-nav-group-title" style="margin-top:16px;">MY ACCOUNT & ORDERS</div>
+          <a href="cart.html" class="mobile-nav-link" onclick="Store.closeMobileMenu()"><i class="fas fa-shopping-bag"></i> Cart (<span class="cart-count-badge-text">0</span>)</a>
+          <a href="orders.html" class="mobile-nav-link" onclick="Store.closeMobileMenu()"><i class="fas fa-truck-moving"></i> Track My Orders</a>
+          <a href="subscription.html" class="mobile-nav-link" onclick="Store.closeMobileMenu()"><i class="fas fa-crown"></i> Plant Subscription Club</a>
+          ${user ? `<button onclick="Store.handleLogout()" class="mobile-nav-link" style="color:#e63946; background:none; border:none; width:100%; text-align:left; font-family:inherit; cursor:pointer;"><i class="fas fa-sign-out-alt"></i> Logout</button>` : ''}
+        </div>
+
+        <div class="mobile-drawer-footer">
+          <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:8px;">HORTICULTURAL NURSERY HOTLINE</div>
+          <a href="tel:+919994247213" style="display:flex; align-items:center; gap:8px; color:var(--forest-900); font-weight:700; font-size:0.88rem; margin-bottom:4px; text-decoration:none;">
+            <i class="fas fa-phone-alt text-sage" style="color:var(--sage-500);"></i> +91 99942 47213
+          </a>
+          <a href="mailto:greengarden783421@gmail.com" style="display:flex; align-items:center; gap:8px; color:var(--text-muted); font-size:0.78rem; text-decoration:none;">
+            <i class="fas fa-envelope" style="color:var(--sage-500);"></i> greengarden783421@gmail.com
+          </a>
+        </div>
+      </div>
     `;
+
+    // Ensure Profile Modal is primed in the DOM
+    Store.injectProfileModal();
 
     Store.updateBadgeCounters();
     document.addEventListener('click', (e) => {

@@ -59,6 +59,7 @@ if (document.readyState === 'loading') {
 const AuthService = {
   // Current user helper
   getCurrentUser: function() {
+    const savedAvatar = localStorage.getItem('gg_user_avatar');
     // Check Firebase auth first
     if (fbAuth && fbAuth.currentUser) {
       const u = fbAuth.currentUser;
@@ -68,19 +69,59 @@ const AuthService = {
         email: u.email,
         name: u.displayName || (cached ? cached.name : u.email.split('@')[0]),
         role: (cached && cached.role) || (u.email === 'admin@greengarden.com' || u.email === 'akd04376@gmail.com' ? 'admin' : 'customer'),
-        photoURL: u.photoURL || 'Ak.jpg'
+        photoURL: savedAvatar || (cached && cached.photoURL) || u.photoURL || 'Ak.jpg'
       };
     }
     // Check persistent session fallback
     const localUser = localStorage.getItem('gg_user') || sessionStorage.getItem('currentUser');
     if (localUser) {
       try {
-        return JSON.parse(localUser);
+        const parsed = JSON.parse(localUser);
+        if (savedAvatar) parsed.photoURL = savedAvatar;
+        return parsed;
       } catch (e) {
         return null;
       }
     }
     return null;
+  },
+
+  // Update Profile (Photo URL, Name, etc.)
+  updateProfile: async function(updates) {
+    let currentUser = AuthService.getCurrentUser() || {
+      uid: 'guest_' + Date.now(),
+      name: 'Botanical Enthusiast',
+      email: 'gardener@greengarden.com',
+      role: 'customer'
+    };
+
+    const updatedUser = { ...currentUser, ...updates };
+
+    if (updates.photoURL) {
+      localStorage.setItem('gg_user_avatar', updates.photoURL);
+    }
+
+    if (fbAuth && fbAuth.currentUser) {
+      try {
+        const authData = {};
+        if (updates.name) authData.displayName = updates.name;
+        if (updates.photoURL) authData.photoURL = updates.photoURL;
+        await fbAuth.currentUser.updateProfile(authData);
+      } catch (e) {
+        console.warn("Auth update profile note:", e.message);
+      }
+    }
+
+    if (fbDb && updatedUser.uid) {
+      try {
+        await fbDb.collection('users').doc(updatedUser.uid).set(updatedUser, { merge: true });
+      } catch (e) {}
+    }
+
+    localStorage.setItem('gg_user', JSON.stringify(updatedUser));
+    sessionStorage.setItem('currentUser', JSON.stringify(updatedUser));
+
+    return { success: true, user: updatedUser };
   },
 
   // Signup

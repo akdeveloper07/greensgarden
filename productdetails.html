@@ -590,6 +590,44 @@
         grid-template-columns: 1fr;
       }
     }
+
+    @media (max-width: 540px) {
+      .details-page-wrap {
+        padding: 16px 12px 50px;
+      }
+      .main-image-frame {
+        height: 300px;
+      }
+      .prod-title {
+        font-size: 1.6rem;
+      }
+      .price-big {
+        font-size: 1.65rem;
+      }
+      .action-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .qty-stepper {
+        justify-content: center;
+        width: 100%;
+      }
+      .action-row .btn-botanical {
+        width: 100%;
+        text-align: center;
+      }
+      .botanical-tabs-nav {
+        overflow-x: auto;
+        white-space: nowrap;
+        scrollbar-width: none;
+      }
+      .botanical-tabs-nav::-webkit-scrollbar {
+        display: none;
+      }
+      .spec-matrix-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>

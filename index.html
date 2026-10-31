@@ -259,9 +259,27 @@
     }
 
     @media (max-width: 768px) {
-      .hero-title { font-size: 2.4rem; }
+      .hero-title { font-size: 2.3rem; }
+      .hero-section { min-height: 72vh; padding: 45px 16px; }
       .stats-grid { grid-template-columns: 1fr 1fr; }
+      .category-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
       .ai-feature-banner { grid-template-columns: 1fr; padding: 30px 20px; }
+      .section-header { margin-bottom: 24px; }
+      .section-title { font-size: 1.85rem; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title { font-size: 1.85rem; }
+      .hero-badge { font-size: 0.75rem; padding: 4px 12px; }
+      .hero-section { min-height: 65vh; padding: 36px 14px; }
+      .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .category-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .cat-card { padding: 16px 10px; }
+      .cat-icon-circle { width: 50px; height: 50px; font-size: 1.4rem; }
+      .cat-name { font-size: 0.92rem; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .section-title { font-size: 1.55rem; }
     }
   </style>
 </head>
@@ -274,7 +292,7 @@
   <section class="hero-section">
     <div class="hero-content">
       <div style="margin-bottom: 16px;">
-        <img src="green-garden-logo.png" alt="Green Garden Official Logo" style="width: 88px; height: 88px; border-radius: 50%; border: 3px solid #d4af37; box-shadow: 0 8px 24px rgba(0,0,0,0.35); transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.08) rotate(5deg)'" onmouseout="this.style.transform='scale(1) rotate(0deg)'">
+        <img src="green-garden-logo.png" alt="Green Garden Official Logo" style="width: 88px; height: 88px; border-radius: 18px; object-fit: cover; background: #0d2818; border: 3px solid #d4af37; box-shadow: 0 8px 24px rgba(0,0,0,0.35); transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.08) rotate(5deg)'" onmouseout="this.style.transform='scale(1) rotate(0deg)'">
       </div>
       <div class="hero-badge">
         <i class="fas fa-certificate"></i> Certified Organic & Climate Protected
