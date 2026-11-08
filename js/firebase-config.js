@@ -125,7 +125,7 @@ const AuthService = {
   },
 
   // Signup
-  signup: async function(name, email, password, role = 'customer') {
+  signup: async function(name, email, password, role = 'customer', phone = '') {
     if (fbAuth) {
       try {
         const userCred = await fbAuth.createUserWithEmailAndPassword(email, password);
@@ -135,6 +135,7 @@ const AuthService = {
           uid: userCred.user.uid,
           name: name,
           email: email,
+          phone: phone || '',
           role: (email === 'admin@greengarden.com' || email === 'akd04376@gmail.com') ? 'admin' : role,
           createdAt: new Date().toISOString(),
           rewardPoints: 100 // Welcome points bonus!
@@ -167,6 +168,7 @@ const AuthService = {
       uid: 'user_' + Date.now(),
       name: name,
       email: email.toLowerCase(),
+      phone: phone || '',
       password: password, // In production stored as hash
       role: (email.toLowerCase() === 'admin@greengarden.com' || email.toLowerCase() === 'akd04376@gmail.com') ? 'admin' : role,
       createdAt: new Date().toISOString(),

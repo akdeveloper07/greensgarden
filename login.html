@@ -2,200 +2,1188 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login | Green Garden Botanical Haven</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Login | Green Garden — Botanical Sanctuary & Seed Haven</title>
   <link rel="icon" type="image/png" href="icon-512.png">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/botanical-theme.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#123D2A">
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <style>
+    :root {
+      --forest-950: #0a2116;
+      --forest-900: #123D2A;
+      --forest-800: #194F37;
+      --natural-green: #3D8B55;
+      --sage-500: #52B788;
+      --sage-300: #95D5B2;
+      --sage-100: #D8F3DC;
+      --gold-accent: #D4AF37;
+      --gold-light: #F3E8C8;
+      --cream-bg: #F7F8F0;
+      --cream-surface: #FFFFFF;
+      --text-main: #14281D;
+      --text-muted: #5E7166;
+      --text-light: #8E9E94;
+      --border-soft: rgba(18, 61, 42, 0.12);
+      --border-focus: #3D8B55;
+      --glass-bg: rgba(255, 255, 255, 0.94);
+      --shadow-luxury: 0 30px 60px -15px rgba(18, 61, 42, 0.15), 0 0 0 1px rgba(18, 61, 42, 0.05);
+      --shadow-hover: 0 35px 70px -15px rgba(18, 61, 42, 0.22);
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 24px;
+      --radius-full: 9999px;
+      --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     body {
-      background: linear-gradient(135deg, rgba(15, 40, 28, 0.85), rgba(20, 54, 38, 0.9)), url('garden.jpg');
-      background-size: cover;
-      background-position: center;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--cream-bg);
+      color: var(--text-main);
       min-height: 100vh;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
     }
 
-    .auth-wrapper {
-      flex-grow: 1;
+    /* Top Utility Pill for direct home access */
+    .top-brand-bar {
+      position: absolute;
+      top: 20px;
+      left: 24px;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-home-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(18, 61, 42, 0.12);
+      color: var(--forest-900);
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+      transition: var(--transition);
+    }
+
+    .back-home-pill:hover {
+      background: #ffffff;
+      transform: translateX(-3px);
+      color: var(--natural-green);
+      box-shadow: 0 6px 20px rgba(18, 61, 42, 0.12);
+    }
+
+    /* Main Split Layout */
+    .auth-split-wrapper {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* ========================================================
+       LEFT HERO SHOWCASE (DESKTOP)
+       ======================================================== */
+    .auth-showcase-panel {
+      position: relative;
+      background: linear-gradient(145deg, rgba(10, 33, 22, 0.94) 0%, rgba(18, 61, 42, 0.88) 55%, rgba(10, 33, 22, 0.96) 100%), 
+                  url('garden.jpg') center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 60px 56px;
+      color: #ffffff;
+      overflow: hidden;
+    }
+
+    /* Ambient Botanical Glow Orbs */
+    .showcase-glow-1 {
+      position: absolute;
+      top: -100px;
+      left: -100px;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(82, 183, 136, 0.28) 0%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(50px);
+      pointer-events: none;
+      animation: ambientPulse 12s ease-in-out infinite alternate;
+    }
+
+    .showcase-glow-2 {
+      position: absolute;
+      bottom: -80px;
+      right: -80px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.22) 0%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(60px);
+      pointer-events: none;
+      animation: ambientPulse 10s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes ambientPulse {
+      0% { transform: scale(1) translate(0, 0); opacity: 0.6; }
+      100% { transform: scale(1.15) translate(20px, -20px); opacity: 0.9; }
+    }
+
+    /* Floating Botanical Leaves */
+    .floating-leaf {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0.18;
+      z-index: 1;
+      animation: driftLeaf 18s ease-in-out infinite alternate;
+    }
+
+    .leaf-1 { top: 18%; right: 12%; font-size: 3rem; color: var(--sage-300); animation-delay: 0s; }
+    .leaf-2 { bottom: 26%; left: 8%; font-size: 2.4rem; color: var(--gold-accent); animation-delay: -5s; }
+    .leaf-3 { top: 60%; right: 8%; font-size: 2rem; color: var(--sage-500); animation-delay: -9s; }
+
+    @keyframes driftLeaf {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-25px) rotate(12deg); }
+      100% { transform: translateY(-45px) rotate(-8deg); }
+    }
+
+    .showcase-header {
+      position: relative;
+      z-index: 2;
+    }
+
+    .showcase-brand-lockup {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 10px 20px 10px 12px;
+      border-radius: var(--radius-full);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .showcase-logo-img {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: #0d2818;
+      border: 2px solid var(--gold-accent);
+      object-fit: cover;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    }
+
+    .showcase-brand-text h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+      line-height: 1.1;
+    }
+
+    .showcase-brand-text span {
+      font-size: 0.72rem;
+      color: var(--gold-accent);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .showcase-center-content {
+      position: relative;
+      z-index: 2;
+      margin: 48px 0;
+      max-width: 520px;
+    }
+
+    .showcase-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      color: #FFF2C6;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      margin-bottom: 24px;
+    }
+
+    .showcase-quote {
+      font-family: 'Fraunces', serif;
+      font-size: 2.6rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: #ffffff;
+      margin-bottom: 20px;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .showcase-quote em {
+      font-style: italic;
+      color: #D8F3DC;
+      font-weight: 400;
+    }
+
+    .showcase-narrative {
+      font-size: 1.02rem;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 32px;
+      font-weight: 400;
+    }
+
+    /* Botanical Features Micro-Cards */
+    .showcase-features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .feature-micro-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      transition: var(--transition);
+    }
+
+    .feature-micro-card:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(212, 175, 55, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .feature-micro-card i {
+      color: var(--gold-accent);
+      font-size: 1.15rem;
+      margin-top: 2px;
+    }
+
+    .feature-micro-card h4 {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+
+    .feature-micro-card p {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.35;
+    }
+
+    .showcase-footer {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding-top: 24px;
+    }
+
+    .community-proof {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar-stack {
+      display: flex;
+      align-items: center;
+    }
+
+    .avatar-stack img {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 2px solid #123D2A;
+      margin-left: -8px;
+      object-fit: cover;
+    }
+
+    .avatar-stack img:first-child {
+      margin-left: 0;
+    }
+
+    .community-proof-text {
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.3;
+    }
+
+    .community-proof-text strong {
+      color: var(--gold-accent);
+    }
+
+    /* ========================================================
+       RIGHT FORM PANEL
+       ======================================================== */
+    .auth-form-panel {
+      background-color: var(--cream-bg);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 40px 20px;
+      padding: 40px 32px;
+      position: relative;
+      overflow-y: auto;
     }
 
-    .auth-card {
-      background: rgba(255, 255, 255, 0.96);
-      backdrop-filter: blur(16px);
-      border-radius: var(--radius-lg);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      box-shadow: var(--shadow-float);
-      max-width: 460px;
+    /* Ambient form background blobs */
+    .form-bg-ambient {
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(61, 139, 85, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      top: 10%;
+      right: 5%;
+    }
+
+    .form-card {
       width: 100%;
-      padding: 44px 36px;
-      animation: fadeInScale 0.4s ease;
+      max-width: 480px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(18, 61, 42, 0.1);
+      border-radius: var(--radius-lg);
+      padding: 44px 40px;
+      box-shadow: var(--shadow-luxury);
+      position: relative;
+      z-index: 2;
+      animation: cardEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    @keyframes fadeInScale {
-      from { transform: scale(0.96); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+    @keyframes cardEnter {
+      from { opacity: 0; transform: translateY(20px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
+    .card-top-identity {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .card-logo-link {
+      display: inline-block;
+      text-decoration: none;
+      transition: transform 0.3s ease;
+      margin-bottom: 14px;
+    }
+
+    .card-logo-link:hover {
+      transform: scale(1.05) rotate(2deg);
+    }
+
+    .card-logo-img {
+      width: 68px;
+      height: 68px;
+      border-radius: 16px;
+      background: #0d2818;
+      border: 2.5px solid var(--gold-accent);
+      box-shadow: 0 8px 24px rgba(18, 61, 42, 0.2);
+      object-fit: cover;
+    }
+
+    .card-title {
+      font-family: 'Fraunces', serif;
+      font-size: 1.95rem;
+      font-weight: 700;
+      color: var(--forest-900);
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .card-subtitle {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Alerts */
+    .auth-alert-box {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 16px;
+      border-radius: var(--radius-md);
+      font-size: 0.88rem;
+      line-height: 1.4;
+      margin-bottom: 22px;
+      animation: alertSlide 0.3s ease;
+    }
+
+    @keyframes alertSlide {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .auth-alert-box.error {
+      display: flex;
+      background: #FFF1F0;
+      color: #CF1322;
+      border: 1px solid #FFA39E;
+    }
+
+    .auth-alert-box.success {
+      display: flex;
+      background: #F6FFED;
+      color: #389E0D;
+      border: 1px solid #B7EB8F;
+    }
+
+    /* Form Fields */
     .form-group {
       margin-bottom: 20px;
       text-align: left;
     }
 
+    .form-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
     .form-label {
-      display: block;
-      font-size: 0.85rem;
+      font-size: 0.86rem;
       font-weight: 700;
       color: var(--forest-900);
-      margin-bottom: 6px;
-      font-family: var(--font-display);
+      letter-spacing: 0.2px;
     }
 
-    .input-wrap {
+    .forgot-link {
+      font-size: 0.82rem;
+      color: var(--natural-green);
+      font-weight: 700;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .forgot-link:hover {
+      color: var(--forest-900);
+      text-decoration: underline;
+    }
+
+    .input-wrapper {
       position: relative;
+      display: flex;
+      align-items: center;
     }
 
-    .input-wrap i.prefix-icon {
+    .input-icon-prefix {
       position: absolute;
       left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-      font-size: 0.95rem;
+      color: var(--text-light);
+      font-size: 1rem;
+      pointer-events: none;
+      transition: var(--transition);
     }
 
     .form-input {
       width: 100%;
-      padding: 13px 44px 13px 44px;
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
+      height: 52px;
+      padding: 0 44px 0 46px;
       font-size: 0.95rem;
-      font-family: var(--font-sans);
-      background: var(--ivory-50);
+      font-family: inherit;
+      color: var(--text-main);
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius-md);
       outline: none;
-      transition: var(--transition-fast);
+      transition: var(--transition);
+      box-shadow: 0 2px 4px rgba(18, 61, 42, 0.02);
+    }
+
+    .form-input::placeholder {
+      color: var(--text-light);
+      font-weight: 400;
     }
 
     .form-input:focus {
-      background: #ffffff;
-      border-color: var(--sage-400);
-      box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.2);
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 4px rgba(61, 139, 85, 0.15);
+      background: #FFFFFF;
     }
 
-    .toggle-pass-btn {
+    .input-wrapper:focus-within .input-icon-prefix {
+      color: var(--natural-green);
+    }
+
+    .toggle-password-btn {
       position: absolute;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-50%);
+      right: 14px;
       background: none;
       border: none;
-      color: var(--text-muted);
+      color: var(--text-light);
+      font-size: 1rem;
       cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .demo-admin-badge {
-      background: var(--ivory-100);
-      border: 1px dashed var(--brass-500);
-      border-radius: var(--radius-md);
-      padding: 12px;
-      margin-top: 24px;
+    .toggle-password-btn:hover {
+      color: var(--forest-900);
+      background: rgba(18, 61, 42, 0.05);
+    }
+
+    /* Remember Me & Controls */
+    .form-options-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .custom-checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      user-select: none;
+    }
+
+    .custom-checkbox-label input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid var(--border-soft);
+      border-radius: 5px;
+      background: #fff;
+      cursor: pointer;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .custom-checkbox-label input[type="checkbox"]:checked {
+      background: var(--natural-green);
+      border-color: var(--natural-green);
+    }
+
+    .custom-checkbox-label input[type="checkbox"]:checked::after {
+      content: '\f00c';
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 900;
+      font-size: 11px;
+      color: #fff;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Primary Submit Button */
+    .btn-submit-premium {
+      width: 100%;
+      height: 52px;
+      border: none;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--forest-900) 0%, var(--natural-green) 100%);
+      color: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.98rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 10px 24px -6px rgba(18, 61, 42, 0.45);
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .btn-submit-premium::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+      transform: skewX(-20deg);
+      transition: 0.75s ease;
+    }
+
+    .btn-submit-premium:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px -6px rgba(18, 61, 42, 0.6);
+      filter: brightness(1.04);
+    }
+
+    .btn-submit-premium:hover::after {
+      left: 140%;
+    }
+
+    .btn-submit-premium:active {
+      transform: translateY(0);
+    }
+
+    .btn-submit-premium:disabled {
+      opacity: 0.75;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Social Divider */
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      margin: 24px 0;
+      gap: 14px;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(18, 61, 42, 0.1);
+    }
+
+    .auth-divider span {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    /* Google Sign-In Button */
+    .btn-google-sign {
+      width: 100%;
+      height: 50px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius-full);
+      color: var(--forest-900);
+      font-family: inherit;
+      font-size: 0.94rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+      transition: var(--transition);
+    }
+
+    .btn-google-sign:hover {
+      background: #FAFAFA;
+      border-color: rgba(18, 61, 42, 0.25);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .btn-google-sign:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    /* Switch Screen Prompt */
+    .card-switch-prompt {
       text-align: center;
-      font-size: 0.82rem;
+      margin-top: 26px;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    .card-switch-prompt a {
+      color: var(--forest-900);
+      font-weight: 800;
+      text-decoration: none;
+      margin-left: 4px;
+      position: relative;
+    }
+
+    .card-switch-prompt a:hover {
+      color: var(--natural-green);
+      text-decoration: underline;
+    }
+
+    /* Admin Demo Credentials Badge */
+    .admin-fast-pill {
+      margin-top: 22px;
+      padding: 12px 14px;
+      background: rgba(212, 175, 55, 0.09);
+      border: 1px dashed rgba(212, 175, 55, 0.6);
+      border-radius: var(--radius-md);
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-main);
+    }
+
+    .admin-fast-pill button {
+      margin-top: 6px;
+      background: #ffffff;
+      border: 1px solid var(--gold-accent);
+      color: #926A18;
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 5px 14px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .admin-fast-pill button:hover {
+      background: var(--gold-accent);
+      color: #ffffff;
+    }
+
+    /* ========================================================
+       MODAL: FORGOT PASSWORD
+       ======================================================== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 33, 22, 0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-window {
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      max-width: 440px;
+      width: 100%;
+      padding: 36px 32px;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(18, 61, 42, 0.12);
+      text-align: center;
+      transform: translateY(20px) scale(0.96);
+      transition: var(--transition);
+    }
+
+    .modal-overlay.active .modal-window {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-icon-circle {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--sage-100);
+      color: var(--forest-900);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 16px;
+    }
+
+    .modal-window h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.5rem;
+      color: var(--forest-900);
+      margin-bottom: 8px;
+    }
+
+    .modal-window p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 22px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      height: 48px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-modal-cancel {
+      background: #F1F3F2;
+      border: 1px solid var(--border-soft);
+      color: var(--text-main);
+    }
+
+    .btn-modal-cancel:hover {
+      background: #E5E9E7;
+    }
+
+    .btn-modal-confirm {
+      background: var(--forest-900);
+      border: none;
+      color: #fff;
+    }
+
+    .btn-modal-confirm:hover {
+      background: var(--natural-green);
+    }
+
+    /* ========================================================
+       RESPONSIVE DESIGN BREAKPOINTS
+       ======================================================== */
+    /* Tablets & Small Laptops (900px - 1024px) */
+    @media (max-width: 1024px) {
+      .auth-split-wrapper {
+        grid-template-columns: 1fr;
+      }
+
+      .auth-showcase-panel {
+        display: none; /* Streamlined for focused tablet/mobile view */
+      }
+
+      .auth-form-panel {
+        padding: 80px 24px 40px;
+        min-height: 100vh;
+      }
+
+      .top-brand-bar {
+        position: fixed;
+      }
+    }
+
+    /* Phones (<= 640px) */
+    @media (max-width: 640px) {
+      .auth-form-panel {
+        padding: 70px 14px 30px;
+      }
+
+      .form-card {
+        padding: 32px 20px;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px -10px rgba(18, 61, 42, 0.12);
+      }
+
+      .card-title {
+        font-size: 1.65rem;
+      }
+
+      .card-subtitle {
+        font-size: 0.86rem;
+      }
+
+      .form-input {
+        height: 48px;
+        font-size: 0.95rem; /* Prevents auto zoom in iOS Safari */
+      }
+
+      .btn-submit-premium,
+      .btn-google-sign {
+        height: 48px;
+      }
+
+      .top-brand-bar {
+        top: 14px;
+        left: 14px;
+      }
+
+      .back-home-pill {
+        padding: 6px 14px;
+        font-size: 0.8rem;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div id="global-header"></div>
+  <!-- Floating Navigation Shortcut -->
+  <div class="top-brand-bar">
+    <a href="index.html" class="back-home-pill" title="Return to Green Garden Home">
+      <i class="fas fa-arrow-left"></i>
+      <span>Back to Garden</span>
+    </a>
+  </div>
 
-  <div class="auth-wrapper">
-    <div class="auth-card">
-        <a href="index.html" style="display: inline-block; text-decoration: none;">
-          <img src="green-garden-logo.png" alt="Green Garden Logo" class="brand-logo-img" onerror="this.src='logo.png'" style="width: 72px; height: 72px; margin: 0 auto 12px; display: block; border: 3px solid #d4af37; box-shadow: var(--shadow-md);">
+  <main class="auth-split-wrapper">
+    <!-- ==========================================
+         LEFT SHOWCASE: BOTANICAL SANCTUARY
+         ========================================== -->
+    <section class="auth-showcase-panel" aria-label="Botanical Sanctuary Showcase">
+      <div class="showcase-glow-1"></div>
+      <div class="showcase-glow-2"></div>
+      <i class="fas fa-leaf floating-leaf leaf-1"></i>
+      <i class="fas fa-seedling floating-leaf leaf-2"></i>
+      <i class="fas fa-spa floating-leaf leaf-3"></i>
+
+      <header class="showcase-header">
+        <a href="index.html" class="showcase-brand-lockup" style="text-decoration: none;">
+          <img src="green-garden-logo.png" alt="Green Garden Official Crest" class="showcase-logo-img" onerror="this.src='logo.png'">
+          <div class="showcase-brand-text">
+            <h2>Green Garden</h2>
+            <span>Botanical Haven</span>
+          </div>
         </a>
-        <h2 style="font-size: 1.8rem; margin-bottom: 6px;">Welcome Back</h2>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">Sign in to manage your garden, orders & rewards</p>
+      </header>
+
+      <div class="showcase-center-content">
+        <div class="showcase-badge-pill">
+          <i class="fas fa-certificate text-gold" style="color: var(--gold-accent);"></i> Certified Indian Horticultural Nursery
+        </div>
+        <h1 class="showcase-quote">
+          “To plant a garden is to believe in <em>tomorrow</em>.”
+        </h1>
+        <p class="showcase-narrative">
+          Connect with India’s foremost sanctuary for organic heirloom seeds, rare exotic cultivars, and AI-assisted horticultural diagnostics.
+        </p>
+
+        <!-- Feature micro cards -->
+        <div class="showcase-features-grid">
+          <div class="feature-micro-card">
+            <i class="fas fa-leaf"></i>
+            <div>
+              <h4>Heirloom Seeds</h4>
+              <p>100% organic, non-GMO verified germination guarantee.</p>
+            </div>
+          </div>
+          <div class="feature-micro-card">
+            <i class="fas fa-stethoscope"></i>
+            <div>
+              <h4>AI Plant Doctor</h4>
+              <p>24/7 instant leaf disease scanner & treatment plans.</p>
+            </div>
+          </div>
+          <div class="feature-micro-card">
+            <i class="fas fa-truck-fast"></i>
+            <div>
+              <h4>Climate-Proof Care</h4>
+              <p>Eco-insulated live sapling transit across India.</p>
+            </div>
+          </div>
+          <div class="feature-micro-card">
+            <i class="fas fa-award"></i>
+            <div>
+              <h4>Green Rewards</h4>
+              <p>Earn points with every sprout to unlock rare plants.</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div id="authAlert" style="display: none; padding: 12px 16px; border-radius: var(--radius-sm); margin-bottom: 20px; font-size: 0.88rem;"></div>
-
-      <form id="loginForm" onsubmit="handleLoginSubmit(event)">
-        <div class="form-group">
-          <label class="form-label">Email Address</label>
-          <div class="input-wrap">
-            <i class="fas fa-envelope prefix-icon"></i>
-            <input type="email" id="loginEmail" class="form-input" placeholder="e.g. akash@example.com" required>
+      <footer class="showcase-footer">
+        <div class="community-proof">
+          <div class="avatar-stack">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" alt="Plant Parent">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&q=80" alt="Botanist">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80" alt="Gardener">
+          </div>
+          <div class="community-proof-text">
+            Joined by <strong>45,000+ urban gardeners</strong><br>cultivating greener living spaces.
           </div>
         </div>
+        <div style="font-size: 0.78rem; color: rgba(255,255,255,0.65); letter-spacing: 0.5px;">
+          <i class="fas fa-shield-alt" style="color: var(--sage-300);"></i> 256-Bit SSL Protected
+        </div>
+      </footer>
+    </section>
 
-        <div class="form-group">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <label class="form-label" style="margin-bottom: 0;">Password</label>
-            <a href="#" onclick="openForgotModal(event)" style="font-size: 0.8rem; color: var(--sage-500); font-weight: 600;">Forgot Password?</a>
-          </div>
-          <div class="input-wrap">
-            <i class="fas fa-lock prefix-icon"></i>
-            <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
-            <button type="button" class="toggle-pass-btn" onclick="togglePassVisibility('loginPassword', this)">
-              <i class="fas fa-eye"></i>
-            </button>
-          </div>
+    <!-- ==========================================
+         RIGHT COLUMN: LUXURY AUTHENTICATION FORM
+         ========================================== -->
+    <section class="auth-form-panel">
+      <div class="form-bg-ambient"></div>
+
+      <div class="form-card">
+        <!-- Logo & Brand Header -->
+        <div class="card-top-identity">
+          <a href="index.html" class="card-logo-link" title="Green Garden Home">
+            <img src="green-garden-logo.png" alt="Green Garden Official Crest" class="card-logo-img" onerror="this.src='logo.png'">
+          </a>
+          <h2 class="card-title">Welcome Back</h2>
+          <p class="card-subtitle">Your journey towards a greener lifestyle starts here.</p>
         </div>
 
-        <button type="submit" id="loginSubmitBtn" class="btn-botanical btn-botanical-primary" style="width: 100%; padding: 14px; margin-top: 10px;">
-          <span>Sign In to Green Garden</span>
-          <i class="fas fa-arrow-right"></i>
-        </button>
-
-        <div style="display: flex; align-items: center; margin: 20px 0; gap: 12px;">
-          <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
-          <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">or</span>
-          <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
+        <!-- Feedback Alert Banner -->
+        <div id="authAlert" class="auth-alert-box" role="alert">
+          <i class="fas fa-circle-info" id="alertIcon"></i>
+          <span id="alertMessage"></span>
         </div>
 
-        <button type="button" id="googleLoginBtn" onclick="handleGoogleLogin()" style="width: 100%; padding: 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-full); background: #ffffff; color: var(--forest-900); font-family: var(--font-display); font-size: 0.92rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: var(--shadow-sm); transition: var(--transition-fast);">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" style="width: 18px; height: 18px;">
-          <span>Continue with Google</span>
-        </button>
-      </form>
+        <!-- Main Login Form -->
+        <form id="loginForm" onsubmit="handleLoginSubmit(event)" novalidate>
+          <!-- Email Input -->
+          <div class="form-group">
+            <div class="form-label-row">
+              <label for="loginEmail" class="form-label">Email Address</label>
+            </div>
+            <div class="input-wrapper">
+              <i class="fas fa-envelope input-icon-prefix"></i>
+              <input 
+                type="email" 
+                id="loginEmail" 
+                class="form-input" 
+                placeholder="name@example.com" 
+                autocomplete="email" 
+                required
+              >
+            </div>
+          </div>
 
-      <div style="text-align: center; margin-top: 24px; font-size: 0.9rem; color: var(--text-secondary);">
-        New to Green Garden? <a href="signup.html" style="color: var(--forest-700); font-weight: 700; text-decoration: underline;">Create Account</a>
+          <!-- Password Input -->
+          <div class="form-group">
+            <div class="form-label-row">
+              <label for="loginPassword" class="form-label">Password</label>
+              <a href="#" class="forgot-link" onclick="openForgotModal(event)">Forgot Password?</a>
+            </div>
+            <div class="input-wrapper">
+              <i class="fas fa-lock input-icon-prefix"></i>
+              <input 
+                type="password" 
+                id="loginPassword" 
+                class="form-input" 
+                placeholder="Enter your password" 
+                autocomplete="current-password" 
+                required
+              >
+              <button 
+                type="button" 
+                class="toggle-password-btn" 
+                onclick="togglePasswordVisibility('loginPassword', this)" 
+                aria-label="Toggle password visibility"
+              >
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Options: Remember Me -->
+          <div class="form-options-row">
+            <label class="custom-checkbox-label">
+              <input type="checkbox" id="rememberMe">
+              <span>Remember me for 30 days</span>
+            </label>
+          </div>
+
+          <!-- Primary Submit Button -->
+          <button type="submit" id="loginSubmitBtn" class="btn-submit-premium">
+            <span id="submitBtnText">Sign In to Green Garden</span>
+            <i class="fas fa-arrow-right" id="submitBtnIcon"></i>
+          </button>
+
+          <!-- Divider -->
+          <div class="auth-divider">
+            <span>or continue with</span>
+          </div>
+
+          <!-- Google Login -->
+          <button type="button" id="googleLoginBtn" class="btn-google-sign" onclick="handleGoogleLogin()">
+            <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.616z" fill="#4285F4"/>
+              <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.836.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/>
+              <path d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.347 2.825.957 4.039l3.007-2.332z" fill="#FBBC05"/>
+              <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.166 6.656 3.58 9 3.58z" fill="#EA4335"/>
+            </svg>
+            <span>Continue with Google</span>
+          </button>
+        </form>
+
+        <!-- Registration Switch Link -->
+        <div class="card-switch-prompt">
+          New to Green Garden?
+          <a href="signup.html">Create an Account</a>
+        </div>
+
+        <!-- Fast Admin Demo Credentials (Evaluation) -->
+        <div class="admin-fast-pill">
+          <div><i class="fas fa-shield-alt text-gold" style="color: var(--gold-accent);"></i> <strong>Administrator Quick Access</strong></div>
+          <button type="button" onclick="fillAdminCredentials()">Auto-fill: admin@greengarden.com</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==========================================
+       FORGOT PASSWORD MODAL
+       ========================================== -->
+  <div id="forgotModal" class="modal-overlay" onclick="handleModalBackdropClick(event)">
+    <div class="modal-window">
+      <div class="modal-icon-circle">
+        <i class="fas fa-key"></i>
+      </div>
+      <h3>Reset Your Password</h3>
+      <p>Enter the email associated with your botanical account and we will send a secure recovery link.</p>
+      
+      <div class="input-wrapper" style="margin-bottom: 8px;">
+        <i class="fas fa-envelope input-icon-prefix"></i>
+        <input 
+          type="email" 
+          id="resetEmail" 
+          class="form-input" 
+          placeholder="your.email@example.com"
+          required
+        >
       </div>
 
-      <!-- Quick Admin Login helper for pairing / demo evaluation -->
-      <div class="demo-admin-badge">
-        <strong style="color: var(--brass-600);"><i class="fas fa-shield-alt"></i> Fast Admin Login (Testing)</strong>
-        <div style="color: var(--text-secondary); margin-top: 4px;">Click to auto-fill Administrator credentials:</div>
-        <button type="button" onclick="fillAdminCredentials()" style="margin-top: 8px; padding: 6px 14px; border: 1px solid var(--brass-500); border-radius: 20px; background: #fff; color: var(--brass-600); font-size: 0.78rem; font-weight: 700; cursor: pointer;">
-          Fill: admin@greengarden.com
-        </button>
+      <div class="modal-actions">
+        <button type="button" class="btn-modal-cancel" onclick="closeForgotModal()">Cancel</button>
+        <button type="button" class="btn-modal-confirm" id="btnSendReset" onclick="handleForgotSubmit()">Send Link</button>
       </div>
     </div>
   </div>
-
-  <!-- Forgot Password Modal -->
-  <div id="forgotModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(6px); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
-    <div style="background: #fff; border-radius: 20px; max-width: 400px; width: 100%; padding: 32px; box-shadow: var(--shadow-float); text-align: center;">
-      <h3 style="margin-bottom: 8px;">Reset Password</h3>
-      <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 20px;">Enter your registered email address to receive a secure password reset link.</p>
-      
-      <input type="email" id="resetEmail" class="form-input" placeholder="Your account email" style="margin-bottom: 16px;">
-      
-      <div style="display: flex; gap: 10px;">
-        <button onclick="closeForgotModal()" style="flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 30px; background: #f5f5f5; cursor: pointer;">Cancel</button>
-        <button onclick="handleForgotSubmit()" class="btn-botanical btn-botanical-primary" style="flex: 1.5; padding: 12px;">Send Link</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="global-footer"></div>
 
   <!-- Firebase Compat Scripts -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -208,114 +1196,215 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      Store.renderHeader('login');
-      Store.renderFooter();
+      // Remember me email pre-fill
+      const rememberedEmail = localStorage.getItem('gg_remember_email');
+      if (rememberedEmail) {
+        document.getElementById('loginEmail').value = rememberedEmail;
+        document.getElementById('rememberMe').checked = true;
+      }
 
-      // If already logged in, redirect
-      const user = AuthService.getCurrentUser();
-      if (user) {
-        if (user.role === 'admin') window.location.href = 'admin.html';
-        else window.location.href = 'index.html';
+      // Check if user is already authenticated
+      if (window.AuthService) {
+        const user = AuthService.getCurrentUser();
+        if (user) {
+          if (user.role === 'admin') {
+            window.location.href = 'admin.html';
+          } else {
+            const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || 'index.html';
+            window.location.href = redirectUrl;
+          }
+        }
       }
     });
 
-    function togglePassVisibility(inputId, btn) {
+    // Password visibility toggle
+    function togglePasswordVisibility(inputId, btn) {
       const input = document.getElementById(inputId);
       const icon = btn.querySelector('i');
       if (input.type === 'password') {
         input.type = 'text';
         icon.className = 'fas fa-eye-slash';
+        btn.setAttribute('aria-label', 'Hide password');
       } else {
         input.type = 'password';
         icon.className = 'fas fa-eye';
+        btn.setAttribute('aria-label', 'Show password');
       }
     }
 
+    // Feedback Alert helper
+    function showAlert(msg, isError = true) {
+      const box = document.getElementById('authAlert');
+      const text = document.getElementById('alertMessage');
+      const icon = document.getElementById('alertIcon');
+
+      box.className = `auth-alert-box ${isError ? 'error' : 'success'}`;
+      icon.className = isError ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+      text.textContent = msg;
+      box.style.display = 'flex';
+    }
+
+    function hideAlert() {
+      const box = document.getElementById('authAlert');
+      box.style.display = 'none';
+    }
+
+    // Admin demo quick credential filler
     function fillAdminCredentials() {
       document.getElementById('loginEmail').value = 'admin@greengarden.com';
       document.getElementById('loginPassword').value = 'admin123';
+      hideAlert();
       Store.showToast("Admin credentials populated!");
     }
 
+    // Login Form Submit Handler
     async function handleLoginSubmit(e) {
       e.preventDefault();
+      hideAlert();
+
       const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
+      const remember = document.getElementById('rememberMe').checked;
       const btn = document.getElementById('loginSubmitBtn');
-      const alertBox = document.getElementById('authAlert');
+      const btnText = document.getElementById('submitBtnText');
+      const btnIcon = document.getElementById('submitBtnIcon');
 
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
-      alertBox.style.display = 'none';
+      // Validation
+      if (!email) {
+        showAlert("Please enter your email address.", true);
+        document.getElementById('loginEmail').focus();
+        return;
+      }
+      if (!password) {
+        showAlert("Please enter your password.", true);
+        document.getElementById('loginPassword').focus();
+        return;
+      }
 
-      const res = await AuthService.login(email, password);
-
-      if (res.success) {
-        Store.showToast("Welcome back, " + res.user.name + "!");
-        setTimeout(() => {
-          if (res.user.role === 'admin') {
-            window.location.href = 'admin.html';
-          } else {
-            const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || 'index.html';
-            window.location.href = redirectUrl;
-          }
-        }, 600);
+      // Remember me handling
+      if (remember) {
+        localStorage.setItem('gg_remember_email', email);
       } else {
+        localStorage.removeItem('gg_remember_email');
+      }
+
+      // UI Loading state
+      btn.disabled = true;
+      btnText.textContent = "Authenticating...";
+      btnIcon.className = "fas fa-spinner fa-spin";
+
+      try {
+        const res = await AuthService.login(email, password);
+
+        if (res.success) {
+          showAlert(`Welcome back, ${res.user.name}! Redirecting...`, false);
+          Store.showToast(`🌿 Welcome back, ${res.user.name}!`);
+          btnText.textContent = "Success!";
+          btnIcon.className = "fas fa-check";
+
+          setTimeout(() => {
+            if (res.user.role === 'admin') {
+              window.location.href = 'admin.html';
+            } else {
+              const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || 'index.html';
+              window.location.href = redirectUrl;
+            }
+          }, 600);
+        } else {
+          btn.disabled = false;
+          btnText.textContent = "Sign In to Green Garden";
+          btnIcon.className = "fas fa-arrow-right";
+          showAlert(res.error || "Invalid email or password. Please try again.", true);
+        }
+      } catch (err) {
         btn.disabled = false;
-        btn.innerHTML = '<span>Sign In to Green Garden</span><i class="fas fa-arrow-right"></i>';
-        alertBox.style.display = 'block';
-        alertBox.style.background = '#ffebee';
-        alertBox.style.color = '#c62828';
-        alertBox.textContent = res.error || "Login failed. Please check your credentials.";
+        btnText.textContent = "Sign In to Green Garden";
+        btnIcon.className = "fas fa-arrow-right";
+        showAlert("An error occurred during sign-in. Please try again.", true);
       }
     }
 
+    // Google Sign-In Handler
     async function handleGoogleLogin() {
       const btn = document.getElementById('googleLoginBtn');
-      const alertBox = document.getElementById('authAlert');
-      alertBox.style.display = 'none';
+      hideAlert();
       btn.disabled = true;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting to Google...';
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="color: var(--forest-900);"></i> <span>Connecting to Google...</span>';
 
-      const res = await AuthService.loginWithGoogle();
-      if (res.success) {
-        Store.showToast("Welcome, " + res.user.name + "!");
-        setTimeout(() => {
-          if (res.user.role === 'admin') {
-            window.location.href = 'admin.html';
-          } else {
-            const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || 'index.html';
-            window.location.href = redirectUrl;
-          }
-        }, 600);
-      } else {
+      try {
+        const res = await AuthService.loginWithGoogle();
+        if (res.success) {
+          showAlert(`Welcome, ${res.user.name}! Redirecting...`, false);
+          Store.showToast(`🌿 Welcome, ${res.user.name}!`);
+          setTimeout(() => {
+            if (res.user.role === 'admin') {
+              window.location.href = 'admin.html';
+            } else {
+              const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || 'index.html';
+              window.location.href = redirectUrl;
+            }
+          }, 600);
+        } else {
+          btn.disabled = false;
+          btn.innerHTML = originalHTML;
+          showAlert(res.error || "Google Sign-In failed.", true);
+        }
+      } catch (err) {
         btn.disabled = false;
-        btn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" style="width: 18px; height: 18px;"><span>Continue with Google</span>';
-        alertBox.style.display = 'block';
-        alertBox.style.background = '#ffebee';
-        alertBox.style.color = '#c62828';
-        alertBox.textContent = res.error || "Google Sign-In failed.";
+        btn.innerHTML = originalHTML;
+        showAlert("Could not connect with Google. Please try again.", true);
       }
     }
 
+    // Forgot Password Modal Handlers
     function openForgotModal(e) {
-      e.preventDefault();
-      document.getElementById('forgotModal').style.display = 'flex';
+      if (e) e.preventDefault();
+      const existingEmail = document.getElementById('loginEmail').value.trim();
+      if (existingEmail) {
+        document.getElementById('resetEmail').value = existingEmail;
+      }
+      const modal = document.getElementById('forgotModal');
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => document.getElementById('resetEmail').focus(), 100);
     }
 
     function closeForgotModal() {
-      document.getElementById('forgotModal').style.display = 'none';
+      const modal = document.getElementById('forgotModal');
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function handleModalBackdropClick(e) {
+      if (e.target.id === 'forgotModal') {
+        closeForgotModal();
+      }
     }
 
     async function handleForgotSubmit() {
       const email = document.getElementById('resetEmail').value.trim();
-      if (!email) {
-        alert("Please enter your email");
+      const btn = document.getElementById('btnSendReset');
+
+      if (!email || !email.includes('@')) {
+        alert("Please enter a valid email address.");
         return;
       }
-      const res = await AuthService.resetPassword(email);
-      closeForgotModal();
-      Store.showToast(res.message);
+
+      btn.disabled = true;
+      btn.textContent = "Sending...";
+
+      try {
+        const res = await AuthService.resetPassword(email);
+        closeForgotModal();
+        showAlert(res.message || "Password recovery instructions sent to your email.", false);
+        Store.showToast(res.message || "Password reset link sent!");
+      } catch (err) {
+        alert("Unable to process request right now. Please try again.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Send Link";
+      }
     }
   </script>
 </body>
